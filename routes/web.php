@@ -37,6 +37,9 @@ Route::get('/members/search-page', function () {
     return view('members.search');
 })->name('members.search-page');
 
+// Membership Types Routes
+Route::resource('membership-types', \App\Http\Controllers\MembershipTypeController::class);
+
 // Cashier Routes
 Route::get('/cashier', function () {
     return view('cashier.index');

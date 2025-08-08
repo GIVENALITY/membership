@@ -32,6 +32,7 @@
               <tr>
                 <th>Member</th>
                 <th>Membership ID</th>
+                <th>Membership Type</th>
                 <th>Phone</th>
                 <th>Total Visits</th>
                 <th>Last Visit</th>
@@ -54,6 +55,13 @@
                     </div>
                   </td>
                   <td><span class="badge bg-label-primary">{{ $member->membership_id }}</span></td>
+                  <td>
+                    @if($member->membershipType)
+                      <span class="badge bg-label-info">{{ $member->membershipType->name }}</span>
+                    @else
+                      <span class="text-muted">N/A</span>
+                    @endif
+                  </td>
                   <td>{{ $member->phone }}</td>
                   <td>{{ $member->total_visits }} visits</td>
                   <td>{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : 'Never' }}</td>

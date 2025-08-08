@@ -98,15 +98,17 @@
             
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="membership_type" class="form-label">Membership Type</label>
-                <select class="form-select @error('membership_type') is-invalid @enderror" 
-                        id="membership_type" name="membership_type" required>
+                <label for="membership_type_id" class="form-label">Membership Type</label>
+                <select class="form-select @error('membership_type_id') is-invalid @enderror" 
+                        id="membership_type_id" name="membership_type_id" required>
                   <option value="">Select membership type</option>
-                  <option value="basic" {{ old('membership_type') == 'basic' ? 'selected' : '' }}>Basic</option>
-                  <option value="premium" {{ old('membership_type') == 'premium' ? 'selected' : '' }}>Premium</option>
-                  <option value="vip" {{ old('membership_type') == 'vip' ? 'selected' : '' }}>VIP</option>
+                  @foreach(\App\Models\MembershipType::active()->ordered()->get() as $type)
+                    <option value="{{ $type->id }}" {{ old('membership_type_id') == $type->id ? 'selected' : '' }}>
+                      {{ $type->name }} - {{ $type->formatted_price }}
+                    </option>
+                  @endforeach
                 </select>
-                @error('membership_type')
+                @error('membership_type_id')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>

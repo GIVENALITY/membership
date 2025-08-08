@@ -13,7 +13,7 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $members = Member::orderBy('created_at', 'desc')->get();
+        $members = Member::with('membershipType')->orderBy('created_at', 'desc')->get();
         return view('members.index', compact('members'));
     }
 
@@ -38,7 +38,7 @@ class MemberController extends Controller
             'phone' => 'required|string|max:20',
             'address' => 'nullable|string',
             'birth_date' => 'required|date',
-            'membership_type' => 'required|in:basic,premium,vip',
+            'membership_type_id' => 'required|exists:membership_types,id',
             'status' => 'required|in:active,inactive,suspended',
         ]);
 
@@ -49,6 +49,8 @@ class MemberController extends Controller
         }
 
         try {
+            $membershipType = \App\Models\MembershipType::find($request->membership_type_id);
+            
             $member = Member::create([
                 'membership_id' => Member::generateMembershipId(),
                 'first_name' => $request->first_name,
@@ -58,11 +60,11 @@ class MemberController extends Controller
                 'address' => $request->address,
                 'birth_date' => $request->birth_date,
                 'join_date' => now()->toDateString(),
-                'membership_type' => $request->membership_type,
+                'membership_type_id' => $request->membership_type_id,
                 'status' => $request->status,
                 'total_visits' => 0,
                 'total_spent' => 0,
-                'current_discount_rate' => 5.00, // Start with 5%
+                'current_discount_rate' => $membershipType->discount_rate,
             ]);
 
             return redirect()->route('members.index')

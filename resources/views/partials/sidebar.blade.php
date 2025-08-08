@@ -99,13 +99,21 @@
       </a>
     </li>
 
-    <!-- Add Member -->
-    <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
-      <a href="{{ route('members.create') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-user-add-line"></i>
-        <div data-i18n="Add Member">Add Member</div>
-      </a>
-    </li>
+               <!-- Add Member -->
+           <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
+             <a href="{{ route('members.create') }}" class="menu-link">
+               <i class="menu-icon icon-base ri ri-user-add-line"></i>
+               <div data-i18n="Add Member">Add Member</div>
+             </a>
+           </li>
+
+           <!-- Membership Types -->
+           <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
+             <a href="{{ route('membership-types.index') }}" class="menu-link">
+               <i class="menu-icon icon-base ri ri-vip-crown-line"></i>
+               <div data-i18n="Membership Types">Membership Types</div>
+             </a>
+           </li>
 
     <!-- Cashier -->
     <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">

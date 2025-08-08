@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Member extends Model
 {
@@ -19,7 +20,7 @@ class Member extends Model
         'address',
         'birth_date',
         'join_date',
-        'membership_type',
+        'membership_type_id',
         'status',
         'total_visits',
         'total_spent',
@@ -65,6 +66,14 @@ class Member extends Model
     public function emailNotifications(): HasMany
     {
         return $this->hasMany(EmailNotification::class);
+    }
+
+    /**
+     * Get the member's membership type
+     */
+    public function membershipType(): BelongsTo
+    {
+        return $this->belongsTo(MembershipType::class);
     }
 
     /**
