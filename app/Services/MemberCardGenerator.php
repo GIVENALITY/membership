@@ -51,7 +51,7 @@ class MemberCardGenerator
         $expX = 535; $expY = 771;
 
         if ($fontPath && function_exists('imagettftext')) {
-            $fontSizePt = 13; // requested 13pt
+            $fontSizePt = 33; // requested 13pt
             // Convert points to pixels approximation for GD: px ≈ pt * 1.333
             $fontPx = (int) round($fontSizePt * 1.333);
             imagettftext($image, $fontPx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
