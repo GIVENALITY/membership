@@ -24,8 +24,7 @@ class MemberCardGenerator
         }
 
         // Colors
-        $white = imagecolorallocate($image, 255, 255, 255);
-        $gold = imagecolorallocate($image, 212, 175, 55);
+        $black = imagecolorallocate($image, 0, 0, 0);
 
         // Try to use a TTF font if available, fallback to built-in bitmap font
         $fontPathCandidates = [
@@ -44,27 +43,28 @@ class MemberCardGenerator
         $membershipType = optional($member->membershipType)->name ?? 'N/A';
         $expires = $member->expires_at ? $member->expires_at->format('M d, Y') : 'N/A';
 
-        // Coordinates (tuned for the provided template). Adjust if needed.
-        // These Y positions target the four gold bars on the template.
-        $startX = 235; // left margin inside the bars
-        $yFullName = 360;
-        $yMemberId = 430;
-        $yType = 500;
-        $yExpires = 570;
+        // Coordinates provided by user (x, y) in pixels
+        // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
+        $nameX = 595; $nameY = 513;
+        $idX = 677; $idY = 593;
+        $typeX = 721; $typeY = 684;
+        $expX = 535; $expY = 771;
 
         if ($fontPath && function_exists('imagettftext')) {
-            $fontSize = 30; // px
-            imagettftext($image, $fontSize, 0, $startX, $yFullName, $white, $fontPath, $fullName);
-            imagettftext($image, $fontSize, 0, $startX, $yMemberId, $white, $fontPath, $membershipId);
-            imagettftext($image, $fontSize, 0, $startX, $yType, $white, $fontPath, $membershipType);
-            imagettftext($image, $fontSize, 0, $startX, $yExpires, $white, $fontPath, $expires);
+            $fontSizePt = 13; // requested 13pt
+            // Convert points to pixels approximation for GD: px ≈ pt * 1.333
+            $fontPx = (int) round($fontSizePt * 1.333);
+            imagettftext($image, $fontPx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
+            imagettftext($image, $fontPx, 0, $idX, $idY, $black, $fontPath, $membershipId);
+            imagettftext($image, $fontPx, 0, $typeX, $typeY, $black, $fontPath, $membershipType);
+            imagettftext($image, $fontPx, 0, $expX, $expY, $black, $fontPath, $expires);
         } else {
-            // Fallback using bitmap fonts
-            $font = 5; // built-in font size
-            imagestring($image, $font, $startX, $yFullName - 16, $fullName, $white);
-            imagestring($image, $font, $startX, $yMemberId - 16, $membershipId, $white);
-            imagestring($image, $font, $startX, $yType - 16, $membershipType, $white);
-            imagestring($image, $font, $startX, $yExpires - 16, $expires, $white);
+            // Fallback using bitmap fonts (approximate placement)
+            $font = 5; // built-in font size (~13px height)
+            imagestring($image, $font, $nameX, $nameY - 10, $fullName, $black);
+            imagestring($image, $font, $idX, $idY - 10, $membershipId, $black);
+            imagestring($image, $font, $typeX, $typeY - 10, $membershipType, $black);
+            imagestring($image, $font, $expX, $expY - 10, $expires, $black);
         }
 
         // Save to public storage so it is web-accessible via storage symlink
