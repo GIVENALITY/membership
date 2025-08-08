@@ -45,14 +45,14 @@ class MemberCardGenerator
 
         // Coordinates provided by user (x, y) in pixels
         // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
-        $nameX = 595; $nameY = 513;
-        $idX = 677; $idY = 593;
-        $typeX = 721; $typeY = 684;
+        $nameX = 595; $nameY = 523;
+        $idX = 677; $idY = 613;
+        $typeX = 721; $typeY = 700;
         $expX = 535; $expY = 771;
 
         if ($fontPath && function_exists('imagettftext')) {
             // Base font size: increase significantly (e.g., ~72pt) and fit to bar width
-            $basePt = 72; // you can tune this further if needed
+            $basePt = 172; // you can tune this further if needed
             $toPx = function (int $pt): int { return (int) round($pt * 1.333); }; // px ≈ pt * 1.333
             $fontPx = $toPx($basePt);
 
