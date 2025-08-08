@@ -46,10 +46,10 @@ class MemberCardGenerator
 
         // Coordinates provided by user (x, y) in pixels
         // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
-        $nameX = 595; $nameY = 533;
-        $idX = 677; $idY = 623;
-        $typeX = 721; $typeY = 710;
-        $expX = 535; $expY = 788;
+        $nameX = 595; $nameY = 535;
+        $idX = 677; $idY = 616;
+        $typeX = 721; $typeY = 708;
+        $expX = 535; $expY = 790;
 
         if ($fontPath && function_exists('imagettftext')) {
             // Use PX as the primary unit; convert to PT for GD's imagettftext
