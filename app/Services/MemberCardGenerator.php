@@ -45,13 +45,13 @@ class MemberCardGenerator
 
         // Coordinates provided by user (x, y) in pixels
         // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
-        $nameX = 595; $nameY = 513;
-        $idX = 677; $idY = 593;
-        $typeX = 721; $typeY = 684;
-        $expX = 535; $expY = 771;
+        $nameX = 595; $nameY = 525;
+        $idX = 677; $idY = 613;
+        $typeX = 721; $typeY = 700;
+        $expX = 535; $expY = 790;
 
         if ($fontPath && function_exists('imagettftext')) {
-            $fontSizePt = 53; // requested 13pt
+            $fontSizePt = 153; // requested 13pt
             // Convert points to pixels approximation for GD: px ≈ pt * 1.333
             $fontPx = (int) round($fontSizePt * 1.333);
             imagettftext($image, $fontPx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
