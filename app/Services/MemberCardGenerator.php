@@ -50,8 +50,15 @@ class MemberCardGenerator
         $typeX = 721; $typeY = 684;
         $expX = 535; $expY = 771;
 
+        // Shift all Y positions 40% lower
+        $scaleY = 1.4;
+        $nameY = (int) round($nameY * $scaleY);
+        $idY = (int) round($idY * $scaleY);
+        $typeY = (int) round($typeY * $scaleY);
+        $expY = (int) round($expY * $scaleY);
+
         if ($fontPath && function_exists('imagettftext')) {
-            $fontSizePt = 33; // requested 13pt
+            $fontSizePt = 52; // 4x of 13pt
             // Convert points to pixels approximation for GD: px ≈ pt * 1.333
             $fontPx = (int) round($fontSizePt * 1.333);
             imagettftext($image, $fontPx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
