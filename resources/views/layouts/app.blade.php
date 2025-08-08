@@ -8,15 +8,6 @@
 <div class="layout-overlay layout-menu-toggle"></div>
 <!-- / Layout wrapper -->
 
-<div class="buy-now">
-  <a
-    href="https://themeselection.com/item/materio-dashboard-pro-bootstrap/"
-    target="_blank"
-    class="btn btn-danger btn-buy-now"
-    >Upgrade to Pro</a
-  >
-</div>
-
 <!-- Core JS -->
 <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
