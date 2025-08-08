@@ -75,7 +75,7 @@
   <div class="menu-inner-shadow"></div>
 
   <ul class="menu-inner py-1">
-    <!-- Dashboards -->
+    <!-- Dashboard -->
     <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
       <a href="{{ route('dashboard') }}" class="menu-link">
         <i class="menu-icon icon-base ri ri-home-smile-line"></i>
@@ -83,12 +83,61 @@
       </a>
     </li>
 
-    <!-- Users -->
-    <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-      <a href="{{ route('users.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-user-line"></i>
-        <div data-i18n="Users">Users</div>
+    <!-- Members -->
+    <li class="menu-item {{ request()->routeIs('members.*') ? 'active' : '' }}">
+      <a href="{{ route('members.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-user-star-line"></i>
+        <div data-i18n="Members">Members</div>
       </a>
+    </li>
+
+    <!-- Add Member -->
+    <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
+      <a href="{{ route('members.create') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-user-add-line"></i>
+        <div data-i18n="Add Member">Add Member</div>
+      </a>
+    </li>
+
+    <!-- Dining History -->
+    <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
+      <a href="{{ route('dining.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-restaurant-line"></i>
+        <div data-i18n="Dining History">Dining History</div>
+      </a>
+    </li>
+
+    <!-- Discounts -->
+    <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">
+      <a href="{{ route('discounts.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-percent-line"></i>
+        <div data-i18n="Discounts">Discounts</div>
+      </a>
+    </li>
+
+    <!-- Reports -->
+    <li class="menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base ri ri-bar-chart-line"></i>
+        <div data-i18n="Reports">Reports</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="{{ route('reports.members') }}" class="menu-link">
+            <div data-i18n="Member Reports">Member Reports</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('reports.dining') }}" class="menu-link">
+            <div data-i18n="Dining Reports">Dining Reports</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('reports.discounts') }}" class="menu-link">
+            <div data-i18n="Discount Reports">Discount Reports</div>
+          </a>
+        </li>
+      </ul>
     </li>
 
     <!-- Settings -->

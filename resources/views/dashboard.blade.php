@@ -9,10 +9,10 @@
       <div class="d-flex align-items-end row">
         <div class="col-sm-7">
           <div class="card-body">
-            <h5 class="card-title text-primary">Congratulations {{ Auth::user()->name ?? 'User' }}! 🎉</h5>
-            <p class="mb-4">You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in your profile.</p>
+            <h5 class="card-title text-primary">Welcome to Membership MS! 🍽️</h5>
+            <p class="mb-4">Manage your restaurant's premium loyalty membership program. Track dining visits, calculate discounts, and grow your member base.</p>
 
-            <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a>
+            <a href="{{ route('members.create') }}" class="btn btn-sm btn-outline-primary">Add New Member</a>
           </div>
         </div>
         <div class="col-sm-5 text-center text-sm-left">
@@ -20,7 +20,7 @@
             <img
               src="{{ asset('assets/img/illustrations/man-with-laptop-light.png') }}"
               height="140"
-              alt="View Badge User"
+              alt="Restaurant Management"
               data-app-dark-img="illustrations/man-with-laptop-dark.png"
               data-app-light-img="illustrations/man-with-laptop-light.png" />
           </div>
@@ -30,76 +30,163 @@
   </div>
   <div class="col-lg-12 col-md-4 order-1">
     <div class="row">
-      <div class="col-lg-6 col-md-12 col-6 mb-4">
+      <div class="col-lg-3 col-md-6 col-6 mb-4">
         <div class="card">
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between">
               <div class="avatar flex-shrink-0">
-                <img
-                  src="{{ asset('assets/img/icons/unicons/chart-success.png') }}"
-                  alt="chart success"
-                  class="rounded" />
-              </div>
-              <div class="dropdown">
-                <button
-                  class="btn p-0"
-                  type="button"
-                  id="cardOpt3"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-                  <i class="icon-base ri ri-more-vertical"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                  <a class="dropdown-item" href="javascript:void(0);">Select All</a>
-                  <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                  <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                </div>
+                <i class="icon-base ri ri-user-star-line icon-lg text-primary"></i>
               </div>
             </div>
-            <span class="fw-semibold d-block mb-1">Profit</span>
-            <h3 class="card-title mb-2">$12,628</h3>
+            <span class="fw-semibold d-block mb-1">Total Members</span>
+            <h3 class="card-title mb-2">1,234</h3>
             <small class="text-success fw-semibold">
               <i class="icon-base ri ri-arrow-up-line"></i>
-              +72.80%
+              +12.5%
             </small>
           </div>
         </div>
       </div>
-      <div class="col-lg-6 col-md-12 col-6 mb-4">
+      <div class="col-lg-3 col-md-6 col-6 mb-4">
         <div class="card">
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between">
               <div class="avatar flex-shrink-0">
-                <img
-                  src="{{ asset('assets/img/icons/unicons/wallet-info.png') }}"
-                  alt="Credit Card"
-                  class="rounded" />
-              </div>
-              <div class="dropdown">
-                <button
-                  class="btn p-0"
-                  type="button"
-                  id="cardOpt6"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-                  <i class="icon-base ri ri-more-vertical"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
-                  <a class="dropdown-item" href="javascript:void(0);">Select All</a>
-                  <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                  <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                </div>
+                <i class="icon-base ri ri-restaurant-line icon-lg text-warning"></i>
               </div>
             </div>
-            <span>Sales</span>
-            <h3 class="card-title text-nowrap mb-1">$4,679</h3>
+            <span class="fw-semibold d-block mb-1">Today's Visits</span>
+            <h3 class="card-title mb-2">89</h3>
             <small class="text-success fw-semibold">
               <i class="icon-base ri ri-arrow-up-line"></i>
-              +28.42%
+              +8.2%
             </small>
           </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <div class="avatar flex-shrink-0">
+                <i class="icon-base ri ri-percent-line icon-lg text-success"></i>
+              </div>
+            </div>
+            <span class="fw-semibold d-block mb-1">Discounts Given</span>
+            <h3 class="card-title mb-2">$2,456</h3>
+            <small class="text-info fw-semibold">
+              <i class="icon-base ri ri-information-line"></i>
+              This Month
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <div class="avatar flex-shrink-0">
+                <i class="icon-base ri ri-bar-chart-line icon-lg text-info"></i>
+              </div>
+            </div>
+            <span class="fw-semibold d-block mb-1">Avg. Visits/Member</span>
+            <h3 class="card-title mb-2">4.2</h3>
+            <small class="text-success fw-semibold">
+              <i class="icon-base ri ri-arrow-up-line"></i>
+              +15.3%
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+  <div class="col-lg-8 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <h5 class="card-title mb-0">Recent Member Activity</h5>
+        <a href="{{ route('members.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Membership ID</th>
+                <th>Last Visit</th>
+                <th>Total Visits</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm me-3">
+                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle" />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">John Doe</h6>
+                      <small class="text-muted">john@example.com</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge bg-label-primary">MS001</span></td>
+                <td>2 hours ago</td>
+                <td>12 visits</td>
+                <td><span class="badge bg-label-success">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm me-3">
+                      <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Avatar" class="rounded-circle" />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">Jane Smith</h6>
+                      <small class="text-muted">jane@example.com</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge bg-label-primary">MS002</span></td>
+                <td>1 day ago</td>
+                <td>8 visits</td>
+                <td><span class="badge bg-label-success">Active</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-4 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('members.create') }}" class="btn btn-primary">
+            <i class="icon-base ri ri-user-add-line me-2"></i>
+            Add New Member
+          </a>
+          <a href="{{ route('dining.index') }}" class="btn btn-outline-primary">
+            <i class="icon-base ri ri-restaurant-line me-2"></i>
+            Record Visit
+          </a>
+          <a href="{{ route('discounts.index') }}" class="btn btn-outline-success">
+            <i class="icon-base ri ri-percent-line me-2"></i>
+            Calculate Discount
+          </a>
+          <a href="{{ route('reports.members') }}" class="btn btn-outline-info">
+            <i class="icon-base ri ri-bar-chart-line me-2"></i>
+            View Reports
+          </a>
         </div>
       </div>
     </div>
