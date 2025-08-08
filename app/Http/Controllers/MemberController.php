@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\MemberCardGenerator;
 
 class MemberController extends Controller
 {
@@ -50,7 +51,7 @@ class MemberController extends Controller
 
         try {
             $membershipType = \App\Models\MembershipType::find($request->membership_type_id);
-            
+
             $member = Member::create([
                 'membership_id' => Member::generateMembershipId(),
                 'first_name' => $request->first_name,
@@ -65,7 +66,17 @@ class MemberController extends Controller
                 'total_visits' => 0,
                 'total_spent' => 0,
                 'current_discount_rate' => $membershipType->discount_rate,
+                // Expiry: match billing cycle of type
+                'expires_at' => $membershipType->billing_cycle === 'monthly'
+                    ? now()->addMonth()->toDateString()
+                    : now()->addYear()->toDateString(),
             ]);
+
+            // Generate and save the membership card image
+            $generator = new MemberCardGenerator();
+            $cardPath = $generator->generate($member->fresh(['membershipType']));
+            $member->card_image_path = $cardPath;
+            $member->save();
 
             return redirect()->route('members.index')
                 ->with('success', 'Member created successfully! Membership ID: ' . $member->membership_id);

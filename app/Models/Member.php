@@ -26,12 +26,15 @@ class Member extends Model
         'total_spent',
         'current_discount_rate',
         'last_visit_at',
+        'card_image_path',
+        'expires_at',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
         'join_date' => 'date',
         'last_visit_at' => 'datetime',
+        'expires_at' => 'date',
         'total_spent' => 'decimal:2',
         'current_discount_rate' => 'decimal:2',
     ];

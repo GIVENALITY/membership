@@ -171,22 +171,26 @@
       </div>
       <div class="card-body">
         <div class="d-grid gap-2">
-          <a href="{{ route('members.search') }}" class="btn btn-primary">
-            <i class="icon-base ri ri-search-line me-2"></i>
-            Search Members
-          </a>
-          <a href="{{ route('cashier.index') }}" class="btn btn-outline-warning">
-            <i class="icon-base ri ri-bank-card-line me-2"></i>
-            Cashier Dashboard
-          </a>
-          <a href="{{ route('members.create') }}" class="btn btn-outline-primary">
-            <i class="icon-base ri ri-user-add-line me-2"></i>
-            Add New Member
-          </a>
-          <a href="{{ route('notifications.index') }}" class="btn btn-outline-info">
-            <i class="icon-base ri ri-mail-line me-2"></i>
-            Email Notifications
-          </a>
+                           <a href="{{ route('members.search') }}" class="btn btn-primary">
+                   <i class="icon-base ri ri-search-line me-2"></i>
+                   Search Members
+                 </a>
+                 <a href="{{ route('cashier.index') }}" class="btn btn-outline-warning">
+                   <i class="icon-base ri ri-bank-card-line me-2"></i>
+                   Cashier Dashboard
+                 </a>
+                 <a href="{{ route('members.create') }}" class="btn btn-outline-primary">
+                   <i class="icon-base ri ri-user-add-line me-2"></i>
+                   Add New Member
+                 </a>
+                 <a href="{{ route('dining.index') }}" class="btn btn-outline-success">
+                   <i class="icon-base ri ri-restaurant-line me-2"></i>
+                   Record Visit
+                 </a>
+                 <a href="{{ route('notifications.index') }}" class="btn btn-outline-info">
+                   <i class="icon-base ri ri-mail-line me-2"></i>
+                   Email Notifications
+                 </a>
         </div>
       </div>
     </div>
