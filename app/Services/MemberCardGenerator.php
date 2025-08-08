@@ -51,40 +51,44 @@ class MemberCardGenerator
         $expX = 535; $expY = 781;
 
         if ($fontPath && function_exists('imagettftext')) {
-            // Base font size: increase significantly (e.g., ~72pt) and fit to bar width
-            $basePt = 672; // you can tune this further if needed
-            $toPx = function (int $pt): int { return (int) round($pt * 1.333); }; // px ≈ pt * 1.333
-            $fontPx = $toPx($basePt);
+            // Use PX as the primary unit; convert to PT for GD's imagettftext
+            $pxToPt = function (float $px): float { return $px / 1.333; };
 
-            // Helper to shrink font so text fits within max width
-            $fitFontPx = function (string $text, string $fontPath, int $fontPx, int $maxWidth) {
-                $measure = function ($text, $fontPath, $fontPx) {
-                    $box = imagettfbbox($fontPx, 0, $fontPath, $text);
-                    $width = abs($box[2] - $box[0]);
-                    return $width;
-                };
-                $current = $fontPx;
-                while ($current > 12 && $measure($text, $fontPath, $current) > $maxWidth) {
-                    $current -= 1; // step down until it fits
+            // Base text size in PX (can be tuned). Auto-fit will scale down if needed
+            $basePx = 72.0;
+
+            // Measure rendered width (in px) for a given px size
+            $measureWidthPx = function (string $text, string $fontPath, float $fontPx) use ($pxToPt) {
+                $pt = $pxToPt($fontPx);
+                $box = imagettfbbox($pt, 0, $fontPath, $text);
+                return abs($box[2] - $box[0]);
+            };
+
+            // Fit a text to a maximum width by reducing pixel size
+            $fitFontPx = function (string $text, string $fontPath, float $startPx, int $maxWidthPx) use ($measureWidthPx) {
+                $current = $startPx;
+                while ($current > 10 && $measureWidthPx($text, $fontPath, $current) > $maxWidthPx) {
+                    $current -= 1; // reduce 1px and try again
                 }
                 return $current;
             };
 
-            // Reasonable widths for the golden bars area (adjust if needed after a visual check)
-            $nameMax = 1000; // px
+            // Max widths for each bar (px)
+            $nameMax = 1000;
             $idMax   = 900;
             $typeMax = 900;
             $expMax  = 800;
 
-            $namePx = $fitFontPx($fullName, $fontPath, $fontPx, $nameMax);
-            $idPx   = $fitFontPx($membershipId, $fontPath, $fontPx, $idMax);
-            $typePx = $fitFontPx($membershipType, $fontPath, $fontPx, $typeMax);
-            $expPx  = $fitFontPx($expires, $fontPath, $fontPx, $expMax);
+            $namePx = $fitFontPx($fullName, $fontPath, $basePx, $nameMax);
+            $idPx   = $fitFontPx($membershipId, $fontPath, $basePx, $idMax);
+            $typePx = $fitFontPx($membershipType, $fontPath, $basePx, $typeMax);
+            $expPx  = $fitFontPx($expires, $fontPath, $basePx, $expMax);
 
-            imagettftext($image, $namePx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
-            imagettftext($image, $idPx,   0, $idX,   $idY,   $black, $fontPath, $membershipId);
-            imagettftext($image, $typePx, 0, $typeX, $typeY, $black, $fontPath, $membershipType);
-            imagettftext($image, $expPx,  0, $expX,  $expY,  $black, $fontPath, $expires);
+            // Render using converted PT sizes
+            imagettftext($image, $pxToPt($namePx), 0, $nameX, $nameY, $black, $fontPath, $fullName);
+            imagettftext($image, $pxToPt($idPx),   0, $idX,   $idY,   $black, $fontPath, $membershipId);
+            imagettftext($image, $pxToPt($typePx), 0, $typeX, $typeY, $black, $fontPath, $membershipType);
+            imagettftext($image, $pxToPt($expPx),  0, $expX,  $expY,  $black, $fontPath, $expires);
         } else {
             // Fallback using bitmap fonts (limited sizing control)
             $font = 5; // built-in font size (~13px height)
