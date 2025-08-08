@@ -30,6 +30,21 @@ class MembershipType extends Model
     ];
 
     /**
+     * Ensure perks attribute is always an array when accessed
+     */
+    public function getPerksAttribute($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
+    }
+
+    /**
      * Get members with this membership type
      */
     public function members(): HasMany
