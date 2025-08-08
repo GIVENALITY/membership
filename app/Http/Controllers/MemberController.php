@@ -117,7 +117,7 @@ class MemberController extends Controller
             'phone' => 'required|string|max:20',
             'address' => 'nullable|string',
             'birth_date' => 'required|date',
-            'membership_type' => 'required|in:basic,premium,vip',
+            'membership_type_id' => 'required|exists:membership_types,id',
             'status' => 'required|in:active,inactive,suspended',
         ]);
 
