@@ -31,17 +31,11 @@ Route::get('/logout', function () {
 })->name('logout');
 
 // Members Routes
-Route::get('/members', function () {
-    return view('members.index');
-})->name('members.index');
-
-Route::get('/members/create', function () {
-    return view('members.create');
-})->name('members.create');
-
-Route::get('/members/search', function () {
+Route::resource('members', \App\Http\Controllers\MemberController::class);
+Route::get('/members/search', [\App\Http\Controllers\MemberController::class, 'search'])->name('members.search');
+Route::get('/members/search-page', function () {
     return view('members.search');
-})->name('members.search');
+})->name('members.search-page');
 
 // Cashier Routes
 Route::get('/cashier', function () {
