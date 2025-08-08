@@ -56,7 +56,7 @@ class MemberCardGenerator
             $pxToPt = function (float $px): float { return $px / 1.333; };
 
             // Base text size in PX (can be tuned). Auto-fit will scale down if needed
-            $basePx = 13.0;
+            $basePx = 73.0;
 
             // Measure rendered width (in px) for a given px size
             $measureWidthPx = function (string $text, string $fontPath, float $fontPx) use ($pxToPt) {
