@@ -92,7 +92,7 @@ class MemberCardGenerator
             imagettftext($image, $pxToPt($expPx),  0, $expX,  $expY,  $black, $fontPath, $expires);
         } else {
             // Fallback using bitmap fonts (limited sizing control)
-            $font = 5; // built-in font size (~13px height)
+            $font = 45; // built-in font size (~13px height)
             imagestring($image, $font, $nameX, $nameY - 10, $fullName, $black);
             imagestring($image, $font, $idX, $idY - 10, $membershipId, $black);
             imagestring($image, $font, $typeX, $typeY - 10, $membershipType, $black);
