@@ -39,6 +39,15 @@ Route::get('/members/create', function () {
     return view('members.create');
 })->name('members.create');
 
+Route::get('/members/search', function () {
+    return view('members.search');
+})->name('members.search');
+
+// Cashier Routes
+Route::get('/cashier', function () {
+    return view('cashier.index');
+})->name('cashier.index');
+
 // Dining Routes
 Route::get('/dining', function () {
     return view('dining.index');
@@ -61,3 +70,8 @@ Route::get('/reports/dining', function () {
 Route::get('/reports/discounts', function () {
     return view('reports.discounts');
 })->name('reports.discounts');
+
+// Notifications Routes
+Route::get('/notifications', function () {
+    return view('notifications.index');
+})->name('notifications.index');

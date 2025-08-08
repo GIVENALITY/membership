@@ -91,11 +91,27 @@
       </a>
     </li>
 
+    <!-- Search Members -->
+    <li class="menu-item {{ request()->routeIs('members.search') ? 'active' : '' }}">
+      <a href="{{ route('members.search') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-search-line"></i>
+        <div data-i18n="Search Members">Search Members</div>
+      </a>
+    </li>
+
     <!-- Add Member -->
     <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
       <a href="{{ route('members.create') }}" class="menu-link">
         <i class="menu-icon icon-base ri ri-user-add-line"></i>
         <div data-i18n="Add Member">Add Member</div>
+      </a>
+    </li>
+
+    <!-- Cashier -->
+    <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
+      <a href="{{ route('cashier.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-bank-card-line"></i>
+        <div data-i18n="Cashier">Cashier</div>
       </a>
     </li>
 
@@ -138,6 +154,14 @@
           </a>
         </li>
       </ul>
+    </li>
+
+    <!-- Notifications -->
+    <li class="menu-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+      <a href="{{ route('notifications.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-mail-line"></i>
+        <div data-i18n="Notifications">Notifications</div>
+      </a>
     </li>
 
     <!-- Settings -->
