@@ -45,21 +45,48 @@ class MemberCardGenerator
 
         // Coordinates provided by user (x, y) in pixels
         // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
-        $nameX = 595; $nameY = 525;
-        $idX = 677; $idY = 613;
-        $typeX = 721; $typeY = 700;
-        $expX = 535; $expY = 790;
+        $nameX = 595; $nameY = 513;
+        $idX = 677; $idY = 593;
+        $typeX = 721; $typeY = 684;
+        $expX = 535; $expY = 771;
 
         if ($fontPath && function_exists('imagettftext')) {
-            $fontSizePt = 153; // requested 13pt
-            // Convert points to pixels approximation for GD: px ≈ pt * 1.333
-            $fontPx = (int) round($fontSizePt * 1.333);
-            imagettftext($image, $fontPx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
-            imagettftext($image, $fontPx, 0, $idX, $idY, $black, $fontPath, $membershipId);
-            imagettftext($image, $fontPx, 0, $typeX, $typeY, $black, $fontPath, $membershipType);
-            imagettftext($image, $fontPx, 0, $expX, $expY, $black, $fontPath, $expires);
+            // Base font size: increase significantly (e.g., ~72pt) and fit to bar width
+            $basePt = 72; // you can tune this further if needed
+            $toPx = function (int $pt): int { return (int) round($pt * 1.333); }; // px ≈ pt * 1.333
+            $fontPx = $toPx($basePt);
+
+            // Helper to shrink font so text fits within max width
+            $fitFontPx = function (string $text, string $fontPath, int $fontPx, int $maxWidth) {
+                $measure = function ($text, $fontPath, $fontPx) {
+                    $box = imagettfbbox($fontPx, 0, $fontPath, $text);
+                    $width = abs($box[2] - $box[0]);
+                    return $width;
+                };
+                $current = $fontPx;
+                while ($current > 12 && $measure($text, $fontPath, $current) > $maxWidth) {
+                    $current -= 1; // step down until it fits
+                }
+                return $current;
+            };
+
+            // Reasonable widths for the golden bars area (adjust if needed after a visual check)
+            $nameMax = 1000; // px
+            $idMax   = 900;
+            $typeMax = 900;
+            $expMax  = 800;
+
+            $namePx = $fitFontPx($fullName, $fontPath, $fontPx, $nameMax);
+            $idPx   = $fitFontPx($membershipId, $fontPath, $fontPx, $idMax);
+            $typePx = $fitFontPx($membershipType, $fontPath, $fontPx, $typeMax);
+            $expPx  = $fitFontPx($expires, $fontPath, $fontPx, $expMax);
+
+            imagettftext($image, $namePx, 0, $nameX, $nameY, $black, $fontPath, $fullName);
+            imagettftext($image, $idPx,   0, $idX,   $idY,   $black, $fontPath, $membershipId);
+            imagettftext($image, $typePx, 0, $typeX, $typeY, $black, $fontPath, $membershipType);
+            imagettftext($image, $expPx,  0, $expX,  $expY,  $black, $fontPath, $expires);
         } else {
-            // Fallback using bitmap fonts (approximate placement)
+            // Fallback using bitmap fonts (limited sizing control)
             $font = 5; // built-in font size (~13px height)
             imagestring($image, $font, $nameX, $nameY - 10, $fullName, $black);
             imagestring($image, $font, $idX, $idY - 10, $membershipId, $black);
