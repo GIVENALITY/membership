@@ -52,7 +52,7 @@ class MemberCardGenerator
 
         if ($fontPath && function_exists('imagettftext')) {
             // Base font size: increase significantly (e.g., ~72pt) and fit to bar width
-            $basePt = 372; // you can tune this further if needed
+            $basePt = 672; // you can tune this further if needed
             $toPx = function (int $pt): int { return (int) round($pt * 1.333); }; // px ≈ pt * 1.333
             $fontPx = $toPx($basePt);
 
