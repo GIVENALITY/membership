@@ -6,6 +6,10 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\MemberCardGenerator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMemberMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MemberController extends Controller
 {
@@ -78,8 +82,45 @@ class MemberController extends Controller
             $member->card_image_path = $cardPath;
             $member->save();
 
+            // Build welcome email content from settings or fallback
+            $subject = DB::table('system_settings')->where('key', 'welcome_email_subject')->value('value')
+                ?? 'Welcome to Membership MS';
+            $templateJson = DB::table('system_settings')->where('key', 'welcome_email_template')->value('value');
+            $body = 'Dear ' . $member->full_name . ",\n\nWelcome to Membership MS!\n\nMembership ID: " . $member->membership_id;
+            if ($templateJson) {
+                $tpl = json_decode($templateJson, true);
+                if (isset($tpl['body'])) {
+                    $body = str_replace([
+                        '[Member Name]', '[MS001]', '[Date]', '[5%]'
+                    ], [
+                        $member->full_name,
+                        $member->membership_id,
+                        now()->toDateString(),
+                        rtrim(rtrim(number_format($member->current_discount_rate,2,'.',''), '0'),'.') . '%'
+                    ], $tpl['body']);
+                }
+            }
+
+            // Send email (sync). In production consider queueing.
+            Mail::to($member->email)->send(new WelcomeMemberMail($member, $subject, $body));
+
+            // Log to email_notifications if table exists
+            if (Schema::hasTable('email_notifications')) {
+                DB::table('email_notifications')->insert([
+                    'member_id' => $member->id,
+                    'email' => $member->email,
+                    'subject' => $subject,
+                    'message' => $body,
+                    'type' => 'welcome',
+                    'status' => 'sent',
+                    'sent_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
             return redirect()->route('members.index')
-                ->with('success', 'Member created successfully! Membership ID: ' . $member->membership_id);
+                ->with('success', 'Member created successfully and welcome email sent! Membership ID: ' . $member->membership_id);
 
         } catch (\Exception $e) {
             return redirect()->back()
