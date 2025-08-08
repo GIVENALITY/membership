@@ -25,3 +25,7 @@ Route::get('/settings/profile', function () {
 Route::get('/settings/account', function () {
     return view('settings.account');
 })->name('settings.account');
+
+Route::get('/logout', function () {
+    return redirect('/');
+})->name('logout');

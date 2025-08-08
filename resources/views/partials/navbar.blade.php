@@ -96,7 +96,7 @@
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ route('profile.edit') }}">
+            <a class="dropdown-item" href="{{ route('settings.profile') }}">
               <i class="icon-base ri ri-user-line icon-md me-3"></i>
               <span>My Profile</span>
             </a>
@@ -112,13 +112,10 @@
           </li>
           <li>
             <div class="d-grid px-4 pt-2 pb-1">
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-danger d-flex">
-                  <small class="align-middle">Logout</small>
-                  <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
-                </button>
-              </form>
+              <a href="{{ route('logout') }}" class="btn btn-danger d-flex">
+                <small class="align-middle">Logout</small>
+                <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
+              </a>
             </div>
           </li>
         </ul>
