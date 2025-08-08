@@ -46,17 +46,17 @@ class MemberCardGenerator
 
         // Coordinates provided by user (x, y) in pixels
         // Name: 595,513 | Membership ID: 677,593 | Membership Type: 721,684 | Expires: 535,771
-        $nameX = 595; $nameY = 523;
-        $idX = 677; $idY = 613;
-        $typeX = 721; $typeY = 700;
-        $expX = 535; $expY = 781;
+        $nameX = 595; $nameY = 533;
+        $idX = 677; $idY = 623;
+        $typeX = 721; $typeY = 710;
+        $expX = 535; $expY = 788;
 
         if ($fontPath && function_exists('imagettftext')) {
             // Use PX as the primary unit; convert to PT for GD's imagettftext
             $pxToPt = function (float $px): float { return $px / 1.333; };
 
             // Base text size in PX (can be tuned). Auto-fit will scale down if needed
-            $basePx = 27.0;
+            $basePx = 37.0;
 
             // Measure rendered width (in px) for a given px size
             $measureWidthPx = function (string $text, string $fontPath, float $fontPx) use ($pxToPt) {
