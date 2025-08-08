@@ -42,9 +42,9 @@
                 </td>
                 <td><span class="badge bg-label-primary">MS001</span></td>
                 <td>Today, 2:30 PM</td>
-                <td>$45.00</td>
-                <td><span class="text-success">$4.50 (10%)</span></td>
-                <td><strong>$40.50</strong></td>
+                <td>TZS 45,000</td>
+                <td><span class="text-success">TZS 4,500 (10%)</span></td>
+                <td><strong>TZS 40,500</strong></td>
                 <td>
                   <button class="btn btn-sm btn-outline-primary">
                     <i class="icon-base ri ri-eye-line"></i>
@@ -65,9 +65,9 @@
                 </td>
                 <td><span class="badge bg-label-primary">MS002</span></td>
                 <td>Yesterday, 7:15 PM</td>
-                <td>$32.00</td>
-                <td><span class="text-success">$3.20 (10%)</span></td>
-                <td><strong>$28.80</strong></td>
+                <td>TZS 32,000</td>
+                <td><span class="text-success">TZS 3,200 (10%)</span></td>
+                <td><strong>TZS 28,800</strong></td>
                 <td>
                   <button class="btn btn-sm btn-outline-primary">
                     <i class="icon-base ri ri-eye-line"></i>
@@ -103,23 +103,23 @@
           <div class="mb-3">
             <label for="billAmount" class="form-label">Bill Amount</label>
             <div class="input-group">
-              <span class="input-group-text">$</span>
-              <input type="number" class="form-control" id="billAmount" step="0.01" placeholder="0.00" required>
+              <span class="input-group-text">TZS</span>
+              <input type="number" class="form-control" id="billAmount" step="100" placeholder="0" required>
             </div>
           </div>
           <div class="mb-3">
             <label for="discountAmount" class="form-label">Discount Applied</label>
             <div class="input-group">
-              <span class="input-group-text">$</span>
-              <input type="number" class="form-control" id="discountAmount" step="0.01" placeholder="0.00" readonly>
+              <span class="input-group-text">TZS</span>
+              <input type="number" class="form-control" id="discountAmount" step="100" placeholder="0" readonly>
             </div>
             <small class="text-muted">Auto-calculated based on member's discount rate</small>
           </div>
           <div class="mb-3">
             <label for="finalAmount" class="form-label">Final Amount</label>
             <div class="input-group">
-              <span class="input-group-text">$</span>
-              <input type="number" class="form-control" id="finalAmount" step="0.01" placeholder="0.00" readonly>
+              <span class="input-group-text">TZS</span>
+              <input type="number" class="form-control" id="finalAmount" step="100" placeholder="0" readonly>
             </div>
           </div>
         </form>

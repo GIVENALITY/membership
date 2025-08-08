@@ -73,7 +73,7 @@
               </div>
             </div>
             <span class="fw-semibold d-block mb-1">Discounts Given</span>
-            <h3 class="card-title mb-2">$2,456</h3>
+            <h3 class="card-title mb-2">TZS 2,456,000</h3>
             <small class="text-info fw-semibold">
               <i class="icon-base ri ri-information-line"></i>
               This Month

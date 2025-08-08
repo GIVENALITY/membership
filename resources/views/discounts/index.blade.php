@@ -19,8 +19,8 @@
             <div class="col-md-6 mb-3">
               <label for="billAmount" class="form-label">Bill Amount</label>
               <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input type="number" class="form-control" id="billAmount" step="0.01" placeholder="0.00">
+                <span class="input-group-text">TZS</span>
+                <input type="number" class="form-control" id="billAmount" step="100" placeholder="0">
               </div>
             </div>
           </div>
@@ -40,28 +40,28 @@
             <div class="col-md-4 mb-3">
               <label for="discountAmount" class="form-label">Discount Amount</label>
               <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input type="number" class="form-control" id="discountAmount" step="0.01" placeholder="0.00" readonly>
+                <span class="input-group-text">TZS</span>
+                <input type="number" class="form-control" id="discountAmount" step="100" placeholder="0" readonly>
               </div>
             </div>
           </div>
           
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="finalAmount" class="form-label">Final Amount</label>
-              <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input type="number" class="form-control" id="finalAmount" step="0.01" placeholder="0.00" readonly>
+                      <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="finalAmount" class="form-label">Final Amount</label>
+                <div class="input-group">
+                  <span class="input-group-text">TZS</span>
+                  <input type="number" class="form-control" id="finalAmount" step="100" placeholder="0" readonly>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="savings" class="form-label">Total Savings</label>
+                <div class="input-group">
+                  <span class="input-group-text">TZS</span>
+                  <input type="number" class="form-control" id="savings" step="100" placeholder="0" readonly>
+                </div>
               </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="savings" class="form-label">Total Savings</label>
-              <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input type="number" class="form-control" id="savings" step="0.01" placeholder="0.00" readonly>
-              </div>
-            </div>
-          </div>
           
           <div class="d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-outline-secondary" onclick="calculateDiscount()">
@@ -144,9 +144,9 @@ function calculateDiscount() {
     
     document.getElementById('visitCount').value = visitCount;
     document.getElementById('discountRate').value = discountRate;
-    document.getElementById('discountAmount').value = discountAmount.toFixed(2);
-    document.getElementById('finalAmount').value = finalAmount.toFixed(2);
-    document.getElementById('savings').value = discountAmount.toFixed(2);
+    document.getElementById('discountAmount').value = Math.round(discountAmount);
+    document.getElementById('finalAmount').value = Math.round(finalAmount);
+    document.getElementById('savings').value = Math.round(discountAmount);
   }
 }
 </script>
