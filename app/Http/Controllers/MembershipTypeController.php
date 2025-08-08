@@ -39,7 +39,7 @@ class MembershipTypeController extends Controller
             'perks.*' => 'required|string|max:255',
             'max_visits_per_month' => 'nullable|integer|min:1',
             'discount_rate' => 'required|numeric|min:0|max:100',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
@@ -60,7 +60,7 @@ class MembershipTypeController extends Controller
                 'perks' => $perks,
                 'max_visits_per_month' => $request->max_visits_per_month,
                 'discount_rate' => $request->discount_rate,
-                'is_active' => $request->has('is_active'),
+                'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);
 
@@ -105,7 +105,7 @@ class MembershipTypeController extends Controller
             'perks.*' => 'required|string|max:255',
             'max_visits_per_month' => 'nullable|integer|min:1',
             'discount_rate' => 'required|numeric|min:0|max:100',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
@@ -126,7 +126,7 @@ class MembershipTypeController extends Controller
                 'perks' => $perks,
                 'max_visits_per_month' => $request->max_visits_per_month,
                 'discount_rate' => $request->discount_rate,
-                'is_active' => $request->has('is_active'),
+                'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);
 
