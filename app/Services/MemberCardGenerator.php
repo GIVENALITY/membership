@@ -28,6 +28,7 @@ class MemberCardGenerator
 
         // Try to use a TTF font if available, fallback to built-in bitmap font
         $fontPathCandidates = [
+            public_path('assets/fonts/Roboto.ttf'),
             public_path('assets/fonts/Inter-Regular.ttf'),
             public_path('assets/fonts/Inter.ttf'),
             base_path('vendor/google/fonts/apache/inter/Inter-Regular.ttf'),
@@ -55,7 +56,7 @@ class MemberCardGenerator
             $pxToPt = function (float $px): float { return $px / 1.333; };
 
             // Base text size in PX (can be tuned). Auto-fit will scale down if needed
-            $basePx = 72.0;
+            $basePx = 13.0;
 
             // Measure rendered width (in px) for a given px size
             $measureWidthPx = function (string $text, string $fontPath, float $fontPx) use ($pxToPt) {
