@@ -100,16 +100,20 @@
             </div>
           </div>
           
-          <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" onclick="clearBill()">
-              <i class="icon-base ri ri-refresh-line me-1"></i>
-              Clear
-            </button>
-            <button type="button" class="btn btn-success" onclick="processPayment()">
-              <i class="icon-base ri ri-bank-card-line me-1"></i>
-              Process Payment
-            </button>
-          </div>
+                           <div class="mb-3">
+                   <label for="cashierReceipt" class="form-label">Upload Receipt (optional)</label>
+                   <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf">
+                 </div>
+                 <div class="d-flex justify-content-between">
+                   <button type="button" class="btn btn-outline-secondary" onclick="clearBill()">
+                     <i class="icon-base ri ri-refresh-line me-1"></i>
+                     Clear
+                   </button>
+                   <button type="button" class="btn btn-success" onclick="processPayment()">
+                     <i class="icon-base ri ri-bank-card-line me-1"></i>
+                     Process Payment
+                   </button>
+                 </div>
         </form>
       </div>
     </div>
@@ -244,19 +248,36 @@ function clearBill() {
   document.getElementById('memberEligibility').style.display = 'none';
 }
 
-function processPayment() {
-  const finalAmount = document.getElementById('finalAmount').value;
-  if (!finalAmount || finalAmount <= 0) {
-    alert('Please calculate the bill first');
-    return;
-  }
-  
-  // Simulate payment processing
-  alert(`Payment processed successfully! Final amount: TZS ${finalAmount}`);
-  
-  // Clear form
-  clearBill();
-}
+       async function processPayment() {
+         const finalAmount = document.getElementById('finalAmount').value;
+         if (!finalAmount || finalAmount <= 0) {
+           alert('Please calculate the bill first');
+           return;
+         }
+
+         const formData = new FormData();
+         // Ideally use selected member id; here we fall back to typed lookup value
+         formData.append('membership_id', document.getElementById('memberLookup').value);
+         formData.append('bill_amount', document.getElementById('billAmount').value || 0);
+         formData.append('discount_amount', document.getElementById('discountAmount').value || 0);
+         formData.append('final_amount', finalAmount);
+         formData.append('discount_rate', 10); // Replace with actual member discount
+         const receipt = document.getElementById('cashierReceipt').files[0];
+         if (receipt) formData.append('receipt', receipt);
+
+         try {
+           const response = await fetch(`{{ route('dining.visits.store') }}`, {
+             method: 'POST',
+             headers: { 'X-CSRF-TOKEN': `{{ csrf_token() }}` },
+             body: formData,
+           });
+           if (!response.ok) throw new Error('Failed to record visit');
+           alert('Payment processed and visit recorded successfully!');
+           clearBill();
+         } catch (e) {
+           alert('Error: ' + e.message);
+         }
+       }
 
 function selectMember(memberId) {
   document.getElementById('memberLookup').value = memberId;

@@ -82,53 +82,96 @@
   </div>
 </div>
 
-<!-- Record Visit Modal -->
-<div class="modal fade" id="recordVisitModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Record New Visit</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="memberSelect" class="form-label">Select Member</label>
-            <select class="form-select" id="memberSelect" required>
-              <option value="">Choose member...</option>
-              <option value="MS001">MS001 - John Doe</option>
-              <option value="MS002">MS002 - Jane Smith</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="billAmount" class="form-label">Bill Amount</label>
-            <div class="input-group">
-              <span class="input-group-text">TZS</span>
-              <input type="number" class="form-control" id="billAmount" step="100" placeholder="0" required>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="discountAmount" class="form-label">Discount Applied</label>
-            <div class="input-group">
-              <span class="input-group-text">TZS</span>
-              <input type="number" class="form-control" id="discountAmount" step="100" placeholder="0" readonly>
-            </div>
-            <small class="text-muted">Auto-calculated based on member's discount rate</small>
-          </div>
-          <div class="mb-3">
-            <label for="finalAmount" class="form-label">Final Amount</label>
-            <div class="input-group">
-              <span class="input-group-text">TZS</span>
-              <input type="number" class="form-control" id="finalAmount" step="100" placeholder="0" readonly>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary">Record Visit</button>
-      </div>
-    </div>
-  </div>
-</div>
-@endsection 
+       <!-- Record Visit Modal -->
+       <div class="modal fade" id="recordVisitModal" tabindex="-1">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title">Record New Visit</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+             </div>
+             <div class="modal-body">
+               <form id="recordVisitForm" enctype="multipart/form-data">
+                 <div class="mb-3">
+                   <label for="memberSelect" class="form-label">Select Member</label>
+                   <select class="form-select" id="memberSelect" required>
+                     <option value="">Choose member...</option>
+                     <option value="MS001">MS001 - John Doe</option>
+                     <option value="MS002">MS002 - Jane Smith</option>
+                   </select>
+                 </div>
+                 <div class="mb-3">
+                   <label for="billAmount" class="form-label">Bill Amount</label>
+                   <div class="input-group">
+                     <span class="input-group-text">TZS</span>
+                     <input type="number" class="form-control" id="billAmount" step="100" placeholder="0" required>
+                   </div>
+                 </div>
+                 <div class="mb-3">
+                   <label for="discountAmount" class="form-label">Discount Applied</label>
+                   <div class="input-group">
+                     <span class="input-group-text">TZS</span>
+                     <input type="number" class="form-control" id="discountAmount" step="100" placeholder="0" readonly>
+                   </div>
+                   <small class="text-muted">Auto-calculated based on member's discount rate</small>
+                 </div>
+                 <div class="mb-3">
+                   <label for="finalAmount" class="form-label">Final Amount</label>
+                   <div class="input-group">
+                     <span class="input-group-text">TZS</span>
+                     <input type="number" class="form-control" id="finalAmount" step="100" placeholder="0" readonly>
+                   </div>
+                 </div>
+                 <div class="mb-3">
+                   <label for="visitReceipt" class="form-label">Upload Receipt (optional)</label>
+                   <input type="file" class="form-control" id="visitReceipt" accept="image/*,.pdf">
+                 </div>
+               </form>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+               <button type="button" class="btn btn-primary" onclick="submitVisit()">Record Visit</button>
+             </div>
+           </div>
+         </div>
+       </div>
+@endsection
+
+@push('scripts')
+<script>
+async function submitVisit() {
+  const memberId = document.getElementById('memberSelect').value;
+  const billAmount = document.getElementById('billAmount').value || 0;
+  const discountAmount = document.getElementById('discountAmount').value || 0;
+  const finalAmount = document.getElementById('finalAmount').value || 0;
+  const receipt = document.getElementById('visitReceipt').files[0];
+
+  if (!memberId || !billAmount || !finalAmount) {
+    alert('Please fill in required fields');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('membership_id', memberId);
+  formData.append('bill_amount', billAmount);
+  formData.append('discount_amount', discountAmount);
+  formData.append('final_amount', finalAmount);
+  formData.append('discount_rate', 10);
+  if (receipt) formData.append('receipt', receipt);
+
+  try {
+    const response = await fetch(`{{ route('dining.visits.store') }}`, {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': `{{ csrf_token() }}` },
+      body: formData,
+    });
+    if (!response.ok) throw new Error('Failed to record visit');
+    alert('Visit recorded successfully');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('recordVisitModal'));
+    modal.hide();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+</script>
+@endpush 

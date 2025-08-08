@@ -49,6 +49,7 @@ Route::get('/cashier', function () {
 Route::get('/dining', function () {
     return view('dining.index');
 })->name('dining.index');
+Route::post('/dining/visits', [\App\Http\Controllers\DiningVisitController::class, 'store'])->name('dining.visits.store');
 
 // Discounts Routes
 Route::get('/discounts', function () {
