@@ -51,8 +51,8 @@ class MemberCardGenerator
         $expX = 535; $expY = 771;
 
         if ($fontPath && function_exists('imagettftext')) {
-            // Base font size: increase significantly (e.g., ~72pt) and fit to bar width
-            $basePt = 172; // you can tune this further if needed
+            // Base font size (pt); text will be auto-fit to bar width
+            $basePt = 272; // tuned by user
             $toPx = function (int $pt): int { return (int) round($pt * 1.333); }; // px ≈ pt * 1.333
             $fontPx = $toPx($basePt);
 
@@ -71,10 +71,10 @@ class MemberCardGenerator
             };
 
             // Reasonable widths for the golden bars area (adjust if needed after a visual check)
-            $nameMax = 1000; // px
-            $idMax   = 900;
-            $typeMax = 900;
-            $expMax  = 800;
+            $nameMax = 1200; // px
+            $idMax   = 1000;
+            $typeMax = 1000;
+            $expMax  = 900;
 
             $namePx = $fitFontPx($fullName, $fontPath, $fontPx, $nameMax);
             $idPx   = $fitFontPx($membershipId, $fontPath, $fontPx, $idMax);
@@ -94,6 +94,14 @@ class MemberCardGenerator
             imagestring($image, $font, $expX, $expY - 10, $expires, $black);
         }
 
+        // Downscale the final image by 50%
+        $origW = imagesx($image);
+        $origH = imagesy($image);
+        $newW = (int) floor($origW / 2);
+        $newH = (int) floor($origH / 2);
+        $scaled = imagecreatetruecolor($newW, $newH);
+        imagecopyresampled($scaled, $image, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+
         // Save to public storage so it is web-accessible via storage symlink
         $fileName = $membershipId . '.jpg';
         $relativePath = 'cards/' . $fileName; // storage/app/public/cards/xxx.jpg
@@ -102,7 +110,8 @@ class MemberCardGenerator
             @mkdir(dirname($absolutePath), 0775, true);
         }
 
-        imagejpeg($image, $absolutePath, 90);
+        imagejpeg($scaled, $absolutePath, 90);
+        imagedestroy($scaled);
         imagedestroy($image);
 
         return $relativePath;
