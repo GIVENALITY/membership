@@ -6,6 +6,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiningHistoryController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MembershipTypeController;
+use App\Http\Controllers\DiningVisitController;
+use App\Http\Controllers\OnboardingController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -47,14 +51,14 @@ Route::middleware('auth')->group(function () {
 
 
     // Members Routes
-    Route::resource('members', \App\Http\Controllers\MemberController::class);
-    Route::get('/members/search', [\App\Http\Controllers\MemberController::class, 'search'])->name('members.search');
+    Route::resource('members', MemberController::class);
+    Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
     Route::get('/members/search-page', function () {
         return view('members.search');
     })->name('members.search-page');
 
     // Membership Types Routes
-    Route::resource('membership-types', \App\Http\Controllers\MembershipTypeController::class);
+    Route::resource('membership-types', MembershipTypeController::class);
 
     // Cashier Routes
     Route::get('/cashier', function () {
@@ -62,17 +66,17 @@ Route::middleware('auth')->group(function () {
     })->name('cashier.index');
 
     // Onboarding Routes
-    Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'index'])->name('onboarding.index');
-    Route::post('/onboarding/complete', [\App\Http\Controllers\OnboardingController::class, 'complete'])->name('onboarding.complete');
-    Route::get('/onboarding/skip', [\App\Http\Controllers\OnboardingController::class, 'skip'])->name('onboarding.skip');
+    Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');
+    Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+    Route::get('/onboarding/skip', [OnboardingController::class, 'skip'])->name('onboarding.skip');
 
     // Dining Routes
-    Route::get('/dining', [\App\Http\Controllers\DiningVisitController::class, 'index'])->name('dining.index');
-    Route::get('/dining/search-members', [\App\Http\Controllers\DiningVisitController::class, 'searchMembers'])->name('dining.search-members');
-    Route::post('/dining/record-visit', [\App\Http\Controllers\DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
-    Route::put('/dining/{visit}/checkout', [\App\Http\Controllers\DiningVisitController::class, 'checkout'])->name('dining.checkout');
-    Route::delete('/dining/{visit}/cancel', [\App\Http\Controllers\DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
-    Route::get('/dining/{visit}', [\App\Http\Controllers\DiningVisitController::class, 'show'])->name('dining.show');
+    Route::get('/dining', [DiningVisitController::class, 'index'])->name('dining.index');
+    Route::get('/dining/search-members', [DiningVisitController::class, 'searchMembers'])->name('dining.search-members');
+    Route::post('/dining/record-visit', [DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
+    Route::put('/dining/{visit}/checkout', [DiningVisitController::class, 'checkout'])->name('dining.checkout');
+    Route::delete('/dining/{visit}/cancel', [DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
+    Route::get('/dining/{visit}', [DiningVisitController::class, 'show'])->name('dining.show');
 
     // Dining History Routes
     Route::get('/dining/history', [DiningHistoryController::class, 'index'])->name('dining.history');
