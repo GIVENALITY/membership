@@ -129,12 +129,24 @@
       </ul>
     </li>
 
-    <!-- Cashier -->
-    <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
-      <a href="{{ route('cashier.index') }}" class="menu-link">
+    <!-- Transactions -->
+    <li class="menu-item {{ request()->routeIs('cashier.*') || request()->routeIs('discounts.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-bank-card-line"></i>
-        <div data-i18n="Cashier">Cashier</div>
+        <div data-i18n="Transactions">Transactions</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
+          <a href="{{ route('cashier.index') }}" class="menu-link">
+            <div data-i18n="Cashier">Cashier</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">
+          <a href="{{ route('discounts.index') }}" class="menu-link">
+            <div data-i18n="Discounts">Discounts</div>
+          </a>
+        </li>
+      </ul>
     </li>
 
             <!-- Dining Management -->
@@ -156,14 +168,6 @@
             </li>
           </ul>
         </li>
-
-    <!-- Discounts -->
-    <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">
-      <a href="{{ route('discounts.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-percent-line"></i>
-        <div data-i18n="Discounts">Discounts</div>
-      </a>
-    </li>
 
     <!-- Reports -->
     <li class="menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">

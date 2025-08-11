@@ -153,15 +153,15 @@
               </tr>
             </thead>
             <tbody>
-              @forelse($member->diningVisits()->latest('visited_at')->limit(10)->get() as $v)
+              @forelse($member->diningVisits()->latest('created_at')->limit(10)->get() as $v)
                 <tr>
-                  <td>{{ \Carbon\Carbon::parse($v->visited_at)->diffForHumans() }}</td>
-                  <td>TZS {{ number_format($v->bill_amount,0) }}</td>
-                  <td>TZS {{ number_format($v->discount_amount,0) }} ({{ rtrim(rtrim(number_format($v->discount_rate,2,'.',''), '0'),'.') }}%)</td>
-                  <td><strong>TZS {{ number_format($v->final_amount,0) }}</strong></td>
+                  <td>{{ \Carbon\Carbon::parse($v->created_at)->diffForHumans() }}</td>
+                  <td>TZS {{ number_format($v->amount_spent ?? 0,0) }}</td>
+                  <td>TZS {{ number_format($v->discount_amount ?? 0,0) }} ({{ $v->discount_percentage ?? 0 }}%)</td>
+                  <td><strong>TZS {{ number_format($v->final_amount ?? 0,0) }}</strong></td>
                   <td>
                     @if($v->receipt_path)
-                      <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ asset('storage/'.$v->receipt_path) }}">
+                      <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ $v->receipt_url }}">
                         <i class="icon-base ri ri-eye-line"></i>
                       </a>
                     @else

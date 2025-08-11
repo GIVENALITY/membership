@@ -258,7 +258,7 @@ function clearBill() {
          const formData = new FormData();
          // Ideally use selected member id; here we fall back to typed lookup value
          formData.append('membership_id', document.getElementById('memberLookup').value);
-         formData.append('bill_amount', document.getElementById('billAmount').value || 0);
+         formData.append('amount_spent', document.getElementById('billAmount').value || 0);
          formData.append('discount_amount', document.getElementById('discountAmount').value || 0);
          formData.append('final_amount', finalAmount);
          formData.append('discount_rate', 10); // Replace with actual member discount
