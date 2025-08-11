@@ -2,6 +2,62 @@
 
 @section('title', 'Dining Management - ' . (Auth::user()->hotel->name ?? 'Membership MS'))
 
+@push('page-css')
+<style>
+    .member-result {
+        transition: background-color 0.2s ease;
+    }
+    
+    .member-result:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .alert-sm {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .badge-sm {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .preference-alert {
+        border-left: 4px solid;
+        margin-bottom: 0.5rem;
+    }
+    
+    .preference-alert.allergies {
+        border-left-color: #dc3545;
+        background-color: #f8d7da;
+    }
+    
+    .preference-alert.dietary {
+        border-left-color: #0dcaf0;
+        background-color: #d1ecf1;
+    }
+    
+    .preference-alert.special {
+        border-left-color: #ffc107;
+        background-color: #fff3cd;
+    }
+    
+    .preference-alert.birthday {
+        border-left-color: #fd7e14;
+        background-color: #ffeaa7;
+    }
+    
+    .service-recommendation {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        margin-bottom: 0.25rem;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
@@ -302,12 +358,39 @@ document.getElementById('member_search').addEventListener('input', function() {
                     data.forEach(member => {
                         const div = document.createElement('div');
                         div.className = 'member-result p-2 border-bottom cursor-pointer';
-                        div.innerHTML = `
+                        
+                        let memberInfo = `
                             <strong>${member.first_name} ${member.last_name}</strong><br>
                             <small class="text-muted">
                                 ${member.membership_id} | ${member.phone || 'No phone'} | ${member.current_discount_rate}% discount
                             </small>
                         `;
+                        
+                        // Add preference indicators
+                        let preferenceIndicators = [];
+                        if (member.allergies && member.allergies.trim()) {
+                            preferenceIndicators.push('<span class="badge bg-danger badge-sm">⚠️ Allergies</span>');
+                        }
+                        if (member.dietary_preferences && member.dietary_preferences.trim()) {
+                            preferenceIndicators.push('<span class="badge bg-info badge-sm">🍽️ Dietary</span>');
+                        }
+                        if (member.special_requests && member.special_requests.trim()) {
+                            preferenceIndicators.push('<span class="badge bg-warning badge-sm">🎯 Special</span>');
+                        }
+                        if (member.birth_date) {
+                            const birthDate = new Date(member.birth_date);
+                            const today = new Date();
+                            const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                            if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
+                                preferenceIndicators.push('<span class="badge bg-warning badge-sm">🎂 Birthday</span>');
+                            }
+                        }
+                        
+                        if (preferenceIndicators.length > 0) {
+                            memberInfo += `<br><small class="mt-1 d-block">${preferenceIndicators.join(' ')}</small>`;
+                        }
+                        
+                        div.innerHTML = memberInfo;
                         div.onclick = () => selectMember(member);
                         resultsDiv.appendChild(div);
                     });
@@ -344,46 +427,154 @@ function showMemberDetails(member) {
                 <p><strong>Phone:</strong> ${member.phone || 'Not provided'}</p>
                 <p><strong>Email:</strong> ${member.email || 'Not provided'}</p>
                 <p><strong>Discount Rate:</strong> <span class="badge bg-success">${member.current_discount_rate}%</span></p>
+                <p><strong>Total Visits:</strong> ${member.total_visits || 0}</p>
+                <p><strong>Points Balance:</strong> <span class="badge bg-info">${member.current_points_balance || 0} pts</span></p>
             </div>
             <div class="col-md-6">
-                <h6 class="text-warning mb-2">Important Notes</h6>
+                <h6 class="text-warning mb-2">Preferences & Important Notes</h6>
     `;
     
     // Add allergies if present
     if (member.allergies && member.allergies.trim()) {
-        detailsHtml += `<p><strong>⚠️ Allergies:</strong> <span class="text-danger">${member.allergies}</span></p>`;
+        detailsHtml += `
+            <div class="alert alert-danger alert-sm mb-2">
+                <i class="icon-base ri ri-error-warning-line me-1"></i>
+                <strong>⚠️ Allergies:</strong> ${member.allergies}
+            </div>
+        `;
     }
     
     // Add dietary preferences if present
     if (member.dietary_preferences && member.dietary_preferences.trim()) {
-        detailsHtml += `<p><strong>🍽️ Dietary:</strong> ${member.dietary_preferences}</p>`;
+        detailsHtml += `
+            <div class="alert alert-info alert-sm mb-2">
+                <i class="icon-base ri ri-restaurant-line me-1"></i>
+                <strong>🍽️ Dietary Preferences:</strong> ${member.dietary_preferences}
+            </div>
+        `;
     }
     
     // Add special requests if present
     if (member.special_requests && member.special_requests.trim()) {
-        detailsHtml += `<p><strong>🎯 Special Requests:</strong> ${member.special_requests}</p>`;
+        detailsHtml += `
+            <div class="alert alert-warning alert-sm mb-2">
+                <i class="icon-base ri ri-star-line me-1"></i>
+                <strong>🎯 Special Requests:</strong> ${member.special_requests}
+            </div>
+        `;
     }
     
     // Add additional notes if present
     if (member.additional_notes && member.additional_notes.trim()) {
-        detailsHtml += `<p><strong>📝 Notes:</strong> ${member.additional_notes}</p>`;
+        detailsHtml += `
+            <div class="alert alert-secondary alert-sm mb-2">
+                <i class="icon-base ri ri-file-text-line me-1"></i>
+                <strong>📝 Additional Notes:</strong> ${member.additional_notes}
+            </div>
+        `;
     }
     
     // Add emergency contact if present
     if (member.emergency_contact_name && member.emergency_contact_phone) {
         detailsHtml += `
-            <p><strong>🚨 Emergency Contact:</strong> ${member.emergency_contact_name} 
-            (${member.emergency_contact_relationship || 'Contact'}) - ${member.emergency_contact_phone}</p>
+            <div class="alert alert-primary alert-sm mb-2">
+                <i class="icon-base ri ri-phone-line me-1"></i>
+                <strong>🚨 Emergency Contact:</strong> ${member.emergency_contact_name} 
+                (${member.emergency_contact_relationship || 'Contact'}) - ${member.emergency_contact_phone}
+            </div>
         `;
     }
     
     // If no important notes, show a message
     if (!member.allergies && !member.dietary_preferences && !member.special_requests && 
         !member.additional_notes && !member.emergency_contact_name) {
-        detailsHtml += `<p class="text-muted">No special requirements or notes recorded.</p>`;
+        detailsHtml += `
+            <div class="alert alert-light alert-sm mb-2">
+                <i class="icon-base ri ri-information-line me-1"></i>
+                No special requirements or notes recorded.
+            </div>
+        `;
+    }
+    
+    // Add birthday alert if applicable
+    if (member.birth_date) {
+        const birthDate = new Date(member.birth_date);
+        const today = new Date();
+        const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
+            detailsHtml += `
+                <div class="alert alert-warning alert-sm mb-2">
+                    <i class="icon-base ri ri-cake-line me-1"></i>
+                    <strong>🎂 Birthday Alert:</strong> ${member.first_name}'s birthday is in ${daysUntilBirthday} days!
+                </div>
+            `;
+        }
     }
     
     detailsHtml += `
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6 class="text-success mb-2">Service Recommendations</h6>
+                <div class="row">
+    `;
+    
+    // Add service recommendations based on preferences
+    if (member.allergies && member.allergies.trim()) {
+        detailsHtml += `
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-1">
+                    <i class="icon-base ri ri-shield-check-line text-danger me-2"></i>
+                    <span>Ensure kitchen is aware of allergies</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (member.dietary_preferences && member.dietary_preferences.trim()) {
+        detailsHtml += `
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-1">
+                    <i class="icon-base ri ri-restaurant-line text-info me-2"></i>
+                    <span>Offer dietary preference options</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (member.special_requests && member.special_requests.trim()) {
+        detailsHtml += `
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-1">
+                    <i class="icon-base ri ri-star-line text-warning me-2"></i>
+                    <span>Accommodate special requests</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (member.birth_date) {
+        const birthDate = new Date(member.birth_date);
+        const today = new Date();
+        const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
+            detailsHtml += `
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="icon-base ri ri-gift-line text-warning me-2"></i>
+                        <span>Consider birthday special treatment</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    detailsHtml += `
+                </div>
             </div>
         </div>
     `;

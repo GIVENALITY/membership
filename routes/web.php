@@ -93,7 +93,12 @@ Route::middleware('auth')->group(function () {
 
     // Discounts Routes
     Route::get('/discounts', function () {
-        return view('discounts.index');
+        $user = auth()->user();
+        $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        return view('discounts.index', compact('membershipTypes'));
     })->name('discounts.index');
 
     // Reports Routes
