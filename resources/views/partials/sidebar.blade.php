@@ -202,6 +202,36 @@
       </a>
     </li>
 
+    <!-- Application Settings -->
+    <li class="menu-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base ri ri-settings-4-line"></i>
+        <div data-i18n="Application Settings">Application Settings</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
+          <a href="{{ route('settings.index') }}" class="menu-link">
+            <div data-i18n="General Settings">General Settings</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('settings.points') ? 'active' : '' }}">
+          <a href="{{ route('settings.points') }}" class="menu-link">
+            <div data-i18n="Points System">Points System</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('settings.email') ? 'active' : '' }}">
+          <a href="{{ route('settings.email') }}" class="menu-link">
+            <div data-i18n="Email Templates">Email Templates</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('settings.discounts') ? 'active' : '' }}">
+          <a href="{{ route('settings.discounts') }}" class="menu-link">
+            <div data-i18n="Discount Rules">Discount Rules</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
     <!-- Hotel Management -->
     <li class="menu-item {{ request()->routeIs('hotel.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

@@ -48,6 +48,23 @@ Route::middleware('auth')->group(function () {
         return view('settings.account');
     })->name('settings.account');
 
+    // Application Settings Routes
+    Route::get('/settings/points', function () {
+        $user = auth()->user();
+        $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        return view('settings.points', compact('membershipTypes'));
+    })->name('settings.points');
+
+    Route::get('/settings/email', function () {
+        return view('settings.email');
+    })->name('settings.email');
+
+    Route::get('/settings/discounts', function () {
+        return view('settings.discounts');
+    })->name('settings.discounts');
 
 
     // Members Routes - Specific routes must come BEFORE the resource route
