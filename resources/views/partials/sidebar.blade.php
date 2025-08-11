@@ -139,13 +139,25 @@
       </a>
     </li>
 
-    <!-- Dining History -->
-    <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
-      <a href="{{ route('dining.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-restaurant-line"></i>
-        <div data-i18n="Dining History">Dining History</div>
-      </a>
-    </li>
+            <!-- Dining Management -->
+        <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon icon-base ri ri-restaurant-line"></i>
+            <div data-i18n="Dining Management">Dining Management</div>
+          </a>
+          <ul class="menu-sub">
+            <li class="menu-item {{ request()->routeIs('dining.index') ? 'active' : '' }}">
+              <a href="{{ route('dining.index') }}" class="menu-link">
+                <div data-i18n="Record Visits">Record Visits</div>
+              </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('dining.history*') ? 'active' : '' }}">
+              <a href="{{ route('dining.history') }}" class="menu-link">
+                <div data-i18n="Dining History">Dining History</div>
+              </a>
+            </li>
+          </ul>
+        </li>
 
     <!-- Discounts -->
     <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">

@@ -73,6 +73,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/dining/{visit}/cancel', [\App\Http\Controllers\DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
     Route::get('/dining/{visit}', [\App\Http\Controllers\DiningVisitController::class, 'show'])->name('dining.show');
 
+    // Dining History Routes
+    Route::get('/dining/history', [\App\Http\Controllers\DiningHistoryController::class, 'index'])->name('dining.history');
+    Route::get('/dining/history/export', [\App\Http\Controllers\DiningHistoryController::class, 'export'])->name('dining.history.export');
+    Route::get('/dining/history/member/{member}', [\App\Http\Controllers\DiningHistoryController::class, 'memberHistory'])->name('dining.history.member');
+
     // Discounts Routes
     Route::get('/discounts', function () {
         return view('discounts.index');

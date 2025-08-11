@@ -135,9 +135,14 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Recent Visits</h5>
-        <a href="{{ route('dining.index') }}" class="btn btn-sm btn-outline-primary">
-          <i class="icon-base ri ri-restaurant-line me-1"></i> Record Visit
-        </a>
+        <div class="d-flex gap-2">
+          <a href="{{ route('dining.history.member', $member) }}" class="btn btn-sm btn-outline-info">
+            <i class="icon-base ri ri-history-line me-1"></i> Full History
+          </a>
+          <a href="{{ route('dining.index') }}" class="btn btn-sm btn-outline-primary">
+            <i class="icon-base ri ri-restaurant-line me-1"></i> Record Visit
+          </a>
+        </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
