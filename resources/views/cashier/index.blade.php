@@ -100,6 +100,10 @@
             </div>
           </div>
           
+          <div class="alert alert-info">
+            <i class="icon-base ri ri-information-line me-2"></i>
+            <small><strong>Note:</strong> Discount will be automatically calculated based on member's membership type, points, and visit history. The preview above shows an estimated rate.</small>
+          </div>
                            <div class="mb-3">
                    <label for="cashierReceipt" class="form-label">Upload Receipt (optional)</label>
                    <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf">
@@ -234,7 +238,10 @@ function lookupMember() {
 
 function calculateBill() {
   const billAmount = parseFloat(document.getElementById('billAmount').value) || 0;
-  const discountRate = 10; // This would come from member data
+  
+  // Note: Actual discount will be calculated by server based on member's membership type and points
+  // This is just a preview - the server will apply the correct discount rate
+  const discountRate = 10; // This is just a preview rate
   
   const discountAmount = (billAmount * discountRate) / 100;
   const finalAmount = billAmount - discountAmount;
@@ -257,23 +264,31 @@ function clearBill() {
 
          const formData = new FormData();
          // Ideally use selected member id; here we fall back to typed lookup value
-         formData.append('membership_id', document.getElementById('memberLookup').value);
+         formData.append('member_id', document.getElementById('memberLookup').value);
+         formData.append('number_of_people', 1); // Default to 1 person
          formData.append('amount_spent', document.getElementById('billAmount').value || 0);
          formData.append('discount_amount', document.getElementById('discountAmount').value || 0);
          formData.append('final_amount', finalAmount);
-         formData.append('discount_rate', 10); // Replace with actual member discount
+         formData.append('is_checked_out', true);
+         formData.append('checkout_notes', 'Processed via cashier');
          const receipt = document.getElementById('cashierReceipt').files[0];
          if (receipt) formData.append('receipt', receipt);
 
          try {
-           const response = await fetch(`{{ route('dining.visits.store') }}`, {
+           const response = await fetch(`{{ route('dining.process-payment') }}`, {
              method: 'POST',
              headers: { 'X-CSRF-TOKEN': `{{ csrf_token() }}` },
              body: formData,
            });
-           if (!response.ok) throw new Error('Failed to record visit');
-           alert('Payment processed and visit recorded successfully!');
-           clearBill();
+           
+           const result = await response.json();
+           
+           if (result.success) {
+             alert(result.message);
+             clearBill();
+           } else {
+             throw new Error(result.message || 'Failed to process payment');
+           }
          } catch (e) {
            alert('Error: ' + e.message);
          }

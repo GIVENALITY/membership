@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dining', [DiningVisitController::class, 'index'])->name('dining.index');
     Route::get('/dining/search-members', [DiningVisitController::class, 'searchMembers'])->name('dining.search-members');
     Route::post('/dining/record-visit', [DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
+    Route::post('/dining/process-payment', [DiningVisitController::class, 'processPayment'])->name('dining.process-payment');
     Route::put('/dining/{visit}/checkout', [DiningVisitController::class, 'checkout'])->name('dining.checkout');
     Route::delete('/dining/{visit}/cancel', [DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
 

@@ -71,7 +71,102 @@ class DiningVisitController extends Controller
     }
 
     /**
-     * Record a new visit (step 1)
+     * Process payment via cashier (record visit and checkout in one step)
+     */
+    public function processPayment(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
+        $request->validate([
+            'member_id' => 'required|exists:members,id',
+            'number_of_people' => 'required|integer|min:1|max:50',
+            'amount_spent' => 'required|numeric|min:0',
+            'receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'checkout_notes' => 'nullable|string|max:500',
+        ]);
+
+        // Verify member belongs to this hotel
+        $member = Member::where('id', $request->member_id)
+            ->where('hotel_id', $user->hotel_id)
+            ->first();
+
+        if (!$member) {
+            return back()->withErrors(['member_id' => 'Invalid member selected.']);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Handle receipt upload
+            $receiptPath = null;
+            if ($request->hasFile('receipt')) {
+                $receiptPath = $request->file('receipt')->store('receipts', 'public');
+            }
+
+            // Calculate discount based on points system
+            $discountPercentage = $member->getSpecialDiscountPercentage();
+            $discountAmount = ($request->amount_spent * $discountPercentage) / 100;
+            $finalAmount = $request->amount_spent - $discountAmount;
+
+            // Create visit with checkout information
+            $visit = DiningVisit::create([
+                'hotel_id' => $user->hotel_id,
+                'member_id' => $request->member_id,
+                'number_of_people' => $request->number_of_people,
+                'amount_spent' => $request->amount_spent,
+                'discount_amount' => $discountAmount,
+                'final_amount' => $finalAmount,
+                'receipt_path' => $receiptPath,
+                'checkout_notes' => $request->checkout_notes,
+                'is_checked_out' => true,
+                'checked_out_at' => now(),
+                'recorded_by' => $user->id,
+                'checked_out_by' => $user->id,
+            ]);
+
+            // Add points for this visit
+            $pointRecord = $member->addPoints($request->amount_spent, $request->number_of_people, $visit->id);
+
+            // Update member statistics
+            $member->increment('total_visits');
+            $member->increment('total_spent', $request->amount_spent);
+            $member->update([
+                'last_visit_at' => now(),
+                'last_visit_date' => now()->toDateString(),
+                'current_discount_rate' => $member->calculateDiscountRate(),
+            ]);
+
+            // Prepare success message with points information
+            $pointsMessage = '';
+            if ($pointRecord->points_earned > 0) {
+                $pointsMessage = " Earned {$pointRecord->points_earned} points.";
+            }
+            
+            if ($pointRecord->is_birthday_visit) {
+                $pointsMessage .= " 🎂 Birthday visit - special treatment applied!";
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Payment processed for {$member->full_name}. Amount: TZS " . number_format($request->amount_spent) . ", Discount: TZS " . number_format($discountAmount) . " ({$discountPercentage}%), Final: TZS " . number_format($finalAmount) . "." . $pointsMessage
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process payment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Record a visit (step 1)
      */
     public function recordVisit(Request $request)
     {
