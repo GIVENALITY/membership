@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard - ' . (Auth::user()->hotel->name ?? 'Membership MS'))
 
 @section('content')
 <div class="row">
@@ -9,7 +9,7 @@
       <div class="d-flex align-items-end row">
         <div class="col-sm-7">
           <div class="card-body">
-            <h5 class="card-title text-primary">Welcome to Membership MS! 🍽️</h5>
+            <h5 class="card-title text-primary">Welcome to {{ Auth::user()->hotel->name ?? 'Membership MS' }}! 🍽️</h5>
             <p class="mb-4">Manage your restaurant's premium loyalty membership program. Track dining visits, calculate discounts, and grow your member base.</p>
 
             <a href="{{ route('members.create') }}" class="btn btn-sm btn-outline-primary">Add New Member</a>
