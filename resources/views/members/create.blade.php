@@ -193,7 +193,7 @@
                 <select class="form-select @error('membership_type_id') is-invalid @enderror" 
                         id="membership_type_id" name="membership_type_id" required>
                   <option value="">Select membership type</option>
-                  @foreach(\App\Models\MembershipType::active()->ordered()->get() as $type)
+                  @foreach($membershipTypes as $type)
                     <option value="{{ $type->id }}" {{ old('membership_type_id') == $type->id ? 'selected' : '' }}>
                       {{ $type->name }} - {{ $type->formatted_price }}
                     </option>

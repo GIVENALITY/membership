@@ -51,7 +51,7 @@
             <div class="col-md-6 mb-3">
               <label class="form-label">Membership Type</label>
               <select name="membership_type_id" class="form-select" required>
-                @foreach(\App\Models\MembershipType::active()->ordered()->get() as $type)
+                @foreach($membershipTypes as $type)
                   <option value="{{ $type->id }}" {{ (old('membership_type_id', $member->membership_type_id) == $type->id) ? 'selected' : '' }}>
                     {{ $type->name }} - {{ $type->formatted_price }}
                   </option>

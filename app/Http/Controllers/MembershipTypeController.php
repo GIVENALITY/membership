@@ -92,6 +92,11 @@ class MembershipTypeController extends Controller
      */
     public function show(MembershipType $membershipType)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $membershipType->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         $membershipType->load('members');
         return view('membership-types.show', compact('membershipType'));
     }
@@ -101,6 +106,11 @@ class MembershipTypeController extends Controller
      */
     public function edit(MembershipType $membershipType)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $membershipType->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         return view('membership-types.edit', compact('membershipType'));
     }
 
@@ -109,6 +119,11 @@ class MembershipTypeController extends Controller
      */
     public function update(Request $request, MembershipType $membershipType)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $membershipType->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:membership_types,name,' . $membershipType->id,
             'description' => 'nullable|string',
@@ -158,6 +173,11 @@ class MembershipTypeController extends Controller
      */
     public function destroy(MembershipType $membershipType)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $membershipType->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         try {
             // Check if any members are using this type
             if ($membershipType->members()->count() > 0) {

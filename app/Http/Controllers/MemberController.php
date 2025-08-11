@@ -163,6 +163,11 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         $member->load(['diningVisits', 'presenceRecords']);
         return view('members.show', compact('member'));
     }
@@ -172,7 +177,17 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        return view('members.edit', compact('member'));
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
+        $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('members.edit', compact('member', 'membershipTypes'));
     }
 
     /**
@@ -180,6 +195,11 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -198,6 +218,15 @@ class MemberController extends Controller
         }
 
         try {
+            // Validate that the membership type belongs to the same hotel
+            $membershipType = \App\Models\MembershipType::where('id', $request->membership_type_id)
+                ->where('hotel_id', $user->hotel_id)
+                ->first();
+            
+            if (!$membershipType) {
+                return back()->withErrors(['membership_type_id' => 'Invalid membership type selected.']);
+            }
+
             $member->update($request->all());
             return redirect()->route('members.index')
                 ->with('success', 'Member updated successfully!');
@@ -214,6 +243,11 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
         try {
             $member->delete();
             return redirect()->route('members.index')
@@ -230,13 +264,22 @@ class MemberController extends Controller
      */
     public function search(Request $request)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
         $query = $request->get('query');
         
-        $members = Member::where('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orWhere('email', 'LIKE', "%{$query}%")
-            ->orWhere('phone', 'LIKE', "%{$query}%")
-            ->orWhere('membership_id', 'LIKE', "%{$query}%")
+        $members = Member::where('hotel_id', $user->hotel_id)
+            ->where(function($q) use ($query) {
+                $q->where('first_name', 'LIKE', "%{$query}%")
+                  ->orWhere('last_name', 'LIKE', "%{$query}%")
+                  ->orWhere('email', 'LIKE', "%{$query}%")
+                  ->orWhere('phone', 'LIKE', "%{$query}%")
+                  ->orWhere('membership_id', 'LIKE', "%{$query}%");
+            })
+            ->with(['membershipType'])
             ->get();
 
         return response()->json($members);
