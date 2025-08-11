@@ -33,6 +33,13 @@ class Member extends Model
         'total_visits',
         'total_spent',
         'current_discount_rate',
+        'total_points_earned',
+        'total_points_used',
+        'current_points_balance',
+        'qualifies_for_discount',
+        'consecutive_visits',
+        'last_visit_date',
+        'average_spending_per_visit',
         'last_visit_at',
         'card_image_path',
         'expires_at',
@@ -42,9 +49,12 @@ class Member extends Model
         'birth_date' => 'date',
         'join_date' => 'date',
         'last_visit_at' => 'datetime',
+        'last_visit_date' => 'date',
         'expires_at' => 'date',
         'total_spent' => 'decimal:2',
         'current_discount_rate' => 'decimal:2',
+        'average_spending_per_visit' => 'decimal:2',
+        'qualifies_for_discount' => 'boolean',
     ];
 
     /**
@@ -96,6 +106,14 @@ class Member extends Model
     }
 
     /**
+     * Get the member's points records
+     */
+    public function points(): HasMany
+    {
+        return $this->hasMany(MemberPoint::class);
+    }
+
+    /**
      * Check if member is present today
      */
     public function isPresentToday(): bool
@@ -107,19 +125,152 @@ class Member extends Model
     }
 
     /**
-     * Calculate discount rate based on visit count
+     * Calculate discount rate based on points system and membership type progression
      */
     public function calculateDiscountRate(): float
     {
-        if ($this->total_visits >= 21) {
-            return 20.0;
-        } elseif ($this->total_visits >= 11) {
-            return 15.0;
-        } elseif ($this->total_visits >= 6) {
-            return 10.0;
-        } else {
-            return 5.0;
+        // Get base discount from membership type progression
+        $baseDiscount = $this->membershipType ? 
+            $this->membershipType->calculateDiscountForVisits($this->total_visits) : 
+            5.0;
+        
+        // If member qualifies for points-based discount (5+ points)
+        if ($this->qualifies_for_discount) {
+            return max($baseDiscount, 10.0); // Minimum 10% for qualified members
         }
+        
+        return $baseDiscount;
+    }
+
+    /**
+     * Add points for a visit
+     */
+    public function addPoints($spendingAmount, $numberOfPeople, $diningVisitId = null)
+    {
+        $pointsEarned = MemberPoint::calculatePoints($spendingAmount, $numberOfPeople);
+        $perPersonSpending = $spendingAmount / $numberOfPeople;
+        
+        // Check if this is a birthday visit
+        $isBirthdayVisit = $this->isBirthdayVisit();
+        
+        // Create points record
+        $pointRecord = $this->points()->create([
+            'hotel_id' => $this->hotel_id,
+            'dining_visit_id' => $diningVisitId,
+            'points_earned' => $pointsEarned,
+            'points_used' => 0,
+            'points_balance' => $pointsEarned,
+            'spending_amount' => $spendingAmount,
+            'number_of_people' => $numberOfPeople,
+            'per_person_spending' => $perPersonSpending,
+            'qualifies_for_discount' => $this->current_points_balance + $pointsEarned >= 5,
+            'is_birthday_visit' => $isBirthdayVisit,
+            'notes' => $isBirthdayVisit ? 'Birthday visit - special treatment applied' : null
+        ]);
+
+        // Update member's points totals
+        $this->increment('total_points_earned', $pointsEarned);
+        $this->increment('current_points_balance', $pointsEarned);
+        
+        // Update consecutive visits
+        $this->updateConsecutiveVisits();
+        
+        // Update average spending
+        $this->updateAverageSpending();
+        
+        // Check if member now qualifies for discount
+        if ($this->current_points_balance >= 5 && !$this->qualifies_for_discount) {
+            $this->update(['qualifies_for_discount' => true]);
+        }
+
+        return $pointRecord;
+    }
+
+    /**
+     * Check if this is a birthday visit
+     */
+    public function isBirthdayVisit(): bool
+    {
+        if (!$this->birth_date) {
+            return false;
+        }
+
+        $birthDate = \Carbon\Carbon::parse($this->birth_date);
+        $today = \Carbon\Carbon::now();
+
+        // Check if today is within 7 days of birthday
+        return $birthDate->isBirthday($today) || 
+               $birthDate->diffInDays($today, false) <= 7;
+    }
+
+    /**
+     * Update consecutive visits count
+     */
+    public function updateConsecutiveVisits()
+    {
+        $lastVisit = $this->diningVisits()
+            ->where('is_checked_out', true)
+            ->orderBy('checked_out_at', 'desc')
+            ->first();
+
+        if (!$lastVisit) {
+            $this->update(['consecutive_visits' => 1]);
+            return;
+        }
+
+        $lastVisitDate = \Carbon\Carbon::parse($lastVisit->checked_out_at);
+        $today = \Carbon\Carbon::now();
+
+        // If last visit was yesterday, increment consecutive visits
+        if ($lastVisitDate->isYesterday()) {
+            $this->increment('consecutive_visits');
+        } else {
+            // Reset to 1 if not consecutive
+            $this->update(['consecutive_visits' => 1]);
+        }
+    }
+
+    /**
+     * Update average spending per visit
+     */
+    public function updateAverageSpending()
+    {
+        $totalSpent = $this->diningVisits()
+            ->where('is_checked_out', true)
+            ->sum('amount_spent');
+        
+        $visitCount = $this->diningVisits()
+            ->where('is_checked_out', true)
+            ->count();
+
+        $averageSpending = $visitCount > 0 ? $totalSpent / $visitCount : 0;
+        
+        $this->update(['average_spending_per_visit' => $averageSpending]);
+    }
+
+    /**
+     * Get special discount percentage for qualified members
+     */
+    public function getSpecialDiscountPercentage(): float
+    {
+        $baseDiscount = $this->calculateDiscountRate();
+        $specialDiscount = $baseDiscount;
+
+        // Check for consecutive visit bonus (membership type specific)
+        if ($this->membershipType && 
+            $this->membershipType->qualifiesForConsecutiveBonus() &&
+            $this->consecutive_visits >= $this->membershipType->consecutive_visits_for_bonus) {
+            $specialDiscount = max($specialDiscount, $this->membershipType->consecutive_visit_bonus_rate);
+        }
+
+        // Check for birthday discount (membership type specific)
+        if ($this->isBirthdayVisit() && 
+            $this->membershipType && 
+            $this->membershipType->qualifiesForBirthdayDiscount()) {
+            $specialDiscount = max($specialDiscount, $this->membershipType->birthday_discount_rate);
+        }
+
+        return $specialDiscount;
     }
 
     /**

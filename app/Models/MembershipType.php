@@ -19,6 +19,13 @@ class MembershipType extends Model
         'perks',
         'max_visits_per_month',
         'discount_rate',
+        'discount_progression',
+        'points_required_for_discount',
+        'has_special_birthday_discount',
+        'birthday_discount_rate',
+        'has_consecutive_visit_bonus',
+        'consecutive_visits_for_bonus',
+        'consecutive_visit_bonus_rate',
         'is_active',
         'sort_order',
     ];
@@ -26,7 +33,12 @@ class MembershipType extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'perks' => 'array',
+        'discount_progression' => 'array',
         'discount_rate' => 'decimal:2',
+        'birthday_discount_rate' => 'decimal:2',
+        'consecutive_visit_bonus_rate' => 'decimal:2',
+        'has_special_birthday_discount' => 'boolean',
+        'has_consecutive_visit_bonus' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -113,5 +125,119 @@ class MembershipType extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('price');
+    }
+
+    /**
+     * Get discount progression as HTML
+     */
+    public function getDiscountProgressionHtmlAttribute(): string
+    {
+        if (empty($this->discount_progression)) {
+            return '<span class="text-muted">No progression defined</span>';
+        }
+
+        $html = '<ul class="list-unstyled mb-0">';
+        foreach ($this->discount_progression as $progression) {
+            $visits = $progression['visits'] ?? 0;
+            $discount = $progression['discount'] ?? 0;
+            $html .= '<li><i class="icon-base ri ri-arrow-right-line text-primary me-2"></i>';
+            $html .= '<strong>' . $visits . ' visits:</strong> ' . $discount . '% discount</li>';
+        }
+        $html .= '</ul>';
+
+        return $html;
+    }
+
+    /**
+     * Calculate discount rate based on visit count
+     */
+    public function calculateDiscountForVisits(int $visitCount): float
+    {
+        if (empty($this->discount_progression)) {
+            return $this->discount_rate;
+        }
+
+        // Sort progression by visits (ascending)
+        $progression = collect($this->discount_progression)->sortBy('visits');
+        
+        $applicableDiscount = $this->discount_rate; // Base discount
+
+        foreach ($progression as $prog) {
+            if ($visitCount >= ($prog['visits'] ?? 0)) {
+                $applicableDiscount = $prog['discount'] ?? $applicableDiscount;
+            }
+        }
+
+        return $applicableDiscount;
+    }
+
+    /**
+     * Get next discount milestone
+     */
+    public function getNextDiscountMilestone(int $currentVisits): ?array
+    {
+        if (empty($this->discount_progression)) {
+            return null;
+        }
+
+        $progression = collect($this->discount_progression)->sortBy('visits');
+        
+        foreach ($progression as $prog) {
+            $requiredVisits = $prog['visits'] ?? 0;
+            if ($currentVisits < $requiredVisits) {
+                return [
+                    'visits' => $requiredVisits,
+                    'discount' => $prog['discount'] ?? 0,
+                    'remaining' => $requiredVisits - $currentVisits
+                ];
+            }
+        }
+
+        return null; // Already at max discount
+    }
+
+    /**
+     * Check if member qualifies for birthday discount
+     */
+    public function qualifiesForBirthdayDiscount(): bool
+    {
+        return $this->has_special_birthday_discount;
+    }
+
+    /**
+     * Check if member qualifies for consecutive visit bonus
+     */
+    public function qualifiesForConsecutiveBonus(): bool
+    {
+        return $this->has_consecutive_visit_bonus;
+    }
+
+    /**
+     * Get default discount progression for membership types
+     */
+    public static function getDefaultProgression(string $type = 'basic'): array
+    {
+        $progressions = [
+            'basic' => [
+                ['visits' => 5, 'discount' => 8.0],
+                ['visits' => 10, 'discount' => 10.0],
+                ['visits' => 15, 'discount' => 12.0],
+                ['visits' => 20, 'discount' => 15.0],
+            ],
+            'premium' => [
+                ['visits' => 3, 'discount' => 10.0],
+                ['visits' => 7, 'discount' => 15.0],
+                ['visits' => 12, 'discount' => 18.0],
+                ['visits' => 18, 'discount' => 20.0],
+            ],
+            'vip' => [
+                ['visits' => 2, 'discount' => 15.0],
+                ['visits' => 5, 'discount' => 20.0],
+                ['visits' => 10, 'discount' => 25.0],
+                ['visits' => 15, 'discount' => 30.0],
+            ]
+        ];
+
+        return $progressions[$type] ?? $progressions['basic'];
     }
 } 

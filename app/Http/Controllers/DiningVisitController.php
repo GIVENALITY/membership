@@ -142,8 +142,10 @@ class DiningVisitController extends Controller
                 $receiptPath = $request->file('receipt')->store('receipts', 'public');
             }
 
-            // Calculate discount
-            $discountAmount = ($request->amount_spent * $visit->member->current_discount_rate) / 100;
+            // Calculate discount based on points system
+            $member = $visit->member;
+            $discountPercentage = $member->getSpecialDiscountPercentage();
+            $discountAmount = ($request->amount_spent * $discountPercentage) / 100;
             $finalAmount = $request->amount_spent - $discountAmount;
 
             // Update visit with checkout information
@@ -158,18 +160,31 @@ class DiningVisitController extends Controller
                 'checked_out_by' => $user->id,
             ]);
 
+            // Add points for this visit
+            $pointRecord = $member->addPoints($request->amount_spent, $visit->number_of_people, $visit->id);
+
             // Update member statistics
-            $member = $visit->member;
             $member->increment('total_visits');
             $member->increment('total_spent', $request->amount_spent);
             $member->update([
                 'last_visit_at' => now(),
+                'last_visit_date' => now()->toDateString(),
                 'current_discount_rate' => $member->calculateDiscountRate(),
             ]);
 
+            // Prepare success message with points information
+            $pointsMessage = '';
+            if ($pointRecord->points_earned > 0) {
+                $pointsMessage = " Earned {$pointRecord->points_earned} points.";
+            }
+            
+            if ($pointRecord->is_birthday_visit) {
+                $pointsMessage .= " 🎂 Birthday visit - special treatment applied!";
+            }
+
             DB::commit();
 
-            return back()->with('success', "Checkout completed for {$member->full_name}. Amount: TZS " . number_format($request->amount_spent) . ", Discount: TZS " . number_format($discountAmount) . ", Final: TZS " . number_format($finalAmount));
+            return back()->with('success', "Checkout completed for {$member->full_name}. Amount: TZS " . number_format($request->amount_spent) . ", Discount: TZS " . number_format($discountAmount) . " ({$discountPercentage}%), Final: TZS " . number_format($finalAmount) . "." . $pointsMessage);
 
         } catch (\Exception $e) {
             DB::rollBack();

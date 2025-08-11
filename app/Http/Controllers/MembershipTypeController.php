@@ -46,6 +46,12 @@ class MembershipTypeController extends Controller
             'perks.*' => 'required|string|max:255',
             'max_visits_per_month' => 'nullable|integer|min:1',
             'discount_rate' => 'required|numeric|min:0|max:100',
+            'points_required_for_discount' => 'required|integer|min:1',
+            'has_special_birthday_discount' => 'nullable|boolean',
+            'birthday_discount_rate' => 'required|numeric|min:0|max:100',
+            'has_consecutive_visit_bonus' => 'nullable|boolean',
+            'consecutive_visits_for_bonus' => 'required|integer|min:1',
+            'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -64,6 +70,22 @@ class MembershipTypeController extends Controller
 
             $perks = array_filter($request->perks); // Remove empty perks
 
+            // Build discount progression array
+            $discountProgression = [];
+            if ($request->has('progression_visits') && $request->has('progression_discounts')) {
+                $visits = $request->progression_visits;
+                $discounts = $request->progression_discounts;
+                
+                for ($i = 0; $i < count($visits); $i++) {
+                    if (!empty($visits[$i]) && !empty($discounts[$i])) {
+                        $discountProgression[] = [
+                            'visits' => (int)$visits[$i],
+                            'discount' => (float)$discounts[$i]
+                        ];
+                    }
+                }
+            }
+
             MembershipType::create([
                 'hotel_id' => $user->hotel_id,
                 'name' => $request->name,
@@ -73,6 +95,13 @@ class MembershipTypeController extends Controller
                 'perks' => $perks,
                 'max_visits_per_month' => $request->max_visits_per_month,
                 'discount_rate' => $request->discount_rate,
+                'discount_progression' => $discountProgression,
+                'points_required_for_discount' => $request->points_required_for_discount,
+                'has_special_birthday_discount' => $request->boolean('has_special_birthday_discount'),
+                'birthday_discount_rate' => $request->birthday_discount_rate,
+                'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
+                'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
+                'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);
@@ -133,6 +162,12 @@ class MembershipTypeController extends Controller
             'perks.*' => 'required|string|max:255',
             'max_visits_per_month' => 'nullable|integer|min:1',
             'discount_rate' => 'required|numeric|min:0|max:100',
+            'points_required_for_discount' => 'required|integer|min:1',
+            'has_special_birthday_discount' => 'nullable|boolean',
+            'birthday_discount_rate' => 'required|numeric|min:0|max:100',
+            'has_consecutive_visit_bonus' => 'nullable|boolean',
+            'consecutive_visits_for_bonus' => 'required|integer|min:1',
+            'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -146,6 +181,22 @@ class MembershipTypeController extends Controller
         try {
             $perks = array_filter($request->perks); // Remove empty perks
 
+            // Build discount progression array
+            $discountProgression = [];
+            if ($request->has('progression_visits') && $request->has('progression_discounts')) {
+                $visits = $request->progression_visits;
+                $discounts = $request->progression_discounts;
+                
+                for ($i = 0; $i < count($visits); $i++) {
+                    if (!empty($visits[$i]) && !empty($discounts[$i])) {
+                        $discountProgression[] = [
+                            'visits' => (int)$visits[$i],
+                            'discount' => (float)$discounts[$i]
+                        ];
+                    }
+                }
+            }
+
             $membershipType->update([
                 'name' => $request->name,
                 'description' => $request->description,
@@ -154,6 +205,13 @@ class MembershipTypeController extends Controller
                 'perks' => $perks,
                 'max_visits_per_month' => $request->max_visits_per_month,
                 'discount_rate' => $request->discount_rate,
+                'discount_progression' => $discountProgression,
+                'points_required_for_discount' => $request->points_required_for_discount,
+                'has_special_birthday_discount' => $request->boolean('has_special_birthday_discount'),
+                'birthday_discount_rate' => $request->birthday_discount_rate,
+                'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
+                'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
+                'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);

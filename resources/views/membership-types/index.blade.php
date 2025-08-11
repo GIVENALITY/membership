@@ -59,6 +59,27 @@
                     <span class="badge bg-label-info">Base Discount: {{ $type->discount_rate }}%</span>
                   </div>
 
+                  @if(!empty($type->discount_progression))
+                    <div class="mb-3">
+                      <h6 class="mb-2">Discount Progression:</h6>
+                      {!! $type->discount_progression_html !!}
+                    </div>
+                  @endif
+
+                  <div class="mb-3">
+                    <div class="row">
+                      <div class="col-6">
+                        <small class="text-muted d-block">Points Required: {{ $type->points_required_for_discount }}</small>
+                      </div>
+                      <div class="col-6">
+                        <small class="text-muted d-block">Consecutive Bonus: {{ $type->consecutive_visits_for_bonus }} visits</small>
+                      </div>
+                    </div>
+                    @if($type->has_special_birthday_discount)
+                      <small class="text-muted d-block">🎂 Birthday: {{ $type->birthday_discount_rate }}%</small>
+                    @endif
+                  </div>
+
                   <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted">{{ $type->members()->count() }} member(s)</small>
                     <div class="dropdown">

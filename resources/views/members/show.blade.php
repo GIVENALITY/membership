@@ -38,9 +38,14 @@
     <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Member Details</h5>
-        <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-outline-secondary">
-          <i class="icon-base ri ri-edit-line me-1"></i> Edit
-        </a>
+        <div class="d-flex gap-2">
+          <a href="{{ route('members.points-history', $member) }}" class="btn btn-sm btn-outline-info">
+            <i class="icon-base ri ri-star-line me-1"></i> Points History
+          </a>
+          <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-outline-secondary">
+            <i class="icon-base ri ri-edit-line me-1"></i> Edit
+          </a>
+        </div>
       </div>
       <div class="card-body">
         <div class="row mb-3">
@@ -66,6 +71,41 @@
           <div class="col-md-4"><strong>Total Spent</strong><div>TZS {{ number_format($member->total_spent,0) }}</div></div>
           <div class="col-md-4"><strong>Current Discount</strong><div>{{ rtrim(rtrim(number_format($member->current_discount_rate,2,'.',''), '0'),'.') }}%</div></div>
         </div>
+        <div class="row mb-3">
+          <div class="col-md-3"><strong>Points Earned</strong><div>{{ $member->total_points_earned }}</div></div>
+          <div class="col-md-3"><strong>Points Used</strong><div>{{ $member->total_points_used }}</div></div>
+          <div class="col-md-3"><strong>Current Balance</strong><div>{{ $member->current_points_balance }}</div></div>
+          <div class="col-md-3"><strong>Qualifies for Discount</strong>
+            <div>
+              @if($member->qualifies_for_discount)
+                <span class="badge bg-label-success">Yes (5+ points)</span>
+              @else
+                <span class="badge bg-label-warning">No ({{ 5 - $member->current_points_balance }} more needed)</span>
+              @endif
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4"><strong>Consecutive Visits</strong><div>{{ $member->consecutive_visits }}</div></div>
+          <div class="col-md-4"><strong>Average Spending</strong><div>TZS {{ number_format($member->average_spending_per_visit,0) }}</div></div>
+          <div class="col-md-4"><strong>Last Visit</strong><div>{{ $member->last_visit_date ? \Carbon\Carbon::parse($member->last_visit_date)->format('M d, Y') : 'Never' }}</div></div>
+        </div>
+        @if($member->isBirthdayVisit())
+          <div class="alert alert-warning mb-0">
+            <i class="icon-base ri ri-cake-line me-2"></i>
+            <strong>Birthday Alert:</strong> This member's birthday is coming up! Special treatment will be applied on their next visit.
+          </div>
+        @endif
+
+        @if($member->membershipType && $member->membershipType->getNextDiscountMilestone($member->total_visits))
+          @php
+            $nextMilestone = $member->membershipType->getNextDiscountMilestone($member->total_visits);
+          @endphp
+          <div class="alert alert-info mb-0 mt-3">
+            <i class="icon-base ri ri-trending-up-line me-2"></i>
+            <strong>Next Milestone:</strong> {{ $nextMilestone['remaining'] }} more visit(s) to get {{ $nextMilestone['discount'] }}% discount!
+          </div>
+        @endif
       </div>
     </div>
 

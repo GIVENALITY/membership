@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/members/search-page', function () {
         return view('members.search');
     })->name('members.search-page');
+    Route::get('/members/{member}/points-history', function ($member) {
+        return view('members.points-history', compact('member'));
+    })->name('members.points-history');
     
     // Resource route comes LAST to avoid catching specific routes
     Route::resource('members', MemberController::class);
