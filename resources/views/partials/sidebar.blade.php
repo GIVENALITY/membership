@@ -99,37 +99,35 @@
       </a>
     </li>
 
-    <!-- Members -->
-    <li class="menu-item {{ request()->routeIs('members.*') ? 'active' : '' }}">
-      <a href="{{ route('members.index') }}" class="menu-link">
+    <!-- Members Management -->
+    <li class="menu-item {{ request()->routeIs('members.*') || request()->routeIs('membership-types.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-user-star-line"></i>
-        <div data-i18n="Members">Members</div>
+        <div data-i18n="Members Management">Members Management</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('members.index') ? 'active' : '' }}">
+          <a href="{{ route('members.index') }}" class="menu-link">
+            <div data-i18n="All Members">All Members</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('members.search') || request()->routeIs('members.search-page') ? 'active' : '' }}">
+          <a href="{{ route('members.search-page') }}" class="menu-link">
+            <div data-i18n="Search Members">Search Members</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
+          <a href="{{ route('members.create') }}" class="menu-link">
+            <div data-i18n="Add Member">Add Member</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
+          <a href="{{ route('membership-types.index') }}" class="menu-link">
+            <div data-i18n="Membership Types">Membership Types</div>
+          </a>
+        </li>
+      </ul>
     </li>
-
-    <!-- Search Members -->
-    <li class="menu-item {{ request()->routeIs('members.search') ? 'active' : '' }}">
-      <a href="{{ route('members.search') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-search-line"></i>
-        <div data-i18n="Search Members">Search Members</div>
-      </a>
-    </li>
-
-               <!-- Add Member -->
-           <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
-             <a href="{{ route('members.create') }}" class="menu-link">
-               <i class="menu-icon icon-base ri ri-user-add-line"></i>
-               <div data-i18n="Add Member">Add Member</div>
-             </a>
-           </li>
-
-           <!-- Membership Types -->
-           <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
-             <a href="{{ route('membership-types.index') }}" class="menu-link">
-               <i class="menu-icon icon-base ri ri-vip-crown-line"></i>
-               <div data-i18n="Membership Types">Membership Types</div>
-             </a>
-           </li>
 
     <!-- Cashier -->
     <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
