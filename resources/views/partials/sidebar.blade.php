@@ -192,21 +192,21 @@
       </ul>
     </li>
 
-    <!-- Settings -->
-    <li class="menu-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+    <!-- User Profile -->
+    <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-settings-4-line"></i>
-        <div data-i18n="Settings">Settings</div>
+        <i class="menu-icon icon-base ri ri-user-line"></i>
+        <div data-i18n="My Profile">My Profile</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="{{ route('settings.profile') }}" class="menu-link">
+          <a href="{{ route('users.profile') }}" class="menu-link">
             <div data-i18n="Profile">Profile</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="{{ route('settings.account') }}" class="menu-link">
-            <div data-i18n="Account">Account</div>
+          <a href="{{ route('users.change-password') }}" class="menu-link">
+            <div data-i18n="Change Password">Change Password</div>
           </a>
         </li>
       </ul>
