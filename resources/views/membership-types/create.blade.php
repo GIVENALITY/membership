@@ -187,6 +187,53 @@
                 </div>
               </div>
 
+              <!-- Points Reset Configuration -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">
+                    <i class="icon-base ri ri-refresh-line me-2"></i>
+                    Points Reset Configuration
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-check">
+                        <input type="hidden" name="points_reset_after_redemption" value="0">
+                        <input class="form-check-input" type="checkbox" id="points_reset_after_redemption" 
+                               name="points_reset_after_redemption" value="1"
+                               {{ old('points_reset_after_redemption', false) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="points_reset_after_redemption">
+                          Enable Points Reset After Redemption
+                        </label>
+                        <small class="text-muted d-block">When enabled, points will reset to 0 after being used for discounts</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="points_reset_threshold" class="form-label">Points Reset Threshold</label>
+                      <input type="number" class="form-control @error('points_reset_threshold') is-invalid @enderror" 
+                             id="points_reset_threshold" name="points_reset_threshold" min="1" 
+                             placeholder="Leave empty for immediate reset" value="{{ old('points_reset_threshold') }}">
+                      <small class="text-muted">Points will reset when reaching this threshold (optional)</small>
+                      @error('points_reset_threshold')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="points_reset_notes" class="form-label">Points Reset Notes</label>
+                    <textarea class="form-control @error('points_reset_notes') is-invalid @error" 
+                              id="points_reset_notes" name="points_reset_notes" rows="2" 
+                              placeholder="Optional notes about points reset policy...">{{ old('points_reset_notes') }}</textarea>
+                    <small class="text-muted">Additional information about the points reset policy</small>
+                    @error('points_reset_notes')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+
               <!-- Discount Progression Table -->
               <div class="mb-3">
                 <label class="form-label">Discount Progression by Visits</label>

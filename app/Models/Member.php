@@ -183,7 +183,47 @@ class Member extends Model
             $this->update(['qualifies_for_discount' => true]);
         }
 
+        // Check if points should be reset based on membership type rules
+        $this->checkAndResetPointsIfNeeded();
+
         return $pointRecord;
+    }
+
+    /**
+     * Check and reset points if needed based on membership type rules
+     */
+    public function checkAndResetPointsIfNeeded()
+    {
+        if (!$this->membershipType) {
+            return;
+        }
+
+        // Check if points should reset after redemption
+        if ($this->membershipType->shouldResetPointsAfterRedemption()) {
+            $threshold = $this->membershipType->getPointsResetThreshold();
+            
+            if ($threshold && $this->current_points_balance >= $threshold) {
+                // Reset points to 0
+                $this->update([
+                    'current_points_balance' => 0,
+                    'qualifies_for_discount' => false
+                ]);
+
+                // Log the reset in points history
+                $this->points()->create([
+                    'hotel_id' => $this->hotel_id,
+                    'points_earned' => 0,
+                    'points_used' => $this->current_points_balance,
+                    'points_balance' => 0,
+                    'spending_amount' => 0,
+                    'number_of_people' => 0,
+                    'per_person_spending' => 0,
+                    'qualifies_for_discount' => false,
+                    'is_birthday_visit' => false,
+                    'notes' => "Points reset to 0 after reaching threshold of {$threshold} points"
+                ]);
+            }
+        }
     }
 
     /**

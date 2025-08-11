@@ -52,6 +52,9 @@ class MembershipTypeController extends Controller
             'has_consecutive_visit_bonus' => 'nullable|boolean',
             'consecutive_visits_for_bonus' => 'required|integer|min:1',
             'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
+            'points_reset_after_redemption' => 'nullable|boolean',
+            'points_reset_threshold' => 'nullable|integer|min:1',
+            'points_reset_notes' => 'nullable|string|max:500',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -102,6 +105,9 @@ class MembershipTypeController extends Controller
                 'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
                 'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
                 'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
+                'points_reset_after_redemption' => $request->boolean('points_reset_after_redemption'),
+                'points_reset_threshold' => $request->points_reset_threshold,
+                'points_reset_notes' => $request->points_reset_notes,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);
@@ -168,6 +174,9 @@ class MembershipTypeController extends Controller
             'has_consecutive_visit_bonus' => 'nullable|boolean',
             'consecutive_visits_for_bonus' => 'required|integer|min:1',
             'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
+            'points_reset_after_redemption' => 'nullable|boolean',
+            'points_reset_threshold' => 'nullable|integer|min:1',
+            'points_reset_notes' => 'nullable|string|max:500',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -212,6 +221,9 @@ class MembershipTypeController extends Controller
                 'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
                 'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
                 'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
+                'points_reset_after_redemption' => $request->boolean('points_reset_after_redemption'),
+                'points_reset_threshold' => $request->points_reset_threshold,
+                'points_reset_notes' => $request->points_reset_notes,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);

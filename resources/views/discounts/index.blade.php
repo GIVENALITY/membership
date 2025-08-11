@@ -72,6 +72,14 @@
                                                 </div>
                                             @endif
                                             
+                                            <!-- Points Reset Policy -->
+                                            <div class="mb-2">
+                                                <strong>Points Reset:</strong>
+                                                <div class="alert alert-sm {{ $type->points_reset_after_redemption ? 'alert-warning' : 'alert-success' }} mt-1 mb-0">
+                                                    <small>{{ $type->points_reset_policy }}</small>
+                                                </div>
+                                            </div>
+                                            
                                             <a href="{{ route('membership-types.edit', $type) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="icon-base ri ri-edit-line me-1"></i>Edit Rules
                                             </a>
@@ -163,6 +171,46 @@
                                             <li><i class="icon-base ri ri-time-line text-danger me-2"></i>Configurable visit thresholds</li>
                                             <li><i class="icon-base ri ri-time-line text-danger me-2"></i>Higher discount rates for loyalty</li>
                                             <li><i class="icon-base ri ri-time-line text-danger me-2"></i>Resets if customer misses a day</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Points Reset Policies -->
+                    <div class="mb-4">
+                        <h5 class="text-info mb-3">
+                            <i class="icon-base ri ri-refresh-line me-2"></i>
+                            Points Reset Policies
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">Reset Options</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><i class="icon-base ri ri-check-line text-info me-2"></i>No Reset: Points accumulate indefinitely</li>
+                                            <li><i class="icon-base ri ri-check-line text-info me-2"></i>Immediate Reset: Reset to 0 after each redemption</li>
+                                            <li><i class="icon-base ri ri-check-line text-info me-2"></i>Threshold Reset: Reset when reaching specific points</li>
+                                            <li><i class="icon-base ri ri-check-line text-info me-2"></i>Configurable per membership type</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-secondary">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h6 class="mb-0">Reset Benefits</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li><i class="icon-base ri ri-lightbulb-line text-secondary me-2"></i>Encourages regular spending</li>
+                                            <li><i class="icon-base ri ri-lightbulb-line text-secondary me-2"></i>Prevents point hoarding</li>
+                                            <li><i class="icon-base ri ri-lightbulb-line text-secondary me-2"></i>Maintains program engagement</li>
+                                            <li><i class="icon-base ri ri-lightbulb-line text-secondary me-2"></i>Flexible for different strategies</li>
                                         </ul>
                                     </div>
                                 </div>

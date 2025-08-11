@@ -80,6 +80,18 @@
                     @endif
                   </div>
 
+                  <!-- Points Reset Policy -->
+                  <div class="mb-3">
+                    <h6 class="mb-2">Points Reset Policy:</h6>
+                    <div class="alert alert-sm {{ $type->points_reset_after_redemption ? 'alert-warning' : 'alert-success' }}">
+                      <i class="icon-base ri {{ $type->points_reset_after_redemption ? 'ri-refresh-line' : 'ri-check-line' }} me-2"></i>
+                      <small>{{ $type->points_reset_policy }}</small>
+                    </div>
+                    @if($type->points_reset_notes && $type->points_reset_notes !== 'No additional notes')
+                      <small class="text-muted d-block">{{ $type->points_reset_notes }}</small>
+                    @endif
+                  </div>
+
                   <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted">{{ $type->members()->count() }} member(s)</small>
                     <div class="dropdown">

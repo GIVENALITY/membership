@@ -26,6 +26,9 @@ class MembershipType extends Model
         'has_consecutive_visit_bonus',
         'consecutive_visits_for_bonus',
         'consecutive_visit_bonus_rate',
+        'points_reset_after_redemption',
+        'points_reset_threshold',
+        'points_reset_notes',
         'is_active',
         'sort_order',
     ];
@@ -39,6 +42,7 @@ class MembershipType extends Model
         'consecutive_visit_bonus_rate' => 'decimal:2',
         'has_special_birthday_discount' => 'boolean',
         'has_consecutive_visit_bonus' => 'boolean',
+        'points_reset_after_redemption' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -239,5 +243,59 @@ class MembershipType extends Model
         ];
 
         return $progressions[$type] ?? $progressions['basic'];
+    }
+
+    /**
+     * Check if points should reset after redemption
+     */
+    public function shouldResetPointsAfterRedemption(): bool
+    {
+        return $this->points_reset_after_redemption;
+    }
+
+    /**
+     * Get points reset threshold
+     */
+    public function getPointsResetThreshold(): ?int
+    {
+        return $this->points_reset_threshold;
+    }
+
+    /**
+     * Check if member should reset points based on threshold
+     */
+    public function shouldResetPointsAtThreshold(int $currentPoints): bool
+    {
+        if (!$this->points_reset_after_redemption) {
+            return false;
+        }
+
+        $threshold = $this->getPointsResetThreshold();
+        return $threshold && $currentPoints >= $threshold;
+    }
+
+    /**
+     * Get points reset policy description
+     */
+    public function getPointsResetPolicyAttribute(): string
+    {
+        if (!$this->points_reset_after_redemption) {
+            return 'Points never reset - accumulate indefinitely';
+        }
+
+        $threshold = $this->getPointsResetThreshold();
+        if ($threshold) {
+            return "Points reset to 0 when reaching {$threshold} points";
+        }
+
+        return 'Points reset to 0 after each redemption';
+    }
+
+    /**
+     * Get points reset notes
+     */
+    public function getPointsResetNotesAttribute(): string
+    {
+        return $this->points_reset_notes ?? 'No additional notes';
     }
 } 
