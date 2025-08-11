@@ -132,10 +132,23 @@
                             Email Statistics
                         </h5>
                         <div class="row">
+                            @php
+                                try {
+                                    $welcomeEmails = \App\Models\EmailNotification::where('type', 'welcome')->count();
+                                    $birthdayEmails = \App\Models\EmailNotification::where('type', 'birthday')->count();
+                                    $deliveredEmails = \App\Models\EmailNotification::where('status', 'sent')->count();
+                                    $pendingEmails = \App\Models\EmailNotification::where('status', 'pending')->count();
+                                } catch (\Exception $e) {
+                                    $welcomeEmails = 0;
+                                    $birthdayEmails = 0;
+                                    $deliveredEmails = 0;
+                                    $pendingEmails = 0;
+                                }
+                            @endphp
                             <div class="col-md-3 mb-3">
                                 <div class="card border-success">
                                     <div class="card-body text-center">
-                                        <h3 class="text-success">{{ \App\Models\EmailNotification::where('hotel_id', Auth::user()->hotel_id)->where('type', 'welcome')->count() }}</h3>
+                                        <h3 class="text-success">{{ $welcomeEmails }}</h3>
                                         <p class="mb-0 text-muted">Welcome Emails Sent</p>
                                     </div>
                                 </div>
@@ -143,7 +156,7 @@
                             <div class="col-md-3 mb-3">
                                 <div class="card border-warning">
                                     <div class="card-body text-center">
-                                        <h3 class="text-warning">{{ \App\Models\EmailNotification::where('hotel_id', Auth::user()->hotel_id)->where('type', 'birthday')->count() }}</h3>
+                                        <h3 class="text-warning">{{ $birthdayEmails }}</h3>
                                         <p class="mb-0 text-muted">Birthday Emails Sent</p>
                                     </div>
                                 </div>
@@ -151,7 +164,7 @@
                             <div class="col-md-3 mb-3">
                                 <div class="card border-info">
                                     <div class="card-body text-center">
-                                        <h3 class="text-info">{{ \App\Models\EmailNotification::where('hotel_id', Auth::user()->hotel_id)->where('sent_at', '!=', null)->count() }}</h3>
+                                        <h3 class="text-info">{{ $deliveredEmails }}</h3>
                                         <p class="mb-0 text-muted">Emails Delivered</p>
                                     </div>
                                 </div>
@@ -159,7 +172,7 @@
                             <div class="col-md-3 mb-3">
                                 <div class="card border-primary">
                                     <div class="card-body text-center">
-                                        <h3 class="text-primary">{{ \App\Models\EmailNotification::where('hotel_id', Auth::user()->hotel_id)->where('sent_at', null)->count() }}</h3>
+                                        <h3 class="text-primary">{{ $pendingEmails }}</h3>
                                         <p class="mb-0 text-muted">Pending Emails</p>
                                     </div>
                                 </div>
