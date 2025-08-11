@@ -12,6 +12,7 @@ class Member extends Model
     use HasFactory;
 
     protected $fillable = [
+        'hotel_id',
         'membership_id',
         'first_name',
         'last_name',
@@ -77,6 +78,14 @@ class Member extends Model
     public function membershipType(): BelongsTo
     {
         return $this->belongsTo(MembershipType::class);
+    }
+
+    /**
+     * Get the hotel this member belongs to
+     */
+    public function hotel(): BelongsTo
+    {
+        return $this->belongsTo(Hotel::class);
     }
 
     /**

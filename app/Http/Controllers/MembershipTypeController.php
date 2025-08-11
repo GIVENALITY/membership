@@ -13,7 +13,14 @@ class MembershipTypeController extends Controller
      */
     public function index()
     {
-        $membershipTypes = MembershipType::ordered()->get();
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
+        $membershipTypes = MembershipType::where('hotel_id', $user->hotel_id)
+            ->ordered()
+            ->get();
         return view('membership-types.index', compact('membershipTypes'));
     }
 
@@ -50,9 +57,15 @@ class MembershipTypeController extends Controller
         }
 
         try {
+            $user = auth()->user();
+            if (!$user || !$user->hotel_id) {
+                return back()->withErrors(['error' => 'User not associated with a hotel.']);
+            }
+
             $perks = array_filter($request->perks); // Remove empty perks
 
             MembershipType::create([
+                'hotel_id' => $user->hotel_id,
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,

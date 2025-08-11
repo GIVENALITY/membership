@@ -11,6 +11,7 @@ class MembershipType extends Model
     use HasFactory;
 
     protected $fillable = [
+        'hotel_id',
         'name',
         'description',
         'price',
@@ -50,6 +51,14 @@ class MembershipType extends Model
     public function members(): HasMany
     {
         return $this->hasMany(Member::class);
+    }
+
+    /**
+     * Get the hotel this membership type belongs to
+     */
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class);
     }
 
     /**

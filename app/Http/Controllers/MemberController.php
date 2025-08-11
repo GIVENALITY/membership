@@ -18,7 +18,15 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $members = Member::with('membershipType')->orderBy('created_at', 'desc')->get();
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
+        $members = Member::with('membershipType')
+            ->where('hotel_id', $user->hotel_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('members.index', compact('members'));
     }
 
@@ -27,8 +35,17 @@ class MemberController extends Controller
      */
     public function create()
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
         $membershipId = Member::generateMembershipId();
-        return view('members.create', compact('membershipId'));
+        $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        return view('members.create', compact('membershipId', 'membershipTypes'));
     }
 
     /**
@@ -54,9 +71,21 @@ class MemberController extends Controller
         }
 
         try {
-            $membershipType = \App\Models\MembershipType::find($request->membership_type_id);
+            $user = auth()->user();
+            if (!$user || !$user->hotel_id) {
+                return back()->withErrors(['error' => 'User not associated with a hotel.']);
+            }
+
+            $membershipType = \App\Models\MembershipType::where('id', $request->membership_type_id)
+                ->where('hotel_id', $user->hotel_id)
+                ->first();
+            
+            if (!$membershipType) {
+                return back()->withErrors(['membership_type_id' => 'Invalid membership type selected.']);
+            }
 
             $member = Member::create([
+                'hotel_id' => $user->hotel_id,
                 'membership_id' => Member::generateMembershipId(),
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
