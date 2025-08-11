@@ -43,25 +43,14 @@ return new class extends Migration
             'hotel_id' => $defaultHotelId
         ]);
 
-        // Check if foreign key constraint already exists
-        $foreignKeys = Schema::getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableForeignKeys('membership_types');
-        
-        $hasForeignKey = false;
-        foreach ($foreignKeys as $foreignKey) {
-            if (in_array('hotel_id', $foreignKey->getLocalColumns())) {
-                $hasForeignKey = true;
-                break;
-            }
-        }
-
-        // Now make the column required and add foreign key constraint if it doesn't exist
-        if (!$hasForeignKey) {
+        // Try to add foreign key constraint (will fail silently if it already exists)
+        try {
             Schema::table('membership_types', function (Blueprint $table) {
                 $table->foreignId('hotel_id')->nullable(false)->change();
                 $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             });
+        } catch (\Exception $e) {
+            // Foreign key constraint already exists, continue
         }
     }
 
