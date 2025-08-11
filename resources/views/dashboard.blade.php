@@ -17,12 +17,25 @@
         </div>
         <div class="col-sm-5 text-center text-sm-left">
           <div class="card-body pb-0 px-0 px-md-4">
-            <img
-              src="{{ asset('assets/img/illustrations/man-with-laptop-light.png') }}"
-              height="140"
-              alt="Restaurant Management"
-              data-app-dark-img="illustrations/man-with-laptop-dark.png"
-              data-app-light-img="illustrations/man-with-laptop-light.png" />
+            @if(Auth::check() && Auth::user()->hotel && Auth::user()->hotel->logo_path)
+              <img
+                src="{{ Auth::user()->hotel->logo_url }}"
+                height="140"
+                alt="{{ Auth::user()->hotel->name }}"
+                style="max-width: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));" />
+            @else
+              <div class="d-flex align-items-center justify-content-center" style="height: 140px;">
+                <div class="text-center">
+                  <div class="mb-2">
+                    <i class="icon-base ri ri-restaurant-line" style="font-size: 3rem; color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};"></i>
+                  </div>
+                  <h5 class="mb-0" style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};">
+                    {{ Auth::user()->hotel->name ?? 'Membership MS' }}
+                  </h5>
+                  <small class="text-muted">Restaurant Management</small>
+                </div>
+              </div>
+            @endif
           </div>
         </div>
       </div>
