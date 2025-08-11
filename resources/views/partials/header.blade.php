@@ -40,11 +40,10 @@
     @stack('page-css')
 
     <!-- Hotel Branding CSS -->
-    @if(Auth::check() && Auth::user()->hotel)
     <style>
         :root {
-            --hotel-primary-color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};
-            --hotel-secondary-color: {{ Auth::user()->hotel->secondary_color ?? '#6c757d' }};
+            --hotel-primary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }};
+            --hotel-secondary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }};
         }
         
         /* Apply hotel branding colors */
@@ -54,8 +53,8 @@
         }
         
         .btn-primary:hover {
-            background-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}dd !important;
-            border-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}dd !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
+            border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
         }
         
         .text-primary {
@@ -71,7 +70,7 @@
         }
         
         .bg-label-primary {
-            background-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}15 !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
             color: var(--hotel-primary-color) !important;
         }
         
@@ -94,12 +93,12 @@
         
         .form-control:focus {
             border-color: var(--hotel-primary-color) !important;
-            box-shadow: 0 0 0 0.2rem {{ Auth::user()->hotel->primary_color ?? '#696cff' }}40 !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}40 !important;
         }
         
         .form-select:focus {
             border-color: var(--hotel-primary-color) !important;
-            box-shadow: 0 0 0 0.2rem {{ Auth::user()->hotel->primary_color ?? '#696cff' }}40 !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}40 !important;
         }
         
         .page-link {
@@ -111,7 +110,6 @@
             border-color: var(--hotel-primary-color) !important;
         }
     </style>
-    @endif
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
