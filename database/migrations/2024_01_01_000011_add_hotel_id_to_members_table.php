@@ -12,10 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, add the column as nullable
-        Schema::table('members', function (Blueprint $table) {
-            $table->foreignId('hotel_id')->nullable()->after('id');
-        });
+        // Check if hotel_id column already exists
+        if (!Schema::hasColumn('members', 'hotel_id')) {
+            // First, add the column as nullable
+            Schema::table('members', function (Blueprint $table) {
+                $table->foreignId('hotel_id')->nullable()->after('id');
+            });
+        }
 
         // Create a default hotel for existing data
         $defaultHotelId = DB::table('hotels')->insertGetId([
@@ -35,11 +38,26 @@ return new class extends Migration
             'hotel_id' => $defaultHotelId
         ]);
 
-        // Now make the column required and add foreign key constraint
-        Schema::table('members', function (Blueprint $table) {
-            $table->foreignId('hotel_id')->nullable(false)->change();
-            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
-        });
+        // Check if foreign key constraint already exists
+        $foreignKeys = Schema::getConnection()
+            ->getDoctrineSchemaManager()
+            ->listTableForeignKeys('members');
+        
+        $hasForeignKey = false;
+        foreach ($foreignKeys as $foreignKey) {
+            if (in_array('hotel_id', $foreignKey->getLocalColumns())) {
+                $hasForeignKey = true;
+                break;
+            }
+        }
+
+        // Now make the column required and add foreign key constraint if it doesn't exist
+        if (!$hasForeignKey) {
+            Schema::table('members', function (Blueprint $table) {
+                $table->foreignId('hotel_id')->nullable(false)->change();
+                $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
+            });
+        }
     }
 
     /**
