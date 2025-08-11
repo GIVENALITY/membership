@@ -50,12 +50,14 @@ Route::middleware('auth')->group(function () {
 
 
 
-    // Members Routes
-    Route::resource('members', MemberController::class);
+    // Members Routes - Specific routes must come BEFORE the resource route
     Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
     Route::get('/members/search-page', function () {
         return view('members.search');
     })->name('members.search-page');
+    
+    // Resource route comes LAST to avoid catching specific routes
+    Route::resource('members', MemberController::class);
 
     // Membership Types Routes
     Route::resource('membership-types', MembershipTypeController::class);
