@@ -24,6 +24,11 @@ class User extends Authenticatable
         'hotel_id',
         'role',
         'is_active',
+        'phone',
+        'address',
+        'bio',
+        'avatar_path',
+        'last_login_at',
     ];
 
     /**
@@ -47,6 +52,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -91,5 +97,24 @@ class User extends Authenticatable
             return in_array($this->role, $roles);
         }
         return $this->role === $roles;
+    }
+
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar_path) {
+            return asset('storage/' . $this->avatar_path);
+        }
+        return asset('assets/img/avatars/default-avatar.png');
+    }
+
+    /**
+     * Get the user's full name.
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->name;
     }
 }

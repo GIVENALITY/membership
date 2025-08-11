@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\UserController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -93,4 +94,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/hotel/profile', [HotelController::class, 'updateProfile'])->name('hotel.profile.update');
     Route::get('/hotel/account', [HotelController::class, 'account'])->name('hotel.account');
     Route::put('/hotel/account', [HotelController::class, 'updateAccount'])->name('hotel.account.update');
+
+    // User Profile Routes
+    Route::get('/profile', [UserController::class, 'profile'])->name('users.profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('users.profile.update');
+    Route::get('/profile/change-password', [UserController::class, 'changePassword'])->name('users.change-password');
+    Route::put('/profile/change-password', [UserController::class, 'updatePassword'])->name('users.password.update');
 });

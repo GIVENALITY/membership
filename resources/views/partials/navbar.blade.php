@@ -73,21 +73,21 @@
           href="javascript:void(0);"
           data-bs-toggle="dropdown">
           <div class="avatar avatar-online">
-            <img src="{{ asset('assets/img/avatars/1.png') }}" alt="alt" class="rounded-circle" />
+            <img src="{{ Auth::user()->avatar_url }}" alt="alt" class="rounded-circle" />
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{{ route('users.profile') }}">
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="alt" class="w-px-40 h-auto rounded-circle" />
+                    <img src="{{ Auth::user()->avatar_url }}" alt="alt" class="w-px-40 h-auto rounded-circle" />
                   </div>
                 </div>
                 <div class="flex-grow-1">
                   <h6 class="mb-0">{{ Auth::user()->name ?? 'User' }}</h6>
-                  <small class="text-body-secondary">{{ Auth::user()->email ?? 'user@example.com' }}</small>
+                  <small class="text-body-secondary">{{ ucfirst(Auth::user()->role ?? 'User') }}</small>
                 </div>
               </div>
             </a>
@@ -96,15 +96,21 @@
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ route('settings.profile') }}">
+            <a class="dropdown-item" href="{{ route('users.profile') }}">
               <i class="icon-base ri ri-user-line icon-md me-3"></i>
               <span>My Profile</span>
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ route('settings.index') }}">
+            <a class="dropdown-item" href="{{ route('users.change-password') }}">
+              <i class="icon-base ri ri-lock-line icon-md me-3"></i>
+              <span>Change Password</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('hotel.account') }}">
               <i class="icon-base ri ri-settings-4-line icon-md me-3"></i>
-              <span>Settings</span>
+              <span>Account Settings</span>
             </a>
           </li>
           <li>
