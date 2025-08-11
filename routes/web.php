@@ -60,6 +60,11 @@ Route::middleware('auth')->group(function () {
         return view('cashier.index');
     })->name('cashier.index');
 
+    // Onboarding Routes
+    Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'index'])->name('onboarding.index');
+    Route::post('/onboarding/complete', [\App\Http\Controllers\OnboardingController::class, 'complete'])->name('onboarding.complete');
+    Route::get('/onboarding/skip', [\App\Http\Controllers\OnboardingController::class, 'skip'])->name('onboarding.skip');
+
     // Dining Routes
     Route::get('/dining', [\App\Http\Controllers\DiningVisitController::class, 'index'])->name('dining.index');
     Route::get('/dining/search-members', [\App\Http\Controllers\DiningVisitController::class, 'searchMembers'])->name('dining.search-members');

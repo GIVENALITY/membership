@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
+use App\Mail\WelcomeHotelMail;
 
 class RegisterController extends Controller
 {
@@ -92,7 +94,15 @@ class RegisterController extends Controller
             // Log in the user
             auth()->login($user);
 
-            return redirect()->route('dashboard')->with('success', 'Hotel registered successfully! Welcome to Membership MS.');
+            // Send welcome email
+            try {
+                Mail::to($user->email)->send(new WelcomeHotelMail($hotel, $user));
+            } catch (\Exception $e) {
+                // Log the error but don't fail registration
+                \Log::error('Failed to send welcome email: ' . $e->getMessage());
+            }
+
+            return redirect()->route('onboarding.index')->with('success', 'Hotel registered successfully! Welcome to Membership MS.');
 
         } catch (\Exception $e) {
             DB::rollBack();
