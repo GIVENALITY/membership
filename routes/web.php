@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DiningHistoryController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -74,9 +75,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dining/{visit}', [\App\Http\Controllers\DiningVisitController::class, 'show'])->name('dining.show');
 
     // Dining History Routes
-    Route::get('/dining/history', [\App\Http\Controllers\DiningHistoryController::class, 'index'])->name('dining.history');
-    Route::get('/dining/history/export', [\App\Http\Controllers\DiningHistoryController::class, 'export'])->name('dining.history.export');
-    Route::get('/dining/history/member/{member}', [\App\Http\Controllers\DiningHistoryController::class, 'memberHistory'])->name('dining.history.member');
+    Route::get('/dining/history', [DiningHistoryController::class, 'index'])->name('dining.history');
+    Route::get('/dining/history/export', [DiningHistoryController::class, 'export'])->name('dining.history.export');
+    Route::get('/dining/history/member/{member}', [DiningHistoryController::class, 'memberHistory'])->name('dining.history.member');
 
     // Discounts Routes
     Route::get('/discounts', function () {
