@@ -95,6 +95,97 @@
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
+
+            <!-- Member Details Section -->
+            <div class="card mb-3">
+              <div class="card-header">
+                <h6 class="mb-0">
+                  <i class="icon-base ri ri-heart-line me-2"></i>
+                  Member Details & Preferences
+                </h6>
+                <small class="text-muted">This information helps us provide better service</small>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="allergies" class="form-label">Allergies</label>
+                    <textarea class="form-control @error('allergies') is-invalid @enderror" 
+                              id="allergies" name="allergies" rows="3" 
+                              placeholder="e.g., Peanuts, Shellfish, Dairy, etc. (Leave blank if none)">{{ old('allergies') }}</textarea>
+                    @error('allergies')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="dietary_preferences" class="form-label">Dietary Preferences</label>
+                    <textarea class="form-control @error('dietary_preferences') is-invalid @enderror" 
+                              id="dietary_preferences" name="dietary_preferences" rows="3" 
+                              placeholder="e.g., Vegetarian, Vegan, Halal, Kosher, etc.">{{ old('dietary_preferences') }}</textarea>
+                    @error('dietary_preferences')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="special_requests" class="form-label">Special Requests</label>
+                    <textarea class="form-control @error('special_requests') is-invalid @enderror" 
+                              id="special_requests" name="special_requests" rows="3" 
+                              placeholder="e.g., Wheelchair accessible, Quiet table, etc.">{{ old('special_requests') }}</textarea>
+                    @error('special_requests')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="additional_notes" class="form-label">Additional Notes</label>
+                    <textarea class="form-control @error('additional_notes') is-invalid @enderror" 
+                              id="additional_notes" name="additional_notes" rows="3" 
+                              placeholder="Any other important information about the member">{{ old('additional_notes') }}</textarea>
+                    @error('additional_notes')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="border-top pt-3">
+                  <h6 class="mb-3">
+                    <i class="icon-base ri ri-phone-line me-2"></i>
+                    Emergency Contact
+                  </h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label for="emergency_contact_name" class="form-label">Contact Name</label>
+                      <input type="text" class="form-control @error('emergency_contact_name') is-invalid @enderror" 
+                             id="emergency_contact_name" name="emergency_contact_name" 
+                             placeholder="Full name" value="{{ old('emergency_contact_name') }}">
+                      @error('emergency_contact_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="emergency_contact_phone" class="form-label">Contact Phone</label>
+                      <input type="tel" class="form-control @error('emergency_contact_phone') is-invalid @enderror" 
+                             id="emergency_contact_phone" name="emergency_contact_phone" 
+                             placeholder="+255 123 456 789" value="{{ old('emergency_contact_phone') }}">
+                      @error('emergency_contact_phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="emergency_contact_relationship" class="form-label">Relationship</label>
+                      <input type="text" class="form-control @error('emergency_contact_relationship') is-invalid @enderror" 
+                             id="emergency_contact_relationship" name="emergency_contact_relationship" 
+                             placeholder="e.g., Spouse, Parent, Friend" value="{{ old('emergency_contact_relationship') }}">
+                      @error('emergency_contact_relationship')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <div class="row">
               <div class="col-md-6 mb-3">

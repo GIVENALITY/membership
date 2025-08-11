@@ -69,6 +69,69 @@
       </div>
     </div>
 
+    <!-- Member Preferences & Details -->
+    @if($member->allergies || $member->dietary_preferences || $member->special_requests || $member->additional_notes || $member->emergency_contact_name)
+    <div class="card mb-4">
+      <div class="card-header">
+        <h6 class="mb-0">
+          <i class="icon-base ri ri-heart-line me-2"></i>
+          Member Preferences & Details
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            @if($member->allergies)
+              <div class="mb-3">
+                <strong class="text-danger">⚠️ Allergies:</strong>
+                <div class="text-danger">{{ $member->allergies }}</div>
+              </div>
+            @endif
+            
+            @if($member->dietary_preferences)
+              <div class="mb-3">
+                <strong>🍽️ Dietary Preferences:</strong>
+                <div>{{ $member->dietary_preferences }}</div>
+              </div>
+            @endif
+            
+            @if($member->special_requests)
+              <div class="mb-3">
+                <strong>🎯 Special Requests:</strong>
+                <div>{{ $member->special_requests }}</div>
+              </div>
+            @endif
+          </div>
+          
+          <div class="col-md-6">
+            @if($member->additional_notes)
+              <div class="mb-3">
+                <strong>📝 Additional Notes:</strong>
+                <div>{{ $member->additional_notes }}</div>
+              </div>
+            @endif
+            
+            @if($member->emergency_contact_name)
+              <div class="mb-3">
+                <strong class="text-warning">🚨 Emergency Contact:</strong>
+                <div>
+                  <strong>{{ $member->emergency_contact_name }}</strong>
+                  @if($member->emergency_contact_relationship)
+                    <small class="text-muted">({{ $member->emergency_contact_relationship }})</small>
+                  @endif
+                  <br>
+                  <a href="tel:{{ $member->emergency_contact_phone }}" class="text-decoration-none">
+                    {{ $member->emergency_contact_phone }}
+                  </a>
+                </div>
+              </div>
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+    @endif
+
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Recent Visits</h5>

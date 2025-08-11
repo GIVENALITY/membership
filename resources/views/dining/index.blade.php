@@ -191,6 +191,21 @@
                                placeholder="Search by name, membership ID, phone, or email..." required>
                         <input type="hidden" name="member_id" id="member_id" required>
                         <div id="member_results" class="mt-2"></div>
+                        
+                        <!-- Member Details Display -->
+                        <div id="member_details" class="mt-3" style="display: none;">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="icon-base ri ri-user-heart-line me-2"></i>
+                                        Member Details
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="member_info"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -311,6 +326,70 @@ function selectMember(member) {
     document.getElementById('member_search').value = `${member.first_name} ${member.last_name} (${member.membership_id})`;
     document.getElementById('member_id').value = member.id;
     document.getElementById('member_results').innerHTML = '';
+    
+    // Show member details
+    showMemberDetails(member);
+}
+
+function showMemberDetails(member) {
+    const detailsDiv = document.getElementById('member_details');
+    const infoDiv = document.getElementById('member_info');
+    
+    let detailsHtml = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-primary mb-2">Basic Information</h6>
+                <p><strong>Name:</strong> ${member.first_name} ${member.last_name}</p>
+                <p><strong>Membership ID:</strong> ${member.membership_id}</p>
+                <p><strong>Phone:</strong> ${member.phone || 'Not provided'}</p>
+                <p><strong>Email:</strong> ${member.email || 'Not provided'}</p>
+                <p><strong>Discount Rate:</strong> <span class="badge bg-success">${member.current_discount_rate}%</span></p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-warning mb-2">Important Notes</h6>
+    `;
+    
+    // Add allergies if present
+    if (member.allergies && member.allergies.trim()) {
+        detailsHtml += `<p><strong>⚠️ Allergies:</strong> <span class="text-danger">${member.allergies}</span></p>`;
+    }
+    
+    // Add dietary preferences if present
+    if (member.dietary_preferences && member.dietary_preferences.trim()) {
+        detailsHtml += `<p><strong>🍽️ Dietary:</strong> ${member.dietary_preferences}</p>`;
+    }
+    
+    // Add special requests if present
+    if (member.special_requests && member.special_requests.trim()) {
+        detailsHtml += `<p><strong>🎯 Special Requests:</strong> ${member.special_requests}</p>`;
+    }
+    
+    // Add additional notes if present
+    if (member.additional_notes && member.additional_notes.trim()) {
+        detailsHtml += `<p><strong>📝 Notes:</strong> ${member.additional_notes}</p>`;
+    }
+    
+    // Add emergency contact if present
+    if (member.emergency_contact_name && member.emergency_contact_phone) {
+        detailsHtml += `
+            <p><strong>🚨 Emergency Contact:</strong> ${member.emergency_contact_name} 
+            (${member.emergency_contact_relationship || 'Contact'}) - ${member.emergency_contact_phone}</p>
+        `;
+    }
+    
+    // If no important notes, show a message
+    if (!member.allergies && !member.dietary_preferences && !member.special_requests && 
+        !member.additional_notes && !member.emergency_contact_name) {
+        detailsHtml += `<p class="text-muted">No special requirements or notes recorded.</p>`;
+    }
+    
+    detailsHtml += `
+            </div>
+        </div>
+    `;
+    
+    infoDiv.innerHTML = detailsHtml;
+    detailsDiv.style.display = 'block';
 }
 
 // Auto-calculate discount for checkout

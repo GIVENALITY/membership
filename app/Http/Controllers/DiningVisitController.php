@@ -60,7 +60,12 @@ class DiningVisitController extends Controller
             })
             ->where('status', 'active')
             ->limit(10)
-            ->get(['id', 'first_name', 'last_name', 'membership_id', 'phone', 'email', 'current_discount_rate']);
+            ->get([
+                'id', 'first_name', 'last_name', 'membership_id', 'phone', 'email', 
+                'current_discount_rate', 'allergies', 'dietary_preferences', 'special_requests', 
+                'additional_notes', 'emergency_contact_name', 'emergency_contact_phone', 
+                'emergency_contact_relationship'
+            ]);
 
         return response()->json($members);
     }
