@@ -17,21 +17,55 @@ return new class extends Migration
                 $table->foreignId('hotel_id')->after('id')->constrained()->onDelete('cascade');
             }
 
-            // Add new fields for two-step process
-            $table->integer('number_of_people')->default(1)->after('member_id');
-            $table->boolean('is_checked_out')->default(false)->after('notes');
-            $table->decimal('amount_spent', 10, 2)->nullable()->after('is_checked_out');
-            $table->decimal('discount_amount', 10, 2)->nullable()->after('amount_spent');
-            $table->decimal('final_amount', 10, 2)->nullable()->after('discount_amount');
-            $table->text('checkout_notes')->nullable()->after('final_amount');
-            $table->timestamp('checked_out_at')->nullable()->after('checkout_notes');
-            $table->foreignId('recorded_by')->nullable()->after('checked_out_at')->constrained('users')->onDelete('set null');
-            $table->foreignId('checked_out_by')->nullable()->after('recorded_by')->constrained('users')->onDelete('set null');
+            // Add new fields for two-step process (check if they exist first)
+            if (!Schema::hasColumn('dining_visits', 'number_of_people')) {
+                $table->integer('number_of_people')->default(1)->after('member_id');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'is_checked_out')) {
+                $table->boolean('is_checked_out')->default(false)->after('notes');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'amount_spent')) {
+                $table->decimal('amount_spent', 10, 2)->nullable()->after('is_checked_out');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'discount_amount')) {
+                $table->decimal('discount_amount', 10, 2)->nullable()->after('amount_spent');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'final_amount')) {
+                $table->decimal('final_amount', 10, 2)->nullable()->after('discount_amount');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'checkout_notes')) {
+                $table->text('checkout_notes')->nullable()->after('final_amount');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'checked_out_at')) {
+                $table->timestamp('checked_out_at')->nullable()->after('checkout_notes');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'recorded_by')) {
+                $table->foreignId('recorded_by')->nullable()->after('checked_out_at')->constrained('users')->onDelete('set null');
+            }
+            
+            if (!Schema::hasColumn('dining_visits', 'checked_out_by')) {
+                $table->foreignId('checked_out_by')->nullable()->after('recorded_by')->constrained('users')->onDelete('set null');
+            }
 
-            // Rename existing fields for clarity
-            $table->renameColumn('bill_amount', 'amount_spent_old');
-            $table->renameColumn('discount_rate', 'discount_rate_old');
-            $table->renameColumn('visited_at', 'created_at_old');
+            // Rename existing fields for clarity (only if they exist and haven't been renamed)
+            if (Schema::hasColumn('dining_visits', 'bill_amount') && !Schema::hasColumn('dining_visits', 'amount_spent_old')) {
+                $table->renameColumn('bill_amount', 'amount_spent_old');
+            }
+            
+            if (Schema::hasColumn('dining_visits', 'discount_rate') && !Schema::hasColumn('dining_visits', 'discount_rate_old')) {
+                $table->renameColumn('discount_rate', 'discount_rate_old');
+            }
+            
+            if (Schema::hasColumn('dining_visits', 'visited_at') && !Schema::hasColumn('dining_visits', 'created_at_old')) {
+                $table->renameColumn('visited_at', 'created_at_old');
+            }
         });
     }
 
