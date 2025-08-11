@@ -107,6 +107,60 @@
                             </div>
                         </div>
 
+                        <!-- Branding Colors -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="icon-base ri ri-palette-line me-2"></i>
+                                    Branding Colors
+                                </h6>
+                                <small class="text-muted">Customize your hotel's color scheme</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="primary_color" class="form-label">Primary Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="primary_color" name="primary_color" 
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#696cff') }}" 
+                                                   title="Choose primary color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#696cff') }}" 
+                                                   id="primary_color_text" placeholder="#696cff">
+                                        </div>
+                                        <small class="form-text text-muted">Used for buttons, links, and primary elements</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="secondary_color" class="form-label">Secondary Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="secondary_color" name="secondary_color" 
+                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#8592a3') }}" 
+                                                   title="Choose secondary color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#8592a3') }}" 
+                                                   id="secondary_color_text" placeholder="#8592a3">
+                                        </div>
+                                        <small class="form-text text-muted">Used for secondary elements and accents</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Color Preview -->
+                                <div class="mt-3">
+                                    <label class="form-label">Color Preview</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="color-preview" style="background-color: {{ $hotel->primary_color ?? '#696cff' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                            Primary
+                                        </div>
+                                        <div class="color-preview" style="background-color: {{ $hotel->secondary_color ?? '#8592a3' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                            Secondary
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Update Hotel Profile</button>
                         </div>
@@ -116,4 +170,40 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
+
+@push('page-js')
+<script>
+// Sync color picker and text input
+document.getElementById('primary_color').addEventListener('input', function() {
+    document.getElementById('primary_color_text').value = this.value;
+    updateColorPreview();
+});
+
+document.getElementById('primary_color_text').addEventListener('input', function() {
+    document.getElementById('primary_color').value = this.value;
+    updateColorPreview();
+});
+
+document.getElementById('secondary_color').addEventListener('input', function() {
+    document.getElementById('secondary_color_text').value = this.value;
+    updateColorPreview();
+});
+
+document.getElementById('secondary_color_text').addEventListener('input', function() {
+    document.getElementById('secondary_color').value = this.value;
+    updateColorPreview();
+});
+
+function updateColorPreview() {
+    const primaryColor = document.getElementById('primary_color').value;
+    const secondaryColor = document.getElementById('secondary_color').value;
+    
+    const previews = document.querySelectorAll('.color-preview');
+    if (previews.length >= 2) {
+        previews[0].style.backgroundColor = primaryColor;
+        previews[1].style.backgroundColor = secondaryColor;
+    }
+}
+</script>
+@endpush 

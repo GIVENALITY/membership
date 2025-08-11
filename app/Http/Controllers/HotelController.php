@@ -40,6 +40,8 @@ class HotelController extends Controller
             'hotel_description' => 'nullable|string|max:1000',
             'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'hotel_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'primary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'secondary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
         ]);
 
         try {
@@ -52,6 +54,8 @@ class HotelController extends Controller
                 'country' => $request->hotel_country,
                 'website' => $request->hotel_website,
                 'description' => $request->hotel_description,
+                'primary_color' => $request->primary_color,
+                'secondary_color' => $request->secondary_color,
             ]);
 
             // Handle logo upload

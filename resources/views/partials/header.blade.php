@@ -39,6 +39,80 @@
     <!-- Page CSS -->
     @stack('page-css')
 
+    <!-- Hotel Branding CSS -->
+    @if(Auth::check() && Auth::user()->hotel)
+    <style>
+        :root {
+            --hotel-primary-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }};
+            --hotel-secondary-color: {{ Auth::user()->hotel->secondary_color ?? '#8592a3' }};
+        }
+        
+        /* Apply hotel branding colors */
+        .btn-primary {
+            background-color: var(--hotel-primary-color) !important;
+            border-color: var(--hotel-primary-color) !important;
+        }
+        
+        .btn-primary:hover {
+            background-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}dd !important;
+            border-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}dd !important;
+        }
+        
+        .text-primary {
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .bg-primary {
+            background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .border-primary {
+            border-color: var(--hotel-primary-color) !important;
+        }
+        
+        .bg-label-primary {
+            background-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }}15 !important;
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .badge.bg-primary {
+            background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .nav-link.active {
+            background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .menu-item.active > .menu-link {
+            background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--hotel-primary-color) !important;
+            border-color: var(--hotel-primary-color) !important;
+        }
+        
+        .form-control:focus {
+            border-color: var(--hotel-primary-color) !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::user()->hotel->primary_color ?? '#696cff' }}40 !important;
+        }
+        
+        .form-select:focus {
+            border-color: var(--hotel-primary-color) !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::user()->hotel->primary_color ?? '#696cff' }}40 !important;
+        }
+        
+        .page-link {
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--hotel-primary-color) !important;
+            border-color: var(--hotel-primary-color) !important;
+        }
+    </style>
+    @endif
+
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     

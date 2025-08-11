@@ -22,6 +22,8 @@ class Hotel extends Model
         'description',
         'logo_path',
         'banner_path',
+        'primary_color',
+        'secondary_color',
         'is_active',
         'email_verified_at',
     ];
