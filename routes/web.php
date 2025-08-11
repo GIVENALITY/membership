@@ -76,12 +76,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/dining/record-visit', [DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
     Route::put('/dining/{visit}/checkout', [DiningVisitController::class, 'checkout'])->name('dining.checkout');
     Route::delete('/dining/{visit}/cancel', [DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
-    Route::get('/dining/{visit}', [DiningVisitController::class, 'show'])->name('dining.show');
 
-    // Dining History Routes
+    // Dining History Routes (MUST come before the wildcard route)
     Route::get('/dining/history', [DiningHistoryController::class, 'index'])->name('dining.history');
     Route::get('/dining/history/export', [DiningHistoryController::class, 'export'])->name('dining.history.export');
     Route::get('/dining/history/member/{member}', [DiningHistoryController::class, 'memberHistory'])->name('dining.history.member');
+
+    // This wildcard route must come LAST to avoid catching specific routes
+    Route::get('/dining/{visit}', [DiningVisitController::class, 'show'])->name('dining.show');
 
     // Discounts Routes
     Route::get('/discounts', function () {
