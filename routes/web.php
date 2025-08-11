@@ -61,10 +61,12 @@ Route::middleware('auth')->group(function () {
     })->name('cashier.index');
 
     // Dining Routes
-    Route::get('/dining', function () {
-        return view('dining.index');
-    })->name('dining.index');
-    Route::post('/dining/visits', [\App\Http\Controllers\DiningVisitController::class, 'store'])->name('dining.visits.store');
+    Route::get('/dining', [\App\Http\Controllers\DiningVisitController::class, 'index'])->name('dining.index');
+    Route::get('/dining/search-members', [\App\Http\Controllers\DiningVisitController::class, 'searchMembers'])->name('dining.search-members');
+    Route::post('/dining/record-visit', [\App\Http\Controllers\DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
+    Route::put('/dining/{visit}/checkout', [\App\Http\Controllers\DiningVisitController::class, 'checkout'])->name('dining.checkout');
+    Route::delete('/dining/{visit}/cancel', [\App\Http\Controllers\DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
+    Route::get('/dining/{visit}', [\App\Http\Controllers\DiningVisitController::class, 'show'])->name('dining.show');
 
     // Discounts Routes
     Route::get('/discounts', function () {
