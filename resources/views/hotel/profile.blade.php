@@ -123,11 +123,11 @@
                                         <div class="input-group">
                                             <input type="color" class="form-control form-control-color" 
                                                    id="primary_color" name="primary_color" 
-                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#696cff') }}" 
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#000000') }}" 
                                                    title="Choose primary color">
                                             <input type="text" class="form-control" 
-                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#696cff') }}" 
-                                                   id="primary_color_text" placeholder="#696cff">
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#000000') }}" 
+                                                   id="primary_color_text" placeholder="#000000">
                                         </div>
                                         <small class="form-text text-muted">Used for buttons, links, and primary elements</small>
                                     </div>
@@ -136,11 +136,11 @@
                                         <div class="input-group">
                                             <input type="color" class="form-control form-control-color" 
                                                    id="secondary_color" name="secondary_color" 
-                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#8592a3') }}" 
+                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#6c757d') }}" 
                                                    title="Choose secondary color">
                                             <input type="text" class="form-control" 
-                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#8592a3') }}" 
-                                                   id="secondary_color_text" placeholder="#8592a3">
+                                                   value="{{ old('secondary_color', $hotel->secondary_color ?? '#6c757d') }}" 
+                                                   id="secondary_color_text" placeholder="#6c757d">
                                         </div>
                                         <small class="form-text text-muted">Used for secondary elements and accents</small>
                                     </div>
@@ -150,10 +150,10 @@
                                 <div class="mt-3">
                                     <label class="form-label">Color Preview</label>
                                     <div class="d-flex gap-3">
-                                        <div class="color-preview" style="background-color: {{ $hotel->primary_color ?? '#696cff' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                        <div class="color-preview" style="background-color: {{ $hotel->primary_color ?? '#000000' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
                                             Primary
                                         </div>
-                                        <div class="color-preview" style="background-color: {{ $hotel->secondary_color ?? '#8592a3' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                        <div class="color-preview" style="background-color: {{ $hotel->secondary_color ?? '#6c757d' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
                                             Secondary
                                         </div>
                                     </div>

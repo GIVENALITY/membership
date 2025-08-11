@@ -7,7 +7,7 @@
           <img src="{{ Auth::user()->hotel->logo_url }}" alt="{{ Auth::user()->hotel->name }}" 
                style="width: 30px; height: 30px; object-fit: contain;">
         @else
-          <span class="text-primary" style="color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }} !important;">
+          <span class="text-primary" style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }} !important;">
             <svg width="30" height="24" viewBox="0 0 250 196" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 fill-rule="evenodd"
@@ -70,7 +70,7 @@
         @endif
       </span>
       <span class="app-brand-text demo menu-text fw-semibold ms-2" 
-            style="color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }} !important;">
+            style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }} !important;">
         {{ Auth::user()->hotel->name ?? 'Membership MS' }}
       </span>
     </a>

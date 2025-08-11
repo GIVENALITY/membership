@@ -43,8 +43,8 @@
     @if(Auth::check() && Auth::user()->hotel)
     <style>
         :root {
-            --hotel-primary-color: {{ Auth::user()->hotel->primary_color ?? '#696cff' }};
-            --hotel-secondary-color: {{ Auth::user()->hotel->secondary_color ?? '#8592a3' }};
+            --hotel-primary-color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};
+            --hotel-secondary-color: {{ Auth::user()->hotel->secondary_color ?? '#6c757d' }};
         }
         
         /* Apply hotel branding colors */
