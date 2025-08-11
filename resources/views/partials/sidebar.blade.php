@@ -172,6 +172,26 @@
       </a>
     </li>
 
+    <!-- Hotel Management -->
+    <li class="menu-item {{ request()->routeIs('hotel.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base ri ri-building-line"></i>
+        <div data-i18n="Hotel Management">Hotel Management</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="{{ route('hotel.profile') }}" class="menu-link">
+            <div data-i18n="Hotel Profile">Hotel Profile</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('hotel.account') }}" class="menu-link">
+            <div data-i18n="Account Settings">Account Settings</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
     <!-- Settings -->
     <li class="menu-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

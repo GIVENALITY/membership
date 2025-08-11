@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HotelController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -86,4 +87,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', function () {
         return view('notifications.index');
     })->name('notifications.index');
+
+    // Hotel Management Routes
+    Route::get('/hotel/profile', [HotelController::class, 'profile'])->name('hotel.profile');
+    Route::put('/hotel/profile', [HotelController::class, 'updateProfile'])->name('hotel.profile.update');
+    Route::get('/hotel/account', [HotelController::class, 'account'])->name('hotel.account');
+    Route::put('/hotel/account', [HotelController::class, 'updateAccount'])->name('hotel.account.update');
 });
