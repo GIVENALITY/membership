@@ -91,6 +91,14 @@
       </a>
     </li>
 
+    <!-- Onboarding Guide -->
+    <li class="menu-item {{ request()->routeIs('onboarding.*') ? 'active' : '' }}">
+      <a href="{{ route('onboarding.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri ri-rocket-line"></i>
+        <div data-i18n="Onboarding Guide">Onboarding Guide</div>
+      </a>
+    </li>
+
     <!-- Members -->
     <li class="menu-item {{ request()->routeIs('members.*') ? 'active' : '' }}">
       <a href="{{ route('members.index') }}" class="menu-link">

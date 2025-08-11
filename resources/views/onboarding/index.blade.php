@@ -159,9 +159,17 @@
                 </div>
             @endif
             <h1 class="display-4 fw-bold" style="color: var(--hotel-primary-color);">
-                Welcome to {{ Auth::user()->hotel->name ?? 'Membership MS' }}!
+                {{ Auth::user()->hotel->name ?? 'Membership MS' }} - System Guide
             </h1>
-            <p class="lead text-muted">Your restaurant loyalty management system is ready to help you grow your business.</p>
+            <p class="lead text-muted">Learn about all the features and capabilities of your restaurant loyalty management system.</p>
+            
+            <!-- Skip button for existing users -->
+            <div class="mt-3">
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="ri ri-arrow-left-line me-1"></i>
+                    Back to Dashboard
+                </a>
+            </div>
         </div>
 
         <!-- Progress Steps -->

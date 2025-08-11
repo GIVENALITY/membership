@@ -12,7 +12,13 @@
             <h5 class="card-title text-primary">Welcome to {{ Auth::user()->hotel->name ?? 'Membership MS' }}! 🍽️</h5>
             <p class="mb-4">Manage your restaurant's premium loyalty membership program. Track dining visits, calculate discounts, and grow your member base.</p>
 
-            <a href="{{ route('members.create') }}" class="btn btn-sm btn-outline-primary">Add New Member</a>
+            <div class="d-flex gap-2">
+              <a href="{{ route('members.create') }}" class="btn btn-sm btn-outline-primary">Add New Member</a>
+              <a href="{{ route('onboarding.index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="ri ri-rocket-line me-1"></i>
+                System Guide
+              </a>
+            </div>
           </div>
         </div>
         <div class="col-sm-5 text-center text-sm-left">
