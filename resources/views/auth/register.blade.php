@@ -38,7 +38,7 @@
     <!-- Content -->
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
-            <div class="authentication-inner">
+            <div class="authentication-inner" style="max-width: 800px; width: 100%;">
                 <!-- Register -->
                 <div class="card">
                     <div class="card-body">
