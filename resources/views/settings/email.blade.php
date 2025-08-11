@@ -208,14 +208,14 @@
                                                 <i class="icon-base ri ri-send-plane-line me-2"></i>
                                                 Send Test Email
                                             </button>
-                                            <button type="button" class="btn btn-outline-info btn-sm">
-                                                <i class="icon-base ri ri-file-list-line me-2"></i>
-                                                View Email History
-                                            </button>
-                                            <button type="button" class="btn btn-outline-success btn-sm">
-                                                <i class="icon-base ri ri-download-line me-2"></i>
-                                                Export Email Data
-                                            </button>
+                                            <a href="{{ route('members.index') }}" class="btn btn-outline-info btn-sm">
+                                                <i class="icon-base ri ri-mail-line me-2"></i>
+                                                View Member Emails
+                                            </a>
+                                            <a href="{{ route('dining.history') }}" class="btn btn-outline-success btn-sm">
+                                                <i class="icon-base ri ri-bar-chart-line me-2"></i>
+                                                Email Analytics
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

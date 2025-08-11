@@ -164,36 +164,13 @@
                     <div class="mb-4">
                         <h5 class="text-warning mb-3">
                             <i class="icon-base ri ri-tools-line me-2"></i>
-                            Maintenance Actions
+                            Quick Actions
                         </h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card border-warning">
-                                    <div class="card-header bg-warning text-dark">
-                                        <h6 class="mb-0">System Maintenance</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-grid gap-2">
-                                            <button type="button" class="btn btn-outline-warning btn-sm">
-                                                <i class="icon-base ri ri-refresh-line me-2"></i>
-                                                Clear Cache
-                                            </button>
-                                            <button type="button" class="btn btn-outline-info btn-sm">
-                                                <i class="icon-base ri ri-database-line me-2"></i>
-                                                Backup Database
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm">
-                                                <i class="icon-base ri ri-file-list-line me-2"></i>
-                                                Generate Reports
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card border-info">
-                                    <div class="card-header bg-info text-white">
-                                        <h6 class="mb-0">Quick Actions</h6>
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">Business Management</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
@@ -208,6 +185,29 @@
                                             <a href="{{ route('dining.index') }}" class="btn btn-outline-warning btn-sm">
                                                 <i class="icon-base ri ri-restaurant-line me-2"></i>
                                                 Record Visit
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">Reports & Analytics</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <a href="{{ route('dining.history') }}" class="btn btn-outline-info btn-sm">
+                                                <i class="icon-base ri ri-bar-chart-line me-2"></i>
+                                                View Dining History
+                                            </a>
+                                            <a href="{{ route('reports.members') }}" class="btn btn-outline-secondary btn-sm">
+                                                <i class="icon-base ri ri-file-list-line me-2"></i>
+                                                Member Reports
+                                            </a>
+                                            <a href="{{ route('discounts.index') }}" class="btn btn-outline-success btn-sm">
+                                                <i class="icon-base ri ri-percent-line me-2"></i>
+                                                Discount Analytics
                                             </a>
                                         </div>
                                     </div>

@@ -8,10 +8,18 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title">Membership Types</h4>
-        <a href="{{ route('membership-types.create') }}" class="btn btn-primary">
-          <i class="icon-base ri ri-add-line me-2"></i>
-          Add New Type
-        </a>
+        <div class="d-flex gap-2">
+          <a href="{{ route('membership-types.create') }}" class="btn btn-primary">
+            <i class="icon-base ri ri-add-line me-2"></i>
+            Add New Type
+          </a>
+          @if($membershipTypes->count() > 0)
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+              <i class="icon-base ri ri-delete-bin-line me-2"></i>
+              Delete All
+            </button>
+          @endif
+        </div>
       </div>
       <div class="card-body">
         @if (session('success'))
@@ -135,4 +143,77 @@
     </div>
   </div>
 </div>
+
+<!-- Delete All Modal -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-labelledby="deleteAllModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="deleteAllModalLabel">
+          <i class="icon-base ri ri-alert-line me-2"></i>
+          Delete All Membership Types
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">
+          <h6><i class="icon-base ri ri-error-warning-line me-2"></i>Warning: This action cannot be undone!</h6>
+          <p class="mb-0">This will permanently delete <strong>ALL</strong> membership types and reset your system. All member data will be affected.</p>
+        </div>
+        
+        <div class="mb-3">
+          <h6>What will be deleted:</h6>
+          <ul class="list-unstyled">
+            <li><i class="icon-base ri ri-delete-bin-line text-danger me-2"></i>All membership types ({{ $membershipTypes->count() }} types)</li>
+            <li><i class="icon-base ri ri-delete-bin-line text-danger me-2"></i>All member associations with types</li>
+            <li><i class="icon-base ri ri-delete-bin-line text-danger me-2"></i>All discount progression rules</li>
+            <li><i class="icon-base ri ri-delete-bin-line text-danger me-2"></i>All points reset configurations</li>
+          </ul>
+        </div>
+
+        <div class="mb-3">
+          <h6>What will be preserved:</h6>
+          <ul class="list-unstyled">
+            <li><i class="icon-base ri ri-check-line text-success me-2"></i>Member basic information</li>
+            <li><i class="icon-base ri ri-check-line text-success me-2"></i>Dining visit history</li>
+            <li><i class="icon-base ri ri-check-line text-success me-2"></i>Points history</li>
+            <li><i class="icon-base ri ri-check-line text-success me-2"></i>Hotel settings</li>
+          </ul>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="confirmDeleteAll" required>
+          <label class="form-check-label" for="confirmDeleteAll">
+            I understand this action will delete all membership types and cannot be undone
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="{{ route('membership-types.delete-all') }}" method="POST" style="display: inline;">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger" id="deleteAllBtn" disabled>
+            <i class="icon-base ri ri-delete-bin-line me-2"></i>
+            Delete All Membership Types
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const confirmCheckbox = document.getElementById('confirmDeleteAll');
+  const deleteBtn = document.getElementById('deleteAllBtn');
+  
+  if (confirmCheckbox && deleteBtn) {
+    confirmCheckbox.addEventListener('change', function() {
+      deleteBtn.disabled = !this.checked;
+    });
+  }
+});
+</script>
+
 @endsection 

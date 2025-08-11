@@ -264,4 +264,46 @@ class MembershipTypeController extends Controller
                 ->with('error', 'Error deleting membership type: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Delete all membership types for the hotel
+     */
+    public function deleteAll()
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
+        try {
+            // Get all membership types for this hotel
+            $membershipTypes = MembershipType::where('hotel_id', $user->hotel_id)->get();
+            
+            if ($membershipTypes->isEmpty()) {
+                return redirect()->back()
+                    ->with('info', 'No membership types found to delete.');
+            }
+
+            $deletedCount = 0;
+            
+            foreach ($membershipTypes as $type) {
+                // Check if any members are using this type
+                if ($type->members()->count() > 0) {
+                    // Update members to remove membership type association
+                    $type->members()->update(['membership_type_id' => null]);
+                }
+                
+                // Delete the membership type
+                $type->delete();
+                $deletedCount++;
+            }
+
+            return redirect()->route('membership-types.index')
+                ->with('success', "Successfully deleted {$deletedCount} membership type(s). You can now create new types to start fresh.");
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error deleting membership types: ' . $e->getMessage());
+        }
+    }
 } 

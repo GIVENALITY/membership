@@ -186,22 +186,22 @@
                             <div class="col-md-6">
                                 <div class="card border-secondary">
                                     <div class="card-header bg-secondary text-white">
-                                        <h6 class="mb-0">Points Reports</h6>
+                                        <h6 class="mb-0">Points Analytics</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="d-grid gap-2">
-                                            <button type="button" class="btn btn-outline-secondary btn-sm">
-                                                <i class="icon-base ri ri-file-list-line me-2"></i>
-                                                Points History Report
-                                            </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                            <a href="{{ route('dining.history') }}" class="btn btn-outline-secondary btn-sm">
+                                                <i class="icon-base ri ri-bar-chart-line me-2"></i>
+                                                View Points History
+                                            </a>
+                                            <a href="{{ route('members.index') }}" class="btn btn-outline-warning btn-sm">
                                                 <i class="icon-base ri ri-star-line me-2"></i>
-                                                Points Distribution Report
-                                            </button>
-                                            <button type="button" class="btn btn-outline-info btn-sm">
-                                                <i class="icon-base ri ri-download-line me-2"></i>
-                                                Export Points Data
-                                            </button>
+                                                View Member Points
+                                            </a>
+                                            <a href="{{ route('discounts.index') }}" class="btn btn-outline-info btn-sm">
+                                                <i class="icon-base ri ri-percent-line me-2"></i>
+                                                Points & Discounts
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

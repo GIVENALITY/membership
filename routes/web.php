@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
 
     // Membership Types Routes
     Route::resource('membership-types', MembershipTypeController::class);
+    Route::delete('/membership-types/delete-all', [MembershipTypeController::class, 'deleteAll'])->name('membership-types.delete-all');
 
     // Cashier Routes
     Route::get('/cashier', function () {
