@@ -223,7 +223,7 @@
                   
                   <div class="mb-3">
                     <label for="points_reset_notes" class="form-label">Points Reset Notes</label>
-                    <textarea class="form-control @error('points_reset_notes') is-invalid @error" 
+                    <textarea class="form-control @error('points_reset_notes') is-invalid @enderror" 
                               id="points_reset_notes" name="points_reset_notes" rows="2" 
                               placeholder="Optional notes about points reset policy...">{{ old('points_reset_notes') }}</textarea>
                     <small class="text-muted">Additional information about the points reset policy</small>
