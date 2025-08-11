@@ -225,6 +225,26 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="feature-card h-100">
                     <div class="feature-icon">
+                        <i class="ri ri-star-line"></i>
+                    </div>
+                    <h4>Points System</h4>
+                    <p>Earn points for dining visits (1 point per person, min 50k spending). Qualify for enhanced discounts with 5+ points.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="ri ri-trending-up-line"></i>
+                    </div>
+                    <h4>Discount Progression</h4>
+                    <p>Membership types with visit-based discount increases. VIP members get higher rates faster.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
                         <i class="ri ri-restaurant-line"></i>
                     </div>
                     <h4>Visit Recording</h4>
@@ -255,10 +275,30 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="feature-card h-100">
                     <div class="feature-icon">
+                        <i class="ri ri-bank-card-line"></i>
+                    </div>
+                    <h4>Cashier System</h4>
+                    <p>Process payments with automatic discount calculation based on membership type and points.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
                         <i class="ri ri-bar-chart-line"></i>
                     </div>
                     <h4>Analytics & Reports</h4>
                     <p>Comprehensive insights into member behavior, visit patterns, and revenue impact.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="ri ri-history-line"></i>
+                    </div>
+                    <h4>Dining History</h4>
+                    <p>Complete dining history with points tracking, export functionality, and detailed analytics.</p>
                 </div>
             </div>
         </div>
@@ -282,7 +322,7 @@
                     <div class="quick-action" onclick="window.location.href='{{ route('membership-types.index') }}'">
                         <i class="ri ri-vip-crown-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
                         <h5 class="mt-2">Membership Types</h5>
-                        <p class="text-muted small">Set up pricing tiers</p>
+                        <p class="text-muted small">Set up pricing & progression</p>
                     </div>
                 </div>
                 
@@ -301,6 +341,22 @@
                         <p class="text-muted small">Test visit system</p>
                     </div>
                 </div>
+                
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="quick-action" onclick="window.location.href='{{ route('cashier.index') }}'">
+                        <i class="ri ri-bank-card-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
+                        <h5 class="mt-2">Cashier System</h5>
+                        <p class="text-muted small">Process payments</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="quick-action" onclick="window.location.href='{{ route('dining.history') }}'">
+                        <i class="ri ri-history-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
+                        <h5 class="mt-2">Dining History</h5>
+                        <p class="text-muted small">View analytics</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -316,6 +372,7 @@
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Capture member allergies and preferences for better service</li>
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Use birthday alerts to send personalized greetings</li>
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Regularly review analytics to understand patterns</li>
+                        <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Set up discount progression rules for each membership type</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
@@ -323,6 +380,7 @@
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Train staff on the two-step visit recording process</li>
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Keep member information updated for accurate communications</li>
                         <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Use the search feature to quickly find members during busy times</li>
+                        <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Monitor points accumulation to encourage repeat visits</li>
                     </ul>
                 </div>
             </div>
