@@ -20,18 +20,23 @@ return new class extends Migration
             });
         }
 
-        // Create a default hotel for existing data
-        $defaultHotelId = DB::table('hotels')->insertGetId([
-            'name' => 'Default Hotel',
-            'email' => 'default@hotel.com',
-            'phone' => '+255000000000',
-            'address' => 'Default Address',
-            'city' => 'Dar es Salaam',
-            'country' => 'Tanzania',
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Check if default hotel already exists
+        $defaultHotelId = DB::table('hotels')->where('email', 'default@hotel.com')->value('id');
+        
+        if (!$defaultHotelId) {
+            // Create a default hotel for existing data
+            $defaultHotelId = DB::table('hotels')->insertGetId([
+                'name' => 'Default Hotel',
+                'email' => 'default@hotel.com',
+                'phone' => '+255000000000',
+                'address' => 'Default Address',
+                'city' => 'Dar es Salaam',
+                'country' => 'Tanzania',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Update existing members to use the default hotel
         DB::table('members')->whereNull('hotel_id')->update([
