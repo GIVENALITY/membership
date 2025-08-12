@@ -125,9 +125,33 @@
                     <p class="card-subtitle text-muted">{{ __('app.process_payments_for_active_visits') }}</p>
                 </div>
                 <div class="card-body">
+                    <!-- Search Bar -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="icon-base ri ri-search-line"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="activeVisitsSearch" 
+                                       placeholder="{{ __('app.search_members_or_visits') }}"
+                                       onkeyup="filterActiveVisits()">
+                                <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                                    <i class="icon-base ri ri-close-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <span class="badge bg-primary" id="visitsCount">
+                                {{ $activeVisits->count() }} {{ __('app.active_visits') }}
+                            </span>
+                        </div>
+                    </div>
+
                     @if($activeVisits->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="activeVisitsTable">
                                 <thead>
                                     <tr>
                                         <th>{{ __('app.member') }}</th>
@@ -138,9 +162,13 @@
                                         <th>{{ __('app.actions') }}</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="activeVisitsTableBody">
                                     @foreach($activeVisits as $visit)
-                                    <tr>
+                                    <tr class="visit-row" 
+                                        data-member-name="{{ strtolower($visit->member->name) }}"
+                                        data-membership-id="{{ strtolower($visit->member->membership_id) }}"
+                                        data-phone="{{ strtolower($visit->member->phone ?? '') }}"
+                                        data-notes="{{ strtolower($visit->notes ?? '') }}">
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar avatar-sm me-2">
@@ -232,4 +260,85 @@
         </div>
     </div>
 </div>
+
+<script>
+function filterActiveVisits() {
+    const searchTerm = document.getElementById('activeVisitsSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('.visit-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const memberName = row.getAttribute('data-member-name');
+        const membershipId = row.getAttribute('data-membership-id');
+        const phone = row.getAttribute('data-phone');
+        const notes = row.getAttribute('data-notes');
+
+        const matches = memberName.includes(searchTerm) || 
+                       membershipId.includes(searchTerm) || 
+                       phone.includes(searchTerm) || 
+                       notes.includes(searchTerm);
+
+        if (matches) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Update the count badge
+    const countBadge = document.getElementById('visitsCount');
+    if (countBadge) {
+        countBadge.textContent = `${visibleCount} ${visibleCount === 1 ? '{{ __("app.active_visit") }}' : '{{ __("app.active_visits") }}'}`;
+    }
+
+    // Show/hide no results message
+    const noResultsDiv = document.getElementById('noSearchResults');
+    if (visibleCount === 0 && searchTerm.length > 0) {
+        if (!noResultsDiv) {
+            const tbody = document.getElementById('activeVisitsTableBody');
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.id = 'noSearchResults';
+            noResultsRow.innerHTML = `
+                <td colspan="6" class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="icon-base ri ri-search-line fs-1 mb-3"></i>
+                        <h6>{{ __('app.no_search_results') }}</h6>
+                        <p>{{ __('app.try_different_search_term') }}</p>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(noResultsRow);
+        }
+    } else if (noResultsDiv) {
+        noResultsDiv.remove();
+    }
+}
+
+function clearSearch() {
+    document.getElementById('activeVisitsSearch').value = '';
+    filterActiveVisits();
+}
+
+// Add keyboard shortcuts
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('activeVisitsSearch');
+    
+    // Focus search on Ctrl+F or Cmd+F
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault();
+            searchInput.focus();
+        }
+        
+        // Escape to clear search
+        if (e.key === 'Escape' && document.activeElement === searchInput) {
+            clearSearch();
+        }
+    });
+
+    // Auto-focus search on page load
+    searchInput.focus();
+});
+</script>
 @endsection 
