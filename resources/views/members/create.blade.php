@@ -80,7 +80,7 @@
               <div class="col-md-6 mb-3">
                 <label for="birth_date" class="form-label">Birth Date</label>
                 <input type="date" class="form-control @error('birth_date') is-invalid @enderror" 
-                       id="birth_date" name="birth_date" value="{{ old('birth_date') }}" required>
+                       id="birth_date" name="birth_date" value="{{ old('birth_date') }}">
                 @error('birth_date')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

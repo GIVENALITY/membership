@@ -62,7 +62,7 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Birth Date</label>
-              <input type="date" name="birth_date" class="form-control @error('birth_date') is-invalid @enderror" value="{{ old('birth_date', $member->birth_date) }}">
+              <input type="date" name="birth_date" class="form-control @error('birth_date') is-invalid @enderror" value="{{ old('birth_date', $member->birth_date ? $member->birth_date->format('Y-m-d') : '') }}">
               @error('birth_date')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror

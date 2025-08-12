@@ -92,7 +92,7 @@ class MemberController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request->address,
-                'birth_date' => $request->birth_date,
+                'birth_date' => empty($request->birth_date) ? null : $request->birth_date,
                 'join_date' => now()->toDateString(),
                 'membership_type_id' => $request->membership_type_id,
                 'status' => $request->status,
@@ -266,7 +266,15 @@ class MemberController extends Controller
                 return back()->withErrors(['membership_type_id' => 'Invalid membership type selected.']);
             }
 
-            $member->update($request->all());
+            // Prepare the data for update
+            $updateData = $request->all();
+            
+            // Handle birth_date - convert empty string to null
+            if (empty($updateData['birth_date'])) {
+                $updateData['birth_date'] = null;
+            }
+
+            $member->update($updateData);
             return redirect()->route('members.index')
                 ->with('success', 'Member updated successfully!');
 
