@@ -14,59 +14,56 @@ class LanguageController extends Controller
      */
     public function switchLanguage($locale)
     {
-        // Log the request for debugging
-        Log::info('Language switch requested', [
-            'locale' => $locale,
-            'current_locale' => App::getLocale(),
-            'session_locale' => Session::get('locale'),
-            'cookie_locale' => request()->cookie('locale'),
-            'user_agent' => request()->userAgent(),
-            'session_id' => Session::getId()
-        ]);
+        try {
+            // Log the request for debugging
+            Log::info('Language switch requested', [
+                'locale' => $locale,
+                'current_locale' => App::getLocale(),
+                'user_agent' => request()->userAgent()
+            ]);
 
-        // Validate the locale
-        $availableLocales = ['en', 'sw'];
-        
-        if (!in_array($locale, $availableLocales)) {
-            Log::warning('Invalid locale requested', ['locale' => $locale]);
-            $locale = 'en'; // Default to English if invalid
+            // Validate the locale
+            $availableLocales = ['en', 'sw'];
+            
+            if (!in_array($locale, $availableLocales)) {
+                Log::warning('Invalid locale requested', ['locale' => $locale]);
+                $locale = 'en'; // Default to English if invalid
+            }
+
+            // Try to set the locale in the session (with error handling)
+            try {
+                Session::put('locale', $locale);
+                Log::info('Session locale set successfully', ['locale' => $locale]);
+            } catch (\Exception $e) {
+                Log::warning('Failed to set session locale', ['error' => $e->getMessage()]);
+            }
+            
+            // Set it in a cookie as primary method (more reliable)
+            cookie()->queue('locale', $locale, 60 * 24 * 365); // 1 year
+            
+            // Set the application locale
+            App::setLocale($locale);
+            app()->setLocale($locale);
+            request()->setLocale($locale);
+
+            Log::info('Language switched successfully', [
+                'new_locale' => $locale,
+                'app_locale' => App::getLocale(),
+                'cookie_locale' => request()->cookie('locale')
+            ]);
+
+            // Redirect back to the previous page
+            return redirect()->back()->with('success', 'Language switched to ' . ($locale === 'en' ? 'English' : 'Swahili'));
+            
+        } catch (\Exception $e) {
+            Log::error('Language switch failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Fallback redirect
+            return redirect()->back()->with('error', 'Language switch failed. Please try again.');
         }
-
-        // Set the locale in the session
-        Session::put('locale', $locale);
-        
-        // Also set it in a cookie as fallback (Laravel 11 session persistence issue)
-        cookie()->queue('locale', $locale, 60 * 24 * 365); // 1 year
-        
-        // For Laravel 11, set the locale in multiple places to ensure it persists
-        // Set the application locale
-        App::setLocale($locale);
-        
-        // Set the locale in the request (Laravel 11 specific)
-        request()->setLocale($locale);
-        
-        // Set the locale in the application instance
-        app()->setLocale($locale);
-        
-        // Set the locale in the container
-        $this->app->setLocale($locale);
-        
-        // Also set it in the config for this request
-        config(['app.locale' => $locale]);
-
-        Log::info('Language switched successfully', [
-            'new_locale' => $locale,
-            'session_locale' => Session::get('locale'),
-            'cookie_locale' => request()->cookie('locale'),
-            'app_locale' => App::getLocale(),
-            'request_locale' => request()->getLocale(),
-            'app_instance_locale' => app()->getLocale(),
-            'config_locale' => config('app.locale'),
-            'session_id' => Session::getId()
-        ]);
-
-        // Redirect back to the previous page
-        return redirect()->back()->with('success', 'Language switched to ' . ($locale === 'en' ? 'English' : 'Swahili'));
     }
 
     /**
