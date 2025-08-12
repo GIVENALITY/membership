@@ -28,8 +28,18 @@ class SetLocale
             $locale = 'en';
         }
         
+        // For Laravel 11, we need to set the locale in multiple places
         // Set the application locale
         App::setLocale($locale);
+        
+        // Set the locale in the application instance
+        app()->setLocale($locale);
+        
+        // Set the locale in the request (Laravel 11 specific)
+        $request->setLocale($locale);
+        
+        // Also set it in the container
+        $this->app->setLocale($locale);
         
         // Log for debugging (only on first few requests to avoid spam)
         if ($request->is('dashboard') || $request->is('members*')) {
@@ -38,7 +48,10 @@ class SetLocale
                 'session_locale' => Session::get('locale'),
                 'config_locale' => config('app.locale'),
                 'final_locale' => $locale,
-                'app_locale' => App::getLocale()
+                'app_locale' => App::getLocale(),
+                'request_locale' => $request->getLocale(),
+                'app_instance_locale' => app()->getLocale(),
+                'container_locale' => $this->app->getLocale()
             ]);
         }
         
