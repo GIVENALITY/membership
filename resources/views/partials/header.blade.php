@@ -1,6 +1,6 @@
 <!doctype html>
 <html
-  lang="en"
+  lang="{{ app()->getLocale() }}"
   class="layout-menu-fixed layout-compact"
   data-assets-path="{{ asset('assets/') }}"
   data-template="vertical-menu-template-free">

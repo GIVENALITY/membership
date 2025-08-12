@@ -1,61 +1,50 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\DiningHistoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\DiningVisitController;
+use App\Http\Controllers\DiningHistoryController;
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LanguageController;
 
-// Authentication Routes
-Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('login');
-    });
-    
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
-    
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+// Language switching routes
+Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
+
+Route::get('/', function () {
+    return redirect('/login');
 });
 
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
 
-// Protected Routes
+    Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+
+    Route::get('/register', function () {
+        return view('auth.register');
+    })->name('register');
+
+    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+});
+
 Route::middleware('auth')->group(function () {
+    Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/users', function () {
-        return view('users.index');
-    })->name('users.index');
-
+    // Application Settings Routes
     Route::get('/settings', function () {
         return view('settings.index');
     })->name('settings.index');
 
-    Route::get('/settings/profile', function () {
-        return view('settings.profile');
-    })->name('settings.profile');
-
-    Route::get('/settings/account', function () {
-        return view('settings.account');
-    })->name('settings.account');
-
-    // Application Settings Routes
     Route::get('/settings/points', function () {
-        $user = auth()->user();
-        $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-        return view('settings.points', compact('membershipTypes'));
+        return view('settings.points');
     })->name('settings.points');
 
     Route::get('/settings/email', function () {

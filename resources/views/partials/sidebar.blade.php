@@ -87,7 +87,7 @@
     <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
       <a href="{{ route('dashboard') }}" class="menu-link">
         <i class="menu-icon icon-base ri ri-home-smile-line"></i>
-        <div data-i18n="Dashboard">Dashboard</div>
+        <div data-i18n="{{ __('app.dashboard') }}">{{ __('app.dashboard') }}</div>
       </a>
     </li>
 
@@ -95,7 +95,7 @@
     <li class="menu-item {{ request()->routeIs('onboarding.*') ? 'active' : '' }}">
       <a href="{{ route('onboarding.index') }}" class="menu-link">
         <i class="menu-icon icon-base ri ri-rocket-line"></i>
-        <div data-i18n="Onboarding Guide">Onboarding Guide</div>
+        <div data-i18n="{{ __('app.onboarding') }}">{{ __('app.onboarding') }}</div>
       </a>
     </li>
 
@@ -103,27 +103,27 @@
     <li class="menu-item {{ request()->routeIs('members.*') || request()->routeIs('membership-types.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-user-star-line"></i>
-        <div data-i18n="Members Management">Members Management</div>
+        <div data-i18n="{{ __('app.members') }}">{{ __('app.members') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item {{ request()->routeIs('members.index') ? 'active' : '' }}">
           <a href="{{ route('members.index') }}" class="menu-link">
-            <div data-i18n="All Members">All Members</div>
+            <div data-i18n="{{ __('app.members_list') }}">{{ __('app.members_list') }}</div>
           </a>
         </li>
         <li class="menu-item {{ request()->routeIs('members.search') || request()->routeIs('members.search-page') ? 'active' : '' }}">
           <a href="{{ route('members.search-page') }}" class="menu-link">
-            <div data-i18n="Search Members">Search Members</div>
+            <div data-i18n="{{ __('app.search') }}">{{ __('app.search') }}</div>
           </a>
         </li>
         <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
           <a href="{{ route('members.create') }}" class="menu-link">
-            <div data-i18n="Add Member">Add Member</div>
+            <div data-i18n="{{ __('app.add_member') }}">{{ __('app.add_member') }}</div>
           </a>
         </li>
         <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
           <a href="{{ route('membership-types.index') }}" class="menu-link">
-            <div data-i18n="Membership Types">Membership Types</div>
+            <div data-i18n="{{ __('app.membership_types') }}">{{ __('app.membership_types') }}</div>
           </a>
         </li>
       </ul>
@@ -138,57 +138,57 @@
       <ul class="menu-sub">
         <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
           <a href="{{ route('cashier.index') }}" class="menu-link">
-            <div data-i18n="Cashier">Cashier</div>
+            <div data-i18n="{{ __('app.cashier') }}">{{ __('app.cashier') }}</div>
           </a>
         </li>
         <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">
           <a href="{{ route('discounts.index') }}" class="menu-link">
-            <div data-i18n="Discounts">Discounts</div>
+            <div data-i18n="{{ __('app.discounts') }}">{{ __('app.discounts') }}</div>
           </a>
         </li>
       </ul>
     </li>
 
-            <!-- Dining Management -->
-        <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
-          <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon icon-base ri ri-restaurant-line"></i>
-            <div data-i18n="Dining Management">Dining Management</div>
+    <!-- Dining Management -->
+    <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base ri ri-restaurant-line"></i>
+        <div data-i18n="{{ __('app.dining_management') }}">{{ __('app.dining_management') }}</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('dining.index') ? 'active' : '' }}">
+          <a href="{{ route('dining.index') }}" class="menu-link">
+            <div data-i18n="{{ __('app.record_visit') }}">{{ __('app.record_visit') }}</div>
           </a>
-          <ul class="menu-sub">
-            <li class="menu-item {{ request()->routeIs('dining.index') ? 'active' : '' }}">
-              <a href="{{ route('dining.index') }}" class="menu-link">
-                <div data-i18n="Record Visits">Record Visits</div>
-              </a>
-            </li>
-            <li class="menu-item {{ request()->routeIs('dining.history*') ? 'active' : '' }}">
-              <a href="{{ route('dining.history') }}" class="menu-link">
-                <div data-i18n="Dining History">Dining History</div>
-              </a>
-            </li>
-          </ul>
         </li>
+        <li class="menu-item {{ request()->routeIs('dining.history*') ? 'active' : '' }}">
+          <a href="{{ route('dining.history') }}" class="menu-link">
+            <div data-i18n="{{ __('app.visit_history') }}">{{ __('app.visit_history') }}</div>
+          </a>
+        </li>
+      </ul>
+    </li>
 
     <!-- Reports -->
     <li class="menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-bar-chart-line"></i>
-        <div data-i18n="Reports">Reports</div>
+        <div data-i18n="{{ __('app.reports') }}">{{ __('app.reports') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('reports.members') }}" class="menu-link">
-            <div data-i18n="Member Reports">Member Reports</div>
+            <div data-i18n="{{ __('app.members_report') }}">{{ __('app.members_report') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.dining') }}" class="menu-link">
-            <div data-i18n="Dining Reports">Dining Reports</div>
+            <div data-i18n="{{ __('app.dining_report') }}">{{ __('app.dining_report') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.discounts') }}" class="menu-link">
-            <div data-i18n="Discount Reports">Discount Reports</div>
+            <div data-i18n="{{ __('app.discounts_report') }}">{{ __('app.discounts_report') }}</div>
           </a>
         </li>
       </ul>
@@ -198,7 +198,7 @@
     <li class="menu-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
       <a href="{{ route('notifications.index') }}" class="menu-link">
         <i class="menu-icon icon-base ri ri-mail-line"></i>
-        <div data-i18n="Notifications">Notifications</div>
+        <div data-i18n="{{ __('app.notifications') }}">{{ __('app.notifications') }}</div>
       </a>
     </li>
 
@@ -206,7 +206,7 @@
     <li class="menu-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-settings-4-line"></i>
-        <div data-i18n="Application Settings">Application Settings</div>
+        <div data-i18n="{{ __('app.application_settings') }}">{{ __('app.application_settings') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
@@ -236,17 +236,17 @@
     <li class="menu-item {{ request()->routeIs('hotel.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-building-line"></i>
-        <div data-i18n="Hotel Management">Hotel Management</div>
+        <div data-i18n="{{ __('app.hotel') }}">{{ __('app.hotel') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('hotel.profile') }}" class="menu-link">
-            <div data-i18n="Hotel Profile">Hotel Profile</div>
+            <div data-i18n="{{ __('app.hotel_profile') }}">{{ __('app.hotel_profile') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('hotel.account') }}" class="menu-link">
-            <div data-i18n="Account Settings">Account Settings</div>
+            <div data-i18n="{{ __('app.settings') }}">{{ __('app.settings') }}</div>
           </a>
         </li>
       </ul>
@@ -256,43 +256,43 @@
     <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-user-line"></i>
-        <div data-i18n="My Profile">My Profile</div>
+        <div data-i18n="{{ __('app.profile') }}">{{ __('app.profile') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('users.profile') }}" class="menu-link">
-            <div data-i18n="Profile">Profile</div>
+            <div data-i18n="{{ __('app.profile') }}">{{ __('app.profile') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('users.change-password') }}" class="menu-link">
-            <div data-i18n="Change Password">Change Password</div>
+            <div data-i18n="{{ __('app.change_password') }}">{{ __('app.change_password') }}</div>
           </a>
         </li>
       </ul>
     </li>
 
-                <!-- User Management (Admin/Manager Only) -->
-                @if(Auth::user()->canManageUsers())
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon icon-base ri ri-team-line"></i>
-                        <div data-i18n="User Management">User Management</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('user-management.index') }}" class="menu-link">
-                                <div data-i18n="All Users">All Users</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('user-management.create') }}" class="menu-link">
-                                <div data-i18n="Add User">Add User</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                @endif
+    <!-- User Management (Admin/Manager Only) -->
+    @if(Auth::user()->canManageUsers())
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon icon-base ri ri-team-line"></i>
+            <div data-i18n="{{ __('app.user_management') }}">{{ __('app.user_management') }}</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item">
+                <a href="{{ route('user-management.index') }}" class="menu-link">
+                    <div data-i18n="{{ __('app.users') }}">{{ __('app.users') }}</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('user-management.create') }}" class="menu-link">
+                    <div data-i18n="{{ __('app.add_user') }}">{{ __('app.add_user') }}</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+    @endif
 
     @stack('sidebar-menu')
   </ul>

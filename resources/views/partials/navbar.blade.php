@@ -16,13 +16,51 @@
         <input
           type="text"
           class="form-control border-0 shadow-none"
-          placeholder="Search..."
-          aria-label="Search..." />
+          placeholder="{{ __('app.search') }}..."
+          aria-label="{{ __('app.search') }}..." />
       </div>
     </div>
     <!-- /Search -->
 
     <ul class="navbar-nav flex-row align-items-center ms-md-auto">
+      <!-- Language Switcher -->
+      <li class="nav-item navbar-dropdown dropdown me-3 me-xl-1">
+        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+          <i class="icon-base ri ri-translate-2 icon-lg"></i>
+          <span class="badge bg-primary rounded-pill badge-center h-px-20 w-px-20">{{ strtoupper(app()->getLocale()) }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end py-0">
+          <li class="dropdown-menu-header border-bottom">
+            <div class="dropdown-header d-flex align-items-center py-3">
+              <h6 class="mb-0 me-auto text-heading">{{ __('app.language') }}</h6>
+            </div>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('language.switch', 'en') }}">
+              <div class="d-flex align-items-center">
+                <i class="icon-base ri ri-flag-line me-2"></i>
+                <span>{{ __('app.english') }}</span>
+                @if(app()->getLocale() == 'en')
+                  <i class="icon-base ri ri-check-line ms-auto text-primary"></i>
+                @endif
+              </div>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('language.switch', 'sw') }}">
+              <div class="d-flex align-items-center">
+                <i class="icon-base ri ri-flag-line me-2"></i>
+                <span>{{ __('app.swahili') }}</span>
+                @if(app()->getLocale() == 'sw')
+                  <i class="icon-base ri ri-check-line ms-auto text-primary"></i>
+                @endif
+              </div>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- /Language Switcher -->
+
       <!-- Notifications -->
       <li class="nav-item navbar-dropdown dropdown-notifications dropdown me-3 me-xl-1">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -32,7 +70,7 @@
         <ul class="dropdown-menu dropdown-menu-end py-0">
           <li class="dropdown-menu-header border-bottom">
             <div class="dropdown-header d-flex align-items-center py-3">
-              <h6 class="mb-0 me-auto text-heading">Notifications</h6>
+              <h6 class="mb-0 me-auto text-heading">{{ __('app.notifications') }}</h6>
               <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read">
                 <i class="ri ri-mail-open-line fs-4"></i>
               </a>
@@ -98,19 +136,19 @@
           <li>
             <a class="dropdown-item" href="{{ route('users.profile') }}">
               <i class="icon-base ri ri-user-line icon-md me-3"></i>
-              <span>My Profile</span>
+              <span>{{ __('app.profile') }}</span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="{{ route('users.change-password') }}">
               <i class="icon-base ri ri-lock-line icon-md me-3"></i>
-              <span>Change Password</span>
+              <span>{{ __('app.change_password') }}</span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="{{ route('hotel.account') }}">
               <i class="icon-base ri ri-settings-4-line icon-md me-3"></i>
-              <span>Account Settings</span>
+              <span>{{ __('app.settings') }}</span>
             </a>
           </li>
           <li>
@@ -121,7 +159,7 @@
               <form method="POST" action="{{ route('logout') }}" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-danger d-flex w-100">
-                  <small class="align-middle">Logout</small>
+                  <small class="align-middle">{{ __('app.logout') }}</small>
                   <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
                 </button>
               </form>
