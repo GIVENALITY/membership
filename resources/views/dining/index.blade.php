@@ -381,7 +381,12 @@ function checkInMember() {
         },
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             alert('Member checked in successfully!');
@@ -390,12 +395,12 @@ function checkInMember() {
             selectedMember = null;
             loadCurrentVisits();
         } else {
-            alert('Error: ' + data.message);
+            alert('Error: ' + (data.message || 'Unknown error occurred'));
         }
     })
     .catch(error => {
         console.error('Error checking in member:', error);
-        alert('Error checking in member');
+        alert('Error checking in member: ' + error.message);
     });
 }
 

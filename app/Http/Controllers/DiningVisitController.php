@@ -211,40 +211,70 @@ class DiningVisitController extends Controller
      */
     public function recordVisit(Request $request)
     {
-        $user = auth()->user();
-        if (!$user || !$user->hotel_id) {
-            return back()->withErrors(['error' => 'User not associated with a hotel.']);
-        }
-
-        $request->validate([
-            'member_id' => 'required|exists:members,id',
-            'number_of_people' => 'required|integer|min:1|max:50',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
-        // Verify member belongs to this hotel
-        $member = Member::where('id', $request->member_id)
-            ->where('hotel_id', $user->hotel_id)
-            ->first();
-
-        if (!$member) {
-            return back()->withErrors(['member_id' => 'Invalid member selected.']);
-        }
-
         try {
-            $visit = DiningVisit::create([
+            $user = auth()->user();
+            if (!$user || !$user->hotel_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not associated with a hotel.'
+                ], 400);
+            }
+
+            $validator = \Validator::make($request->all(), [
+                'member_id' => 'required|exists:members,id',
+                'number_of_people' => 'required|integer|min:1|max:50',
+                'notes' => 'nullable|string|max:500',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Verify member belongs to this hotel
+            $member = Member::where('id', $request->member_id)
+                ->where('hotel_id', $user->hotel_id)
+                ->first();
+
+            if (!$member) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid member selected.'
+                ], 400);
+            }
+
+            // Create the dining visit
+            $visitData = [
                 'hotel_id' => $user->hotel_id,
                 'member_id' => $request->member_id,
                 'number_of_people' => $request->number_of_people,
                 'notes' => $request->notes,
                 'is_checked_out' => false,
                 'recorded_by' => $user->id,
+            ];
+
+            $visit = DiningVisit::create($visitData);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Visit recorded for {$member->full_name} ({$request->number_of_people} people). Ready for checkout when they finish dining.",
+                'visit_id' => $visit->id
             ]);
 
-            return back()->with('success', "Visit recorded for {$member->full_name} ({$request->number_of_people} people). Ready for checkout when they finish dining.");
-
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to record visit: ' . $e->getMessage()]);
+            \Log::error('Error recording visit: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to record visit: ' . $e->getMessage()
+            ], 500);
         }
     }
 
