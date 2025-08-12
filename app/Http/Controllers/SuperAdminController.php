@@ -12,10 +12,25 @@ use App\Models\Hotel;
 class SuperAdminController extends Controller
 {
     /**
+     * Constructor - ensure only superadmin can access
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (!auth()->user() || auth()->user()->role !== 'superadmin') {
+                abort(403, 'Access denied. Superadmin privileges required.');
+            }
+            return $next($request);
+        });
+    }
+
+    /**
      * Show superadmin dashboard
      */
     public function dashboard()
     {
+        $user = auth()->user();
         $stats = [
             'total_hotels' => Hotel::count(),
             'total_users' => User::count(),
@@ -23,7 +38,7 @@ class SuperAdminController extends Controller
             'active_users' => User::where('is_active', true)->count(),
         ];
 
-        return view('superadmin.dashboard', compact('stats'));
+        return view('superadmin.dashboard', compact('stats', 'user'));
     }
 
     /**
