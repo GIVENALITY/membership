@@ -12,19 +12,15 @@ use App\Models\Hotel;
 class SuperAdminController extends Controller
 {
     /**
-     * Constructor - ensure only superadmin can access
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Check if user is superadmin
      */
     private function checkSuperAdmin()
     {
-        if (!auth()->user() || auth()->user()->role !== 'superadmin') {
+        if (!auth()->check()) {
+            abort(401, 'Authentication required.');
+        }
+        
+        if (auth()->user()->role !== 'superadmin') {
             abort(403, 'Access denied. Superadmin privileges required.');
         }
     }

@@ -279,15 +279,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/user-management/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('user-management.toggle-status');
 
     // Superadmin Routes (only for superadmin users)
-    Route::middleware('auth')->group(function () {
-        Route::prefix('superadmin')->name('superadmin.')->group(function () {
-            Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
-            Route::get('/translations', [SuperAdminController::class, 'translations'])->name('translations');
-            Route::post('/translations/update', [SuperAdminController::class, 'updateTranslations'])->name('translations.update');
-            Route::get('/system-settings', [SuperAdminController::class, 'systemSettings'])->name('system-settings');
-            Route::get('/hotels', [SuperAdminController::class, 'hotels'])->name('hotels');
-            Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
-            Route::get('/logs', [SuperAdminController::class, 'logs'])->name('logs');
-        });
+    Route::prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/translations', [SuperAdminController::class, 'translations'])->name('translations');
+        Route::post('/translations/update', [SuperAdminController::class, 'updateTranslations'])->name('translations.update');
+        Route::get('/system-settings', [SuperAdminController::class, 'systemSettings'])->name('system-settings');
+        Route::get('/hotels', [SuperAdminController::class, 'hotels'])->name('hotels');
+        Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
+        Route::get('/logs', [SuperAdminController::class, 'logs'])->name('logs');
     });
 });
