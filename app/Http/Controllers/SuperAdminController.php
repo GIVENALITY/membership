@@ -17,12 +17,16 @@ class SuperAdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            if (!auth()->user() || auth()->user()->role !== 'superadmin') {
-                abort(403, 'Access denied. Superadmin privileges required.');
-            }
-            return $next($request);
-        });
+    }
+
+    /**
+     * Check if user is superadmin
+     */
+    private function checkSuperAdmin()
+    {
+        if (!auth()->user() || auth()->user()->role !== 'superadmin') {
+            abort(403, 'Access denied. Superadmin privileges required.');
+        }
     }
 
     /**
@@ -30,6 +34,8 @@ class SuperAdminController extends Controller
      */
     public function dashboard()
     {
+        $this->checkSuperAdmin();
+        
         $user = auth()->user();
         $stats = [
             'total_hotels' => Hotel::count(),
@@ -46,6 +52,8 @@ class SuperAdminController extends Controller
      */
     public function translations()
     {
+        $this->checkSuperAdmin();
+        
         $languages = ['en', 'sw'];
         $translationFiles = [];
         
@@ -68,6 +76,8 @@ class SuperAdminController extends Controller
      */
     public function updateTranslations(Request $request)
     {
+        $this->checkSuperAdmin();
+        
         $request->validate([
             'language' => 'required|in:en,sw',
             'file' => 'required|string',
@@ -117,6 +127,7 @@ class SuperAdminController extends Controller
      */
     public function systemSettings()
     {
+        $this->checkSuperAdmin();
         return view('superadmin.system-settings');
     }
 
@@ -125,6 +136,7 @@ class SuperAdminController extends Controller
      */
     public function hotels()
     {
+        $this->checkSuperAdmin();
         $hotels = Hotel::with('users')->paginate(20);
         return view('superadmin.hotels', compact('hotels'));
     }
@@ -134,6 +146,7 @@ class SuperAdminController extends Controller
      */
     public function users()
     {
+        $this->checkSuperAdmin();
         $users = User::with('hotel')->paginate(20);
         return view('superadmin.users', compact('users'));
     }
@@ -143,6 +156,7 @@ class SuperAdminController extends Controller
      */
     public function logs()
     {
+        $this->checkSuperAdmin();
         $logFile = storage_path('logs/laravel.log');
         $logs = [];
         
