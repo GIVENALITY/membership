@@ -1,3 +1,12 @@
+@php
+// Set the application locale directly in the view
+$locale = session('locale', request()->cookie('locale', config('app.locale')));
+if (in_array($locale, ['en', 'sw'])) {
+    app()->setLocale($locale);
+    App::setLocale($locale);
+}
+@endphp
+
 @include('partials.header')
 
 @include('partials.sidebar')

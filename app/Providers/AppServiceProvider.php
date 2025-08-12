@@ -21,14 +21,34 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Simple locale setting without middleware dependency
+        // Set locale from session on every request
         $this->app->booted(function () {
             try {
-                $locale = Session::get('locale', config('app.locale'));
+                // Get locale from session, fallback to cookie, then config
+                $locale = Session::get('locale');
+                
+                // If session is null, try cookie
+                if ($locale === null) {
+                    $locale = request()->cookie('locale');
+                }
+                
+                // Final fallback to config
+                if ($locale === null) {
+                    $locale = config('app.locale');
+                }
+                
                 $availableLocales = ['en', 'sw'];
                 
                 if (in_array($locale, $availableLocales)) {
                     App::setLocale($locale);
+                    app()->setLocale($locale);
+                    
+                    \Log::info('AppServiceProvider set locale', [
+                        'session_locale' => Session::get('locale'),
+                        'cookie_locale' => request()->cookie('locale'),
+                        'final_locale' => $locale,
+                        'app_locale' => App::getLocale()
+                    ]);
                 }
             } catch (\Exception $e) {
                 // Silently fail - don't break the application
