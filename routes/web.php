@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));
     })->name('members.points-history');
+    Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
     
     // Resource route comes LAST to avoid catching specific routes
     Route::resource('members', MemberController::class);
@@ -96,6 +98,7 @@ Route::middleware('auth')->group(function () {
     // Dining Routes
     Route::get('/dining', [DiningVisitController::class, 'index'])->name('dining.index');
     Route::get('/dining/search-members', [DiningVisitController::class, 'searchMembers'])->name('dining.search-members');
+    Route::get('/dining/current-visits', [DiningVisitController::class, 'currentVisits'])->name('dining.current-visits');
     Route::post('/dining/record-visit', [DiningVisitController::class, 'recordVisit'])->name('dining.record-visit');
     Route::post('/dining/process-payment', [DiningVisitController::class, 'processPayment'])->name('dining.process-payment');
     Route::put('/dining/{visit}/checkout', [DiningVisitController::class, 'checkout'])->name('dining.checkout');

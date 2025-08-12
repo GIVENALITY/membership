@@ -2,73 +2,42 @@
 
 @section('title', 'Dining Management - ' . (Auth::user()->hotel->name ?? 'Membership MS'))
 
-@push('page-css')
-<style>
-    .member-result {
-        transition: background-color 0.2s ease;
-    }
-    
-    .member-result:hover {
-        background-color: #f8f9fa;
-    }
-    
-    .alert-sm {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .badge-sm {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-    }
-    
-    .preference-alert {
-        border-left: 4px solid;
-        margin-bottom: 0.5rem;
-    }
-    
-    .preference-alert.allergies {
-        border-left-color: #dc3545;
-        background-color: #f8d7da;
-    }
-    
-    .preference-alert.dietary {
-        border-left-color: #0dcaf0;
-        background-color: #d1ecf1;
-    }
-    
-    .preference-alert.special {
-        border-left-color: #ffc107;
-        background-color: #fff3cd;
-    }
-    
-    .preference-alert.birthday {
-        border-left-color: #fd7e14;
-        background-color: #ffeaa7;
-    }
-    
-    .service-recommendation {
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        margin-bottom: 0.25rem;
-    }
-</style>
-@endpush
-
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Dining Management</h5>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recordVisitModal">
-                        <i class="icon-base ri ri-restaurant-line me-2"></i>
-                        Record New Visit
-                    </button>
+            <!-- Process Flow Guide -->
+            <div class="alert alert-info">
+                <h6><i class="icon-base ri ri-information-line me-2"></i>Dining Process Flow</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Step 1 - Check-in:</strong>
+                        <ol class="mb-0 small">
+                            <li>Search member by name/number</li>
+                            <li>Record number of guests</li>
+                            <li>Review member preferences</li>
+                            <li>Check-in member (visit stays open)</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Step 2 - Checkout:</strong>
+                        <ol class="mb-0 small">
+                            <li>Find member in "Current Visits"</li>
+                            <li>Enter bill amount</li>
+                            <li>System calculates discount</li>
+                            <li>Upload receipt & close visit</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check-in Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="icon-base ri ri-user-add-line me-2"></i>
+                        Step 1: Member Check-in
+                    </h4>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -78,532 +47,529 @@
                         </div>
                     @endif
 
-                    @if($errors->any())
+                    @if(session('error'))
                         <div class="alert alert-danger alert-dismissible" role="alert">
-                            <ul class="mb-0">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            {{ session('error') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
-                    <!-- Active Visits -->
+                    <!-- Member Search -->
                     <div class="mb-4">
-                        <h6 class="text-primary">
-                            <i class="icon-base ri ri-time-line me-2"></i>
-                            Active Visits ({{ $activeVisits->count() }})
-                        </h6>
-                        @if($activeVisits->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Member</th>
-                                            <th>People</th>
-                                            <th>Arrived</th>
-                                            <th>Duration</th>
-                                            <th>Notes</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($activeVisits as $visit)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="avatar avatar-sm me-3">
-                                                            <span class="avatar-initial rounded-circle bg-label-primary">
-                                                                {{ substr($visit->member->first_name, 0, 1) }}
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <h6 class="mb-0">{{ $visit->member->full_name }}</h6>
-                                                            <small class="text-muted">{{ $visit->member->membership_id }}</small>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-label-info">{{ $visit->number_of_people }} people</span>
-                                                </td>
-                                                <td>{{ $visit->created_at->format('H:i') }}</td>
-                                                <td>{{ $visit->created_at->diffForHumans() }}</td>
-                                                <td>
-                                                    @if($visit->notes)
-                                                        <small class="text-muted">{{ Str::limit($visit->notes, 30) }}</small>
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex gap-2">
-                                                        <button type="button" class="btn btn-sm btn-success" 
-                                                                data-bs-toggle="modal" data-bs-target="#checkoutModal{{ $visit->id }}">
-                                                            <i class="icon-base ri ri-bank-card-line"></i>
-                                                            Checkout
-                                                        </button>
-                                                        <form action="{{ route('dining.cancel', $visit) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger" 
-                                                                    onclick="return confirm('Cancel this visit?')">
-                                                                <i class="icon-base ri ri-close-line"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="icon-base ri ri-restaurant-line text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-2">No active visits</p>
-                            </div>
-                        @endif
+                        <label for="memberSearch" class="form-label">
+                            <i class="icon-base ri ri-search-line me-2"></i>
+                            Search Member (Name or Membership Number)
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="memberSearch" 
+                                   placeholder="Type member name or number (e.g., John Doe or MS001)">
+                            <button class="btn btn-outline-primary" type="button" onclick="searchMembers()">
+                                <i class="icon-base ri ri-search-line"></i>
+                                Search
+                            </button>
+                        </div>
+                        <small class="text-muted">Search by member name or membership ID to begin check-in process</small>
                     </div>
 
-                    <!-- Recent Completed Visits -->
-                    <div>
-                        <h6 class="text-success">
-                            <i class="icon-base ri ri-check-line me-2"></i>
-                            Recent Completed Visits
-                        </h6>
-                        @if($completedVisits->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Member</th>
-                                            <th>Amount</th>
-                                            <th>Discount</th>
-                                            <th>Final</th>
-                                            <th>Completed</th>
-                                            <th>Receipt</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($completedVisits as $visit)
-                                            <tr>
-                                                <td>
-                                                    <div>
-                                                        <h6 class="mb-0">{{ $visit->member->full_name }}</h6>
-                                                        <small class="text-muted">{{ $visit->member->membership_id }}</small>
-                                                    </div>
-                                                </td>
-                                                <td>TZS {{ number_format($visit->amount_spent) }}</td>
-                                                <td>
-                                                    <span class="text-success">-TZS {{ number_format($visit->discount_amount) }}</span>
-                                                    <small class="text-muted">({{ $visit->discount_percentage }}%)</small>
-                                                </td>
-                                                <td>
-                                                    <strong>TZS {{ number_format($visit->final_amount) }}</strong>
-                                                </td>
-                                                <td>{{ $visit->checked_out_at->format('M j, H:i') }}</td>
-                                                <td>
-                                                    @if($visit->receipt_path)
-                                                        <a href="{{ $visit->receipt_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            <i class="icon-base ri ri-file-text-line"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="icon-base ri ri-check-line text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-2">No completed visits yet</p>
-                            </div>
-                        @endif
+                    <!-- Search Results -->
+                    <div id="searchResults" class="mb-4" style="display: none;">
+                        <h6>Search Results:</h6>
+                        <div id="memberResults" class="list-group"></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Record Visit Modal -->
-<div class="modal fade" id="recordVisitModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Record New Visit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ route('dining.record-visit') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="member_search" class="form-label">Search Member *</label>
-                        <input type="text" class="form-control" id="member_search" 
-                               placeholder="Search by name, membership ID, phone, or email..." required>
-                        <input type="hidden" name="member_id" id="member_id" required>
-                        <div id="member_results" class="mt-2"></div>
-                        
-                        <!-- Member Details Display -->
-                        <div id="member_details" class="mt-3" style="display: none;">
-                            <div class="card border-primary">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0">
-                                        <i class="icon-base ri ri-user-heart-line me-2"></i>
-                                        Member Details
-                                    </h6>
+                    <!-- Check-in Form -->
+                    <div id="checkinForm" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">Member Information</h6>
+                                    </div>
+                                    <div class="card-body" id="memberInfo">
+                                        <!-- Member details will be populated here -->
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <div id="member_info"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">Check-in Details</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="checkinFormElement">
+                                            <div class="mb-3">
+                                                <label for="numberOfPeople" class="form-label">Number of Guests</label>
+                                                <input type="number" class="form-control" id="numberOfPeople" 
+                                                       name="number_of_people" min="1" max="20" value="1" required>
+                                                <small class="text-muted">Total number of people dining</small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="notes" class="form-label">Special Notes</label>
+                                                <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                                          placeholder="Any special requests or notes for the waiter..."></textarea>
+                                                <small class="text-muted">Communicate preferences to waiter</small>
+                                            </div>
+
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-success" onclick="checkInMember()">
+                                                    <i class="icon-base ri ri-check-line me-2"></i>
+                                                    Check-in Member
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="mb-3">
-                        <label for="number_of_people" class="form-label">Number of People *</label>
-                        <input type="number" class="form-control" id="number_of_people" name="number_of_people" 
-                               min="1" max="50" value="1" required>
+            <!-- Current Visits Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="icon-base ri ri-time-line me-2"></i>
+                        Current Active Visits
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Membership ID</th>
+                                    <th>Guests</th>
+                                    <th>Check-in Time</th>
+                                    <th>Notes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="currentVisitsTable">
+                                <!-- Current visits will be populated here -->
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="notes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                  placeholder="Any special requests or notes..."></textarea>
+                    <div id="noVisitsMessage" class="text-center py-4">
+                        <i class="icon-base ri ri-time-line icon-3x text-muted mb-3"></i>
+                        <h6>No Active Visits</h6>
+                        <p class="text-muted">Check in members to see them here</p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Record Visit</button>
+            </div>
+
+            <!-- Checkout Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="icon-base ri ri-bill-line me-2"></i>
+                        Step 2: Payment & Checkout
+                    </h4>
                 </div>
-            </form>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h6><i class="icon-base ri ri-information-line me-2"></i>Checkout Process</h6>
+                        <p class="mb-0">
+                            When member is ready to pay: Enter bill amount → System calculates discount → Upload receipt → Close visit
+                        </p>
+                    </div>
+
+                    <!-- Checkout Form -->
+                    <div id="checkoutForm" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0">Payment Details</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="checkoutFormElement">
+                                            <div class="mb-3">
+                                                <label for="billAmount" class="form-label">Total Bill Amount (TZS)</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">TZS</span>
+                                                    <input type="number" class="form-control" id="billAmount" 
+                                                           name="amount_spent" step="100" min="0" required>
+                                                </div>
+                                                <small class="text-muted">Enter the total bill amount before discount</small>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="receipt" class="form-label">Upload Receipt</label>
+                                                <input type="file" class="form-control" id="receipt" name="receipt" 
+                                                       accept="image/*,.pdf" required>
+                                                <small class="text-muted">Upload receipt image or PDF</small>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="checkoutNotes" class="form-label">Checkout Notes</label>
+                                                <textarea class="form-control" id="checkoutNotes" name="checkout_notes" 
+                                                          rows="2" placeholder="Any additional notes..."></textarea>
+                                            </div>
+
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-warning" onclick="processCheckout()">
+                                                    <i class="icon-base ri ri-bill-line me-2"></i>
+                                                    Process Payment & Checkout
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0">Discount Preview</h6>
+                                    </div>
+                                    <div class="card-body" id="discountPreview">
+                                        <div class="text-center text-muted">
+                                            <i class="icon-base ri ri-calculator-line icon-2x mb-2"></i>
+                                            <p>Enter bill amount to see discount calculation</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Checkout Modals -->
-@foreach($activeVisits as $visit)
-<div class="modal fade" id="checkoutModal{{ $visit->id }}" tabindex="-1">
-    <div class="modal-dialog">
+<!-- Member Details Modal -->
+<div class="modal fade" id="memberDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Checkout - {{ $visit->member->full_name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">Member Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('dining.checkout', $visit) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <strong>Member:</strong> {{ $visit->member->full_name }} ({{ $visit->member->membership_id }})<br>
-                        <strong>Discount Rate:</strong> {{ $visit->member->current_discount_rate }}%<br>
-                        <strong>Arrived:</strong> {{ $visit->created_at->format('M j, Y H:i') }}<br>
-                        <strong>Duration:</strong> {{ $visit->created_at->diffForHumans() }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="amount_spent{{ $visit->id }}" class="form-label">Amount Spent (TZS) *</label>
-                        <input type="number" class="form-control" id="amount_spent{{ $visit->id }}" 
-                               name="amount_spent" min="0" step="100" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="receipt{{ $visit->id }}" class="form-label">Upload Receipt</label>
-                        <input type="file" class="form-control" id="receipt{{ $visit->id }}" 
-                               name="receipt" accept="image/*">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="checkout_notes{{ $visit->id }}" class="form-label">Checkout Notes</label>
-                        <textarea class="form-control" id="checkout_notes{{ $visit->id }}" 
-                                  name="checkout_notes" rows="3" 
-                                  placeholder="Any notes about the visit..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Complete Checkout</button>
-                </div>
-            </form>
+            <div class="modal-body" id="memberDetailsContent">
+                <!-- Member details will be populated here -->
+            </div>
         </div>
     </div>
 </div>
-@endforeach
-@endsection
 
-@push('page-js')
 <script>
-// AJAX member search
-let searchTimeout;
-document.getElementById('member_search').addEventListener('input', function() {
-    clearTimeout(searchTimeout);
-    const query = this.value;
-    const resultsDiv = document.getElementById('member_results');
+let selectedMember = null;
+let currentVisits = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadCurrentVisits();
     
-    if (query.length < 2) {
-        resultsDiv.innerHTML = '';
-        return;
-    }
+    // Auto-search on input
+    const searchInput = document.getElementById('memberSearch');
+    searchInput.addEventListener('input', function() {
+        if (this.value.length >= 2) {
+            searchMembers();
+        }
+    });
     
-    searchTimeout = setTimeout(() => {
-        fetch(`{{ route('dining.search-members') }}?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                resultsDiv.innerHTML = '';
-                if (data.length > 0) {
-                    data.forEach(member => {
-                        const div = document.createElement('div');
-                        div.className = 'member-result p-2 border-bottom cursor-pointer';
-                        
-                        let memberInfo = `
-                            <strong>${member.first_name} ${member.last_name}</strong><br>
-                            <small class="text-muted">
-                                ${member.membership_id} | ${member.phone || 'No phone'} | ${member.current_discount_rate}% discount
-                            </small>
-                        `;
-                        
-                        // Add preference indicators
-                        let preferenceIndicators = [];
-                        if (member.allergies && member.allergies.trim()) {
-                            preferenceIndicators.push('<span class="badge bg-danger badge-sm">⚠️ Allergies</span>');
-                        }
-                        if (member.dietary_preferences && member.dietary_preferences.trim()) {
-                            preferenceIndicators.push('<span class="badge bg-info badge-sm">🍽️ Dietary</span>');
-                        }
-                        if (member.special_requests && member.special_requests.trim()) {
-                            preferenceIndicators.push('<span class="badge bg-warning badge-sm">🎯 Special</span>');
-                        }
-                        if (member.birth_date) {
-                            const birthDate = new Date(member.birth_date);
-                            const today = new Date();
-                            const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                            if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
-                                preferenceIndicators.push('<span class="badge bg-warning badge-sm">🎂 Birthday</span>');
-                            }
-                        }
-                        
-                        if (preferenceIndicators.length > 0) {
-                            memberInfo += `<br><small class="mt-1 d-block">${preferenceIndicators.join(' ')}</small>`;
-                        }
-                        
-                        div.innerHTML = memberInfo;
-                        div.onclick = () => selectMember(member);
-                        resultsDiv.appendChild(div);
-                    });
-                } else {
-                    resultsDiv.innerHTML = '<div class="text-muted p-2">No members found</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                resultsDiv.innerHTML = '<div class="text-danger p-2">Error searching members</div>';
-            });
-    }, 300);
+    // Calculate discount on bill amount change
+    const billAmountInput = document.getElementById('billAmount');
+    billAmountInput.addEventListener('input', function() {
+        calculateDiscount();
+    });
 });
 
-function selectMember(member) {
-    document.getElementById('member_search').value = `${member.first_name} ${member.last_name} (${member.membership_id})`;
-    document.getElementById('member_id').value = member.id;
-    document.getElementById('member_results').innerHTML = '';
-    
-    // Show member details
-    showMemberDetails(member);
+function searchMembers() {
+    const searchTerm = document.getElementById('memberSearch').value;
+    if (!searchTerm) return;
+
+    fetch(`{{ route('dining.search-members') }}?search=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById('memberResults');
+            const searchResultsDiv = document.getElementById('searchResults');
+            
+            if (data.members && data.members.length > 0) {
+                resultsDiv.innerHTML = data.members.map(member => `
+                    <div class="list-group-item list-group-item-action member-result" 
+                         onclick="selectMember(${member.id})" style="cursor: pointer;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">${member.name}</h6>
+                                <small class="text-muted">ID: ${member.membership_id} | Phone: ${member.phone || 'N/A'}</small>
+                                ${member.preferenceIndicators || ''}
+                            </div>
+                            <i class="icon-base ri ri-arrow-right-line"></i>
+                        </div>
+                    </div>
+                `).join('');
+                searchResultsDiv.style.display = 'block';
+            } else {
+                resultsDiv.innerHTML = '<div class="text-center text-muted py-3">No members found</div>';
+                searchResultsDiv.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error searching members:', error);
+        });
+}
+
+function selectMember(memberId) {
+    fetch(`/members/${memberId}/json`)
+        .then(response => response.json())
+        .then(member => {
+            selectedMember = member;
+            showMemberDetails(member);
+            document.getElementById('checkinForm').style.display = 'block';
+            document.getElementById('searchResults').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error fetching member details:', error);
+        });
 }
 
 function showMemberDetails(member) {
-    const detailsDiv = document.getElementById('member_details');
-    const infoDiv = document.getElementById('member_info');
-    
-    let detailsHtml = `
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="text-primary mb-2">Basic Information</h6>
-                <p><strong>Name:</strong> ${member.first_name} ${member.last_name}</p>
-                <p><strong>Membership ID:</strong> ${member.membership_id}</p>
-                <p><strong>Phone:</strong> ${member.phone || 'Not provided'}</p>
-                <p><strong>Email:</strong> ${member.email || 'Not provided'}</p>
-                <p><strong>Discount Rate:</strong> <span class="badge bg-success">${member.current_discount_rate}%</span></p>
-                <p><strong>Total Visits:</strong> ${member.total_visits || 0}</p>
-                <p><strong>Points Balance:</strong> <span class="badge bg-info">${member.current_points_balance || 0} pts</span></p>
-            </div>
-            <div class="col-md-6">
-                <h6 class="text-warning mb-2">Preferences & Important Notes</h6>
-    `;
-    
-    // Add allergies if present
-    if (member.allergies && member.allergies.trim()) {
-        detailsHtml += `
-            <div class="alert alert-danger alert-sm mb-2">
-                <i class="icon-base ri ri-error-warning-line me-1"></i>
-                <strong>⚠️ Allergies:</strong> ${member.allergies}
-            </div>
-        `;
-    }
-    
-    // Add dietary preferences if present
-    if (member.dietary_preferences && member.dietary_preferences.trim()) {
-        detailsHtml += `
-            <div class="alert alert-info alert-sm mb-2">
-                <i class="icon-base ri ri-restaurant-line me-1"></i>
-                <strong>🍽️ Dietary Preferences:</strong> ${member.dietary_preferences}
-            </div>
-        `;
-    }
-    
-    // Add special requests if present
-    if (member.special_requests && member.special_requests.trim()) {
-        detailsHtml += `
-            <div class="alert alert-warning alert-sm mb-2">
-                <i class="icon-base ri ri-star-line me-1"></i>
-                <strong>🎯 Special Requests:</strong> ${member.special_requests}
-            </div>
-        `;
-    }
-    
-    // Add additional notes if present
-    if (member.additional_notes && member.additional_notes.trim()) {
-        detailsHtml += `
-            <div class="alert alert-secondary alert-sm mb-2">
-                <i class="icon-base ri ri-file-text-line me-1"></i>
-                <strong>📝 Additional Notes:</strong> ${member.additional_notes}
-            </div>
-        `;
-    }
-    
-    // Add emergency contact if present
-    if (member.emergency_contact_name && member.emergency_contact_phone) {
-        detailsHtml += `
-            <div class="alert alert-primary alert-sm mb-2">
-                <i class="icon-base ri ri-phone-line me-1"></i>
-                <strong>🚨 Emergency Contact:</strong> ${member.emergency_contact_name} 
-                (${member.emergency_contact_relationship || 'Contact'}) - ${member.emergency_contact_phone}
-            </div>
-        `;
-    }
-    
-    // If no important notes, show a message
-    if (!member.allergies && !member.dietary_preferences && !member.special_requests && 
-        !member.additional_notes && !member.emergency_contact_name) {
-        detailsHtml += `
-            <div class="alert alert-light alert-sm mb-2">
-                <i class="icon-base ri ri-information-line me-1"></i>
-                No special requirements or notes recorded.
-            </div>
-        `;
-    }
-    
-    // Add birthday alert if applicable
-    if (member.birth_date) {
-        const birthDate = new Date(member.birth_date);
-        const today = new Date();
-        const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
-            detailsHtml += `
-                <div class="alert alert-warning alert-sm mb-2">
-                    <i class="icon-base ri ri-cake-line me-1"></i>
-                    <strong>🎂 Birthday Alert:</strong> ${member.first_name}'s birthday is in ${daysUntilBirthday} days!
-                </div>
-            `;
-        }
-    }
-    
-    detailsHtml += `
-            </div>
+    const memberInfo = document.getElementById('memberInfo');
+    memberInfo.innerHTML = `
+        <div class="mb-3">
+            <h6>${member.name}</h6>
+            <p class="text-muted mb-1">ID: ${member.membership_id}</p>
+            <p class="text-muted mb-1">Phone: ${member.phone || 'N/A'}</p>
+            <p class="text-muted mb-1">Email: ${member.email || 'N/A'}</p>
         </div>
         
-        <div class="row mt-3">
-            <div class="col-12">
-                <h6 class="text-success mb-2">Service Recommendations</h6>
-                <div class="row">
-    `;
-    
-    // Add service recommendations based on preferences
-    if (member.allergies && member.allergies.trim()) {
-        detailsHtml += `
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-1">
-                    <i class="icon-base ri ri-shield-check-line text-danger me-2"></i>
-                    <span>Ensure kitchen is aware of allergies</span>
-                </div>
-            </div>
-        `;
-    }
-    
-    if (member.dietary_preferences && member.dietary_preferences.trim()) {
-        detailsHtml += `
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-1">
-                    <i class="icon-base ri ri-restaurant-line text-info me-2"></i>
-                    <span>Offer dietary preference options</span>
-                </div>
-            </div>
-        `;
-    }
-    
-    if (member.special_requests && member.special_requests.trim()) {
-        detailsHtml += `
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-1">
-                    <i class="icon-base ri ri-star-line text-warning me-2"></i>
-                    <span>Accommodate special requests</span>
-                </div>
-            </div>
-        `;
-    }
-    
-    if (member.birth_date) {
-        const birthDate = new Date(member.birth_date);
-        const today = new Date();
-        const daysUntilBirthday = Math.ceil((birthDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        <div class="mb-3">
+            <h6>Membership Status</h6>
+            <p class="text-muted mb-1">Type: ${member.membership_type?.name || 'N/A'}</p>
+            <p class="text-muted mb-1">Points: ${member.current_points_balance || 0}</p>
+            <p class="text-muted mb-1">Total Visits: ${member.total_visits || 0}</p>
+        </div>
         
-        if (daysUntilBirthday >= 0 && daysUntilBirthday <= 7) {
-            detailsHtml += `
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-1">
-                        <i class="icon-base ri ri-gift-line text-warning me-2"></i>
-                        <span>Consider birthday special treatment</span>
-                    </div>
-                </div>
-            `;
-        }
-    }
-    
-    detailsHtml += `
-                </div>
-            </div>
+        <div class="mb-3">
+            <h6>Preferences & Important Notes</h6>
+            ${member.allergies ? `<div class="alert alert-sm alert-danger mb-2"><i class="icon-base ri ri-error-warning-line me-2"></i><strong>Allergies:</strong> ${member.allergies}</div>` : ''}
+            ${member.dietary_preferences ? `<div class="alert alert-sm alert-warning mb-2"><i class="icon-base ri ri-restaurant-line me-2"></i><strong>Dietary:</strong> ${member.dietary_preferences}</div>` : ''}
+            ${member.special_requests ? `<div class="alert alert-sm alert-info mb-2"><i class="icon-base ri ri-star-line me-2"></i><strong>Special:</strong> ${member.special_requests}</div>` : ''}
+            ${member.additional_notes ? `<div class="alert alert-sm alert-secondary mb-2"><i class="icon-base ri ri-file-text-line me-2"></i><strong>Notes:</strong> ${member.additional_notes}</div>` : ''}
+            ${member.emergency_contact ? `<div class="alert alert-sm alert-primary mb-2"><i class="icon-base ri ri-phone-line me-2"></i><strong>Emergency:</strong> ${member.emergency_contact}</div>` : ''}
+        </div>
+        
+        ${member.is_birthday_visit ? '<div class="alert alert-warning"><i class="icon-base ri ri-cake-line me-2"></i><strong>Birthday Alert:</strong> Special birthday discount available!</div>' : ''}
+        
+        <div class="service-recommendation">
+            <h6>Service Recommendations</h6>
+            <ul class="list-unstyled small">
+                ${member.allergies ? '<li><i class="icon-base ri ri-check-line text-success me-2"></i>Ensure kitchen is aware of allergies</li>' : ''}
+                ${member.dietary_preferences ? '<li><i class="icon-base ri ri-check-line text-success me-2"></i>Offer dietary preference options</li>' : ''}
+                ${member.special_requests ? '<li><i class="icon-base ri ri-check-line text-success me-2"></i>Accommodate special requests</li>' : ''}
+                ${member.is_birthday_visit ? '<li><i class="icon-base ri ri-check-line text-success me-2"></i>Consider birthday celebration options</li>' : ''}
+            </ul>
         </div>
     `;
-    
-    infoDiv.innerHTML = detailsHtml;
-    detailsDiv.style.display = 'block';
 }
 
-// Auto-calculate discount for checkout
-document.querySelectorAll('[id^="amount_spent"]').forEach(input => {
-    input.addEventListener('input', function() {
-        const visitId = this.id.replace('amount_spent', '');
-        const amount = parseFloat(this.value) || 0;
-        const discountRate = {{ $activeVisits->first() ? $activeVisits->first()->member->current_discount_rate : 0 }};
-        const discount = (amount * discountRate) / 100;
-        const final = amount - discount;
-        
-        // You can add a display for the calculated values if needed
-        console.log(`Amount: ${amount}, Discount: ${discount}, Final: ${final}`);
+function checkInMember() {
+    if (!selectedMember) return;
+
+    const formData = new FormData();
+    formData.append('member_id', selectedMember.id);
+    formData.append('number_of_people', document.getElementById('numberOfPeople').value);
+    formData.append('notes', document.getElementById('notes').value);
+
+    fetch('{{ route("dining.record-visit") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Member checked in successfully!');
+            document.getElementById('checkinForm').style.display = 'none';
+            document.getElementById('memberSearch').value = '';
+            selectedMember = null;
+            loadCurrentVisits();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error checking in member:', error);
+        alert('Error checking in member');
     });
-});
+}
+
+function loadCurrentVisits() {
+    fetch('{{ route("dining.current-visits") }}')
+        .then(response => response.json())
+        .then(data => {
+            currentVisits = data.visits || [];
+            updateCurrentVisitsTable();
+        })
+        .catch(error => {
+            console.error('Error loading current visits:', error);
+        });
+}
+
+function updateCurrentVisitsTable() {
+    const tableBody = document.getElementById('currentVisitsTable');
+    const noVisitsMessage = document.getElementById('noVisitsMessage');
+    
+    if (currentVisits.length === 0) {
+        tableBody.innerHTML = '';
+        noVisitsMessage.style.display = 'block';
+        return;
+    }
+    
+    noVisitsMessage.style.display = 'none';
+    tableBody.innerHTML = currentVisits.map(visit => `
+        <tr>
+            <td>${visit.member.name}</td>
+            <td>${visit.member.membership_id}</td>
+            <td>${visit.number_of_people}</td>
+            <td>${new Date(visit.created_at).toLocaleTimeString()}</td>
+            <td>${visit.notes || '-'}</td>
+            <td>
+                <button class="btn btn-sm btn-warning" onclick="startCheckout(${visit.id})">
+                    <i class="icon-base ri ri-bill-line me-1"></i>
+                    Checkout
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function startCheckout(visitId) {
+    const visit = currentVisits.find(v => v.id === visitId);
+    if (!visit) return;
+
+    selectedMember = visit.member;
+    document.getElementById('checkoutForm').style.display = 'block';
+    document.getElementById('billAmount').focus();
+    
+    // Scroll to checkout section
+    document.getElementById('checkoutForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function calculateDiscount() {
+    const billAmount = parseFloat(document.getElementById('billAmount').value) || 0;
+    if (billAmount <= 0) {
+        document.getElementById('discountPreview').innerHTML = `
+            <div class="text-center text-muted">
+                <i class="icon-base ri ri-calculator-line icon-2x mb-2"></i>
+                <p>Enter bill amount to see discount calculation</p>
+            </div>
+        `;
+        return;
+    }
+
+    // This would be calculated server-side, but showing preview
+    const discountRate = 10; // Example rate
+    const discountAmount = (billAmount * discountRate) / 100;
+    const finalAmount = billAmount - discountAmount;
+
+    document.getElementById('discountPreview').innerHTML = `
+        <div class="row text-center">
+            <div class="col-6">
+                <h6 class="text-muted">Bill Amount</h6>
+                <h4 class="text-primary">TZS ${billAmount.toLocaleString()}</h4>
+            </div>
+            <div class="col-6">
+                <h6 class="text-muted">Discount (${discountRate}%)</h6>
+                <h4 class="text-success">-TZS ${discountAmount.toLocaleString()}</h4>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <h6 class="text-muted">Final Amount</h6>
+            <h3 class="text-warning">TZS ${finalAmount.toLocaleString()}</h3>
+        </div>
+    `;
+}
+
+function processCheckout() {
+    if (!selectedMember) return;
+
+    const formData = new FormData();
+    formData.append('member_id', selectedMember.id);
+    formData.append('amount_spent', document.getElementById('billAmount').value);
+    formData.append('receipt', document.getElementById('receipt').files[0]);
+    formData.append('checkout_notes', document.getElementById('checkoutNotes').value);
+    formData.append('is_checked_out', 'true');
+
+    fetch('{{ route("dining.process-payment") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Payment processed successfully! Visit closed.');
+            document.getElementById('checkoutForm').style.display = 'none';
+            document.getElementById('checkoutFormElement').reset();
+            selectedMember = null;
+            loadCurrentVisits();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error processing checkout:', error);
+        alert('Error processing checkout');
+    });
+}
 </script>
 
 <style>
 .member-result:hover {
     background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
 }
-.cursor-pointer {
-    cursor: pointer;
+
+.alert-sm {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.badge-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.preference-alert {
+    border-left: 3px solid;
+    padding-left: 0.75rem;
+}
+
+.preference-alert.allergies {
+    border-left-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.preference-alert.dietary {
+    border-left-color: #ffc107;
+    background-color: #fff3cd;
+}
+
+.preference-alert.special {
+    border-left-color: #17a2b8;
+    background-color: #d1ecf1;
+}
+
+.preference-alert.birthday {
+    border-left-color: #fd7e14;
+    background-color: #ffeaa7;
+}
+
+.service-recommendation {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border-left: 3px solid #28a745;
 }
 </style>
-@endpush 
+
+@endsection 

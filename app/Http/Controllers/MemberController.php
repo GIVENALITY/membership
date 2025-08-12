@@ -159,17 +159,49 @@ class MemberController extends Controller
     }
 
     /**
-     * Display the specified member
+     * Display the specified member.
      */
     public function show(Member $member)
     {
-        $user = auth()->user();
-        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
-            return back()->withErrors(['error' => 'Access denied.']);
-        }
-
         $member->load(['diningVisits', 'presenceRecords']);
         return view('members.show', compact('member'));
+    }
+
+    /**
+     * Display the specified member as JSON.
+     */
+    public function showJson(Member $member)
+    {
+        $user = auth()->user();
+        
+        // Ensure the member belongs to the user's hotel
+        if ($member->hotel_id !== $user->hotel_id) {
+            return response()->json(['error' => 'Member not found'], 404);
+        }
+
+        $member->load('membershipType');
+        
+        return response()->json([
+            'id' => $member->id,
+            'name' => $member->first_name . ' ' . $member->last_name,
+            'membership_id' => $member->membership_id,
+            'phone' => $member->phone,
+            'email' => $member->email,
+            'allergies' => $member->allergies,
+            'dietary_preferences' => $member->dietary_preferences,
+            'special_requests' => $member->special_requests,
+            'additional_notes' => $member->additional_notes,
+            'emergency_contact' => $member->emergency_contact_name ? 
+                $member->emergency_contact_name . ' (' . $member->emergency_contact_relationship . ') - ' . $member->emergency_contact_phone : null,
+            'membership_type' => $member->membershipType ? [
+                'name' => $member->membershipType->name,
+                'discount_rate' => $member->membershipType->discount_rate
+            ] : null,
+            'current_points_balance' => $member->current_points_balance,
+            'total_visits' => $member->total_visits,
+            'is_birthday_visit' => $member->isBirthdayVisit(),
+            'qualifies_for_discount' => $member->qualifies_for_discount
+        ]);
     }
 
     /**
