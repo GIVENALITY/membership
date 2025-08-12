@@ -21,16 +21,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Temporarily disable locale setting to debug blank page issue
-        // Set the application locale from session on every request
-        // $this->app->booted(function () {
-        //     $locale = Session::get('locale', config('app.locale'));
-        //     $availableLocales = ['en', 'sw'];
-        //     
-        //     if (in_array($locale, $availableLocales)) {
-        //         App::setLocale($locale);
-        //         $this->app->setLocale($locale);
-        //     }
-        // });
+        // Simple locale setting without middleware dependency
+        $this->app->booted(function () {
+            try {
+                $locale = Session::get('locale', config('app.locale'));
+                $availableLocales = ['en', 'sw'];
+                
+                if (in_array($locale, $availableLocales)) {
+                    App::setLocale($locale);
+                }
+            } catch (\Exception $e) {
+                // Silently fail - don't break the application
+                \Log::warning('Locale setting failed in AppServiceProvider', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+        });
     }
 }

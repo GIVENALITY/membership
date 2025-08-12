@@ -6,7 +6,7 @@
       <div class="nav-item navbar-search-wrapper mb-0">
         <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
           <i class="icon-base ri ri-search-line icon-lg"></i>
-          <span class="d-none d-md-inline-block text-muted ms-2">{{ __('app.search') }}...</span>
+          <span class="d-none d-md-inline-block text-muted ms-2">Search...</span>
         </a>
       </div>
     </div>
@@ -19,6 +19,13 @@
       </li>
       <li class="nav-item me-3">
         <a href="{{ route('language.switch', 'sw') }}" class="btn btn-sm btn-outline-primary">SW</a>
+      </li>
+
+      <!-- Debug Info -->
+      <li class="nav-item me-3">
+        <small class="text-muted">
+          {{ session('locale', 'en') }} | {{ App::getLocale() }}
+        </small>
       </li>
 
       <!-- User -->
@@ -50,13 +57,13 @@
           <li>
             <a class="dropdown-item" href="{{ route('users.profile') }}">
               <i class="icon-base ri ri-user-line icon-md me-3"></i>
-              <span>{{ __('app.profile') }}</span>
+              <span>Profile</span>
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="{{ route('users.change-password') }}">
               <i class="icon-base ri ri-lock-line icon-md me-3"></i>
-              <span>{{ __('app.change_password') }}</span>
+              <span>Change Password</span>
             </a>
           </li>
           <li>
@@ -67,7 +74,7 @@
               @csrf
               <button type="submit" class="dropdown-item">
                 <i class="icon-base ri ri-logout-box-line icon-md me-3"></i>
-                <span>{{ __('app.logout') }}</span>
+                <span>Logout</span>
               </button>
             </form>
           </li>
