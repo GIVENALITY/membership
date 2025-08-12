@@ -12,21 +12,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Temporarily disable SetLocale middleware to debug blank page issue
+        // Temporarily disable all middleware to debug 500 error
         // $middleware->append(\App\Http\Middleware\SetLocale::class);
         
-        // Set locale early in the bootstrap process
-        $middleware->web(function ($request, $next) {
-            $locale = Session::get('locale', config('app.locale'));
-            $availableLocales = ['en', 'sw'];
-            
-            if (in_array($locale, $availableLocales)) {
-                app()->setLocale($locale);
-                $request->setLocale($locale);
-            }
-            
-            return $next($request);
-        });
+        // Temporarily disable web middleware locale setting
+        // $middleware->web(function ($request, $next) {
+        //     $locale = Session::get('locale', config('app.locale'));
+        //     $availableLocales = ['en', 'sw'];
+        //     
+        //     if (in_array($locale, $availableLocales)) {
+        //         app()->setLocale($locale);
+        //         $request->setLocale($locale);
+        //     }
+        //     
+        //     return $next($request);
+        // });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -12,6 +12,125 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 
+// Test route for debugging 500 error
+Route::get('/test-simple', function () {
+    return response()->json([
+        'status' => 'working',
+        'message' => 'Simple route works',
+        'timestamp' => now()
+    ]);
+});
+
+// Test route for debugging dashboard
+Route::get('/test-dashboard', function () {
+    try {
+        $user = auth()->user();
+        return response()->json([
+            'status' => 'auth_working',
+            'user' => $user ? $user->name : 'no_user',
+            'hotel' => $user && $user->hotel ? $user->hotel->name : 'no_hotel',
+            'role' => $user ? $user->role : 'no_role'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]);
+    }
+});
+
+// Simple dashboard route for debugging
+Route::get('/dashboard-simple', function () {
+    try {
+        $user = auth()->user();
+        if (!$user) {
+            return redirect('/login');
+        }
+        
+        return response()->make('
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Simple Dashboard</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+                    .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                    .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+                    .card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; background: #fafafa; }
+                    .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 5px; }
+                    .btn:hover { background: #0056b3; }
+                    .success { color: green; }
+                    .error { color: red; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Simple Dashboard (Debug Mode)</h1>
+                        <p class="success">✅ Basic authentication working</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>User Information</h2>
+                        <p><strong>Name:</strong> ' . ($user->name ?? 'Unknown') . '</p>
+                        <p><strong>Email:</strong> ' . ($user->email ?? 'Unknown') . '</p>
+                        <p><strong>Role:</strong> ' . ($user->role ?? 'Unknown') . '</p>
+                        <p><strong>Hotel:</strong> ' . ($user->hotel->name ?? 'No Hotel') . '</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Quick Navigation</h2>
+                        <a href="/members" class="btn">Members</a>
+                        <a href="/dining" class="btn">Dining</a>
+                        <a href="/cashier" class="btn">Cashier</a>
+                        <a href="/dashboard" class="btn">Full Dashboard</a>
+                        <a href="/test-simple" class="btn">Test Simple</a>
+                        <a href="/test-dashboard" class="btn">Test Auth</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Debug Information</h2>
+                        <p><strong>PHP Version:</strong> ' . PHP_VERSION . '</p>
+                        <p><strong>Laravel Version:</strong> ' . app()->version() . '</p>
+                        <p><strong>Current Time:</strong> ' . now() . '</p>
+                        <p><strong>Session ID:</strong> ' . session()->getId() . '</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        ');
+    } catch (\Exception $e) {
+        return response()->make('
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Error - Simple Dashboard</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+                    .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                    .error { color: red; background: #ffe6e6; padding: 15px; border-radius: 5px; border: 1px solid #ff9999; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Error in Simple Dashboard</h1>
+                    <div class="error">
+                        <h3>Error Details:</h3>
+                        <p><strong>Message:</strong> ' . $e->getMessage() . '</p>
+                        <p><strong>File:</strong> ' . $e->getFile() . '</p>
+                        <p><strong>Line:</strong> ' . $e->getLine() . '</p>
+                        <p><strong>Trace:</strong></p>
+                        <pre>' . $e->getTraceAsString() . '</pre>
+                    </div>
+                </div>
+            </body>
+            </html>
+        ');
+    }
+});
+
 // Language switching routes - must be first to avoid wildcard conflicts
 Route::get('/switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 
