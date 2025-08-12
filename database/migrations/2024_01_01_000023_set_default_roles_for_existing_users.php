@@ -12,11 +12,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Set default role for existing users
-        DB::table('users')->update([
-            'role' => 'manager',
-            'is_active' => true
-        ]);
+        // Only update if the role column exists
+        if (Schema::hasColumn('users', 'role')) {
+            DB::table('users')->update([
+                'role' => 'manager'
+            ]);
+        }
+        
+        // Only update if the is_active column exists
+        if (Schema::hasColumn('users', 'is_active')) {
+            DB::table('users')->update([
+                'is_active' => true
+            ]);
+        }
     }
 
     /**
