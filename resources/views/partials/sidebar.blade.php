@@ -1,82 +1,40 @@
-<!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo">
     <a href="{{ route('dashboard') }}" class="app-brand-link">
-      <span class="app-brand-logo demo me-1">
-        @if(Auth::check() && Auth::user()->hotel && Auth::user()->hotel->logo_path)
-          <img src="{{ Auth::user()->hotel->logo_url }}" alt="{{ Auth::user()->hotel->name }}" 
-               style="width: 30px; height: 30px; object-fit: contain;">
-        @else
-          <span class="text-primary" style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }} !important;">
-            <svg width="30" height="24" viewBox="0 0 250 196" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M12.3002 1.25469L56.655 28.6432C59.0349 30.1128 60.4839 32.711 60.4839 35.5089V160.63C60.4839 163.468 58.9941 166.097 56.5603 167.553L12.2055 194.107C8.3836 196.395 3.43136 195.15 1.14435 191.327C0.395485 190.075 0 188.643 0 187.184V8.12039C0 3.66447 3.61061 0.0522461 8.06452 0.0522461C9.56056 0.0522461 11.0271 0.468577 12.3002 1.25469Z"
-                fill="currentColor" />
-              <path
-                opacity="0.077704"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M0 65.2656L60.4839 99.9629V133.979L0 65.2656Z"
-                fill="black" />
-              <path
-                opacity="0.077704"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M0 65.2656L60.4839 99.0795V119.859L0 65.2656Z"
-                fill="black" />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M237.71 1.22393L193.355 28.5207C190.97 29.9889 189.516 32.5905 189.516 35.3927V160.631C189.516 163.469 191.006 166.098 193.44 167.555L237.794 194.108C241.616 196.396 246.569 195.151 248.856 191.328C249.605 190.076 250 188.644 250 187.185V8.09597C250 3.64006 246.389 0.027832 241.935 0.027832C240.444 0.027832 238.981 0.441882 237.71 1.22393Z"
-                fill="currentColor" />
-              <path
-                opacity="0.077704"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M250 65.2656L189.516 99.8897V135.006L250 65.2656Z"
-                fill="black" />
-              <path
-                opacity="0.077704"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M250 65.2656L189.516 99.0497V120.886L250 65.2656Z"
-                fill="black" />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M12.2787 1.18923L125 70.3075V136.87L0 65.2465V8.06814C0 3.61223 3.61061 0 8.06452 0C9.552 0 11.0105 0.411583 12.2787 1.18923Z"
-                fill="currentColor" />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M12.2787 1.18923L125 70.3075V136.87L0 65.2465V8.06814C0 3.61223 3.61061 0 8.06452 0C9.552 0 11.0105 0.411583 12.2787 1.18923Z"
-                fill="white"
-                fill-opacity="0.15" />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M237.721 1.18923L125 70.3075V136.87L250 65.2465V8.06814C250 3.61223 246.389 0 241.935 0C240.448 0 238.99 0.411583 237.721 1.18923Z"
-                fill="currentColor" />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M237.721 1.18923L125 70.3075V136.87L250 65.2465V8.06814C250 3.61223 246.389 0 241.935 0C240.448 0 238.99 0.411583 237.721 1.18923Z"
-                fill="white"
-                fill-opacity="0.3" />
-            </svg>
-          </span>
-        @endif
+      <span class="app-brand-logo demo">
+        <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <defs>
+            <path d="M13.7918663,0.358365126 L3.39788168,7.44144159 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747186 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z" id="path-1"></path>
+            <path d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.7474144,6.10983573 13.1073746,4.65957225 10.6997674,3.63361125 C8.65485998,2.74983727 6.83482694,2.24581969 5.47320593,6.00457225 Z" id="path-3"></path>
+            <path d="M7.50063644,21.2294429 L12.3234468,23.3556932 C14.0758029,24.2297078 14.6359495,25.5394451 13.7326044,27.0960096 C12.7014291,28.8997156 10.7660073,29.5483889 8.94622138,28.9589449 C7.30276361,28.4321542 5.32503817,27.7013091 4.01469323,26.5180557 C2.77059474,25.3246174 2.91447364,23.6164152 4.37897705,22.0198339 C4.93446909,21.4566135 6.28710187,21.0632871 7.50063644,21.2294429 Z" id="path-4"></path>
+            <path d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17.0074193 24,17.0074193 C23.5672596,17.0074193 23.1461923,16.8596443 22.8,16.6 L18.3333333,12.1333333 C17.5652174,11.36125 16.4347826,11.36125 15.6666667,12.1333333 L11.2,16.6 C10.4347826,17.3586957 9.56521739,17.3586957 8.8,16.6 L4.33333333,12.1333333 C3.56521739,11.36125 2.43478261,11.36125 1.66666667,12.1333333 L1.4,12.4 C0.637681159,13.1524734 0.637681159,14.3475266 1.4,15.1 L6.4,21.7666667 C7.16231884,22.5191401 8.35747313,22.5191401 9.12,21.7666667 L13.6,17.3 C14.3623188,16.5475266 15.5574731,16.5475266 16.32,17.3 L20.8,21.7666667 C21.5623188,22.5191401 22.7574731,22.5191401 23.52,21.7666667 L28.52,15.1 C29.2823188,14.3475266 29.2823188,13.1524734 28.52,12.4 L28.26,12.1333333 C27.4918841,11.36125 26.3611159,11.36125 25.6,12.1333333 L20.6,7.13333333 Z" id="path-5"></path>
+          </defs>
+          <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Brand-Logo" transform="translate(27.000000, 27.000000)">
+              <g id="Icon" transform="translate(0.000000, 27.000000)">
+                <use fill="#696cff" xlink:href="#path-1"></use>
+                <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-1"></use>
+              </g>
+              <g id="Triangle" transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) ">
+                <use fill="#696cff" xlink:href="#path-3"></use>
+                <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
+              </g>
+              <g id="Rectangle" transform="translate(0.000000, 19.000000)">
+                <use fill="#696cff" xlink:href="#path-4"></use>
+                <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
+              </g>
+              <polygon id="Shape" opacity="0.077783" fill="#000000" points="3.26129167 27.8862917 14.8872917 4.00691667 26.4132917 27.8862917"></polygon>
+              <polygon id="Shape" opacity="0.077783" fill="#000000" points="0 19.52875 8.41666667 38.6875 16.8333333 19.52875"></polygon>
+              <polygon id="Shape" opacity="0.077783" fill="#000000" points="9.57552083 4.60625 17.9963542 23.5208333 26.4171875 4.60625"></polygon>
+            </g>
+          </g>
+        </svg>
       </span>
-      <span class="app-brand-text demo menu-text fw-semibold ms-2" 
-            style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }} !important;">
-        {{ Auth::user()->hotel->name ?? 'Membership MS' }}
-      </span>
+      <span class="app-brand-text demo menu-text fw-bold ms-2">Membership MS</span>
     </a>
 
-    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-      <i class="menu-toggle-icon d-xl-inline-block align-middle"></i>
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+      <i class="icon-base ri ri-close-line align-middle"></i>
     </a>
   </div>
 
@@ -84,147 +42,131 @@
 
   <ul class="menu-inner py-1">
     <!-- Dashboard -->
-    <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+    <li class="menu-item active">
       <a href="{{ route('dashboard') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-home-smile-line"></i>
-        <div data-i18n="{{ __('app.dashboard') }}">{{ __('app.dashboard') }}</div>
-      </a>
-    </li>
-
-    <!-- Onboarding Guide -->
-    <li class="menu-item {{ request()->routeIs('onboarding.*') ? 'active' : '' }}">
-      <a href="{{ route('onboarding.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-rocket-line"></i>
-        <div data-i18n="{{ __('app.onboarding') }}">{{ __('app.onboarding') }}</div>
+        <i class="icon-base ri ri-dashboard-line menu-icon"></i>
+        <div data-i18n="Dashboard">Dashboard</div>
       </a>
     </li>
 
     <!-- Members Management -->
-    <li class="menu-item {{ request()->routeIs('members.*') || request()->routeIs('membership-types.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-user-star-line"></i>
-        <div data-i18n="{{ __('app.members') }}">{{ __('app.members') }}</div>
+        <i class="icon-base ri ri-team-line menu-icon"></i>
+        <div data-i18n="Members Management">Members Management</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('members.index') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('members.index') }}" class="menu-link">
-            <div data-i18n="{{ __('app.members_list') }}">{{ __('app.members_list') }}</div>
+            <div data-i18n="All Members">All Members</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('members.search') || request()->routeIs('members.search-page') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('members.search-page') }}" class="menu-link">
-            <div data-i18n="{{ __('app.search') }}">{{ __('app.search') }}</div>
+            <div data-i18n="Search Members">Search Members</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('members.create') }}" class="menu-link">
-            <div data-i18n="{{ __('app.add_member') }}">{{ __('app.add_member') }}</div>
+            <div data-i18n="Add Member">Add Member</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('membership-types.index') }}" class="menu-link">
-            <div data-i18n="{{ __('app.membership_types') }}">{{ __('app.membership_types') }}</div>
+            <div data-i18n="Membership Types">Membership Types</div>
           </a>
         </li>
       </ul>
     </li>
 
     <!-- Transactions -->
-    <li class="menu-item {{ request()->routeIs('cashier.*') || request()->routeIs('discounts.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-bank-card-line"></i>
+        <i class="icon-base ri ri-exchange-line menu-icon"></i>
         <div data-i18n="Transactions">Transactions</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('cashier.*') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('cashier.index') }}" class="menu-link">
-            <div data-i18n="{{ __('app.cashier') }}">{{ __('app.cashier') }}</div>
+            <div data-i18n="Cashier">Cashier</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('discounts.*') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('discounts.index') }}" class="menu-link">
-            <div data-i18n="{{ __('app.discounts') }}">{{ __('app.discounts') }}</div>
+            <div data-i18n="Discounts">Discounts</div>
           </a>
         </li>
       </ul>
     </li>
 
     <!-- Dining Management -->
-    <li class="menu-item {{ request()->routeIs('dining.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-restaurant-line"></i>
-        <div data-i18n="{{ __('app.dining_management') }}">{{ __('app.dining_management') }}</div>
+        <i class="icon-base ri ri-restaurant-line menu-icon"></i>
+        <div data-i18n="Dining Management">Dining Management</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('dining.index') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('dining.index') }}" class="menu-link">
-            <div data-i18n="{{ __('app.record_visit') }}">{{ __('app.record_visit') }}</div>
+            <div data-i18n="Record Visits">Record Visits</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('dining.history*') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('dining.history') }}" class="menu-link">
-            <div data-i18n="{{ __('app.visit_history') }}">{{ __('app.visit_history') }}</div>
+            <div data-i18n="Dining History">Dining History</div>
           </a>
         </li>
       </ul>
     </li>
 
     <!-- Reports -->
-    <li class="menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-bar-chart-line"></i>
-        <div data-i18n="{{ __('app.reports') }}">{{ __('app.reports') }}</div>
+        <i class="icon-base ri ri-file-chart-line menu-icon"></i>
+        <div data-i18n="Reports">Reports</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('reports.members') }}" class="menu-link">
-            <div data-i18n="{{ __('app.members_report') }}">{{ __('app.members_report') }}</div>
+            <div data-i18n="Member Reports">Member Reports</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.dining') }}" class="menu-link">
-            <div data-i18n="{{ __('app.dining_report') }}">{{ __('app.dining_report') }}</div>
+            <div data-i18n="Dining Reports">Dining Reports</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.discounts') }}" class="menu-link">
-            <div data-i18n="{{ __('app.discounts_report') }}">{{ __('app.discounts_report') }}</div>
+            <div data-i18n="Discount Reports">Discount Reports</div>
           </a>
         </li>
       </ul>
     </li>
 
-    <!-- Notifications -->
-    <li class="menu-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-      <a href="{{ route('notifications.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri ri-mail-line"></i>
-        <div data-i18n="{{ __('app.notifications') }}">{{ __('app.notifications') }}</div>
-      </a>
-    </li>
-
     <!-- Application Settings -->
-    <li class="menu-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-settings-4-line"></i>
-        <div data-i18n="{{ __('app.application_settings') }}">{{ __('app.application_settings') }}</div>
+        <i class="icon-base ri ri-settings-3-line menu-icon"></i>
+        <div data-i18n="Application Settings">Application Settings</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('settings.index') }}" class="menu-link">
             <div data-i18n="General Settings">General Settings</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('settings.points') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('settings.points') }}" class="menu-link">
             <div data-i18n="Points System">Points System</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('settings.email') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('settings.email') }}" class="menu-link">
             <div data-i18n="Email Templates">Email Templates</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('settings.discounts') ? 'active' : '' }}">
+        <li class="menu-item">
           <a href="{{ route('settings.discounts') }}" class="menu-link">
             <div data-i18n="Discount Rules">Discount Rules</div>
           </a>
@@ -233,68 +175,53 @@
     </li>
 
     <!-- Hotel Management -->
-    <li class="menu-item {{ request()->routeIs('hotel.*') ? 'active' : '' }}">
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-building-line"></i>
-        <div data-i18n="{{ __('app.hotel') }}">{{ __('app.hotel') }}</div>
+        <i class="icon-base ri ri-building-line menu-icon"></i>
+        <div data-i18n="Hotel Management">Hotel Management</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('hotel.profile') }}" class="menu-link">
-            <div data-i18n="{{ __('app.hotel_profile') }}">{{ __('app.hotel_profile') }}</div>
+            <div data-i18n="Hotel Profile">Hotel Profile</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('hotel.account') }}" class="menu-link">
-            <div data-i18n="{{ __('app.settings') }}">{{ __('app.settings') }}</div>
+            <div data-i18n="Account Settings">Account Settings</div>
           </a>
         </li>
       </ul>
     </li>
 
-    <!-- User Profile -->
-    <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+    <!-- User Management (Manager Only) -->
+    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-user-line"></i>
-        <div data-i18n="{{ __('app.profile') }}">{{ __('app.profile') }}</div>
+        <i class="icon-base ri ri-user-settings-line menu-icon"></i>
+        <div data-i18n="User Management">User Management</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="{{ route('users.profile') }}" class="menu-link">
-            <div data-i18n="{{ __('app.profile') }}">{{ __('app.profile') }}</div>
+          <a href="{{ route('user-management.index') }}" class="menu-link">
+            <div data-i18n="All Users">All Users</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="{{ route('users.change-password') }}" class="menu-link">
-            <div data-i18n="{{ __('app.change_password') }}">{{ __('app.change_password') }}</div>
+          <a href="{{ route('user-management.create') }}" class="menu-link">
+            <div data-i18n="Add User">Add User</div>
           </a>
         </li>
       </ul>
     </li>
-
-    <!-- User Management (Admin/Manager Only) -->
-    @if(Auth::user()->canManageUsers())
-    <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon icon-base ri ri-team-line"></i>
-            <div data-i18n="{{ __('app.user_management') }}">{{ __('app.user_management') }}</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item">
-                <a href="{{ route('user-management.index') }}" class="menu-link">
-                    <div data-i18n="{{ __('app.users') }}">{{ __('app.users') }}</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('user-management.create') }}" class="menu-link">
-                    <div data-i18n="{{ __('app.add_user') }}">{{ __('app.add_user') }}</div>
-                </a>
-            </li>
-        </ul>
-    </li>
     @endif
 
-    @stack('sidebar-menu')
+    <!-- Onboarding -->
+    <li class="menu-item">
+      <a href="{{ route('onboarding.index') }}" class="menu-link">
+        <i class="icon-base ri ri-book-open-line menu-icon"></i>
+        <div data-i18n="Onboarding Guide">Onboarding Guide</div>
+      </a>
+    </li>
   </ul>
-</aside>
-<!-- / Menu --> 
+</aside> 

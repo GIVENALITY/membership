@@ -16,6 +16,16 @@ class DashboardController extends Controller
     public function index()
     {
         try {
+            // Simple test first
+            if (request()->has('test')) {
+                return response()->json([
+                    'status' => 'working',
+                    'user' => auth()->user()->name,
+                    'hotel' => auth()->user()->hotel->name ?? 'No Hotel',
+                    'role' => auth()->user()->role
+                ]);
+            }
+
             $user = auth()->user();
             $hotel = $user->hotel;
 
@@ -35,6 +45,13 @@ class DashboardController extends Controller
                     return $this->managerDashboard($user, $hotel, $stats);
             }
         } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Dashboard error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             // Fallback to a simple dashboard if there are any errors
             return $this->fallbackDashboard();
         }
@@ -56,7 +73,41 @@ class DashboardController extends Controller
             'active_visits' => 0,
         ];
 
-        return view('dashboard.manager', compact('user', 'hotel', 'stats'));
+        // Try to return the normal view first
+        try {
+            return view('dashboard.manager', compact('user', 'hotel', 'stats'));
+        } catch (\Exception $e) {
+            // If that fails, return a very simple HTML response
+            return response()->make('
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Dashboard - Fallback</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .card { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 5px; }
+                        .error { color: red; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Dashboard (Fallback Mode)</h1>
+                    <div class="card">
+                        <h2>Welcome, ' . ($user->name ?? 'User') . '!</h2>
+                        <p>Hotel: ' . ($hotel->name ?? 'No Hotel') . '</p>
+                        <p>Role: ' . ($user->role ?? 'Unknown') . '</p>
+                        <p class="error">This is a fallback dashboard due to an error.</p>
+                        <p>Error: ' . $e->getMessage() . '</p>
+                    </div>
+                    <div class="card">
+                        <h3>Quick Actions</h3>
+                        <a href="/members">View Members</a> | 
+                        <a href="/dining">Record Visit</a> | 
+                        <a href="/cashier">Cashier</a>
+                    </div>
+                </body>
+                </html>
+            ');
+        }
     }
 
     /**

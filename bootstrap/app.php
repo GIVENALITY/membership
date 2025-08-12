@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(\App\Http\Middleware\SetLocale::class);
+        // Temporarily disable SetLocale middleware to debug blank page issue
+        // $middleware->append(\App\Http\Middleware\SetLocale::class);
         
         // Set locale early in the bootstrap process
         $middleware->web(function ($request, $next) {
