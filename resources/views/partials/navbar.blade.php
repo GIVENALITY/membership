@@ -24,7 +24,7 @@
       <!-- Debug Info -->
       <li class="nav-item me-3">
         <small class="text-muted">
-          {{ session('locale', 'en') }} | {{ App::getLocale() }}
+          {{ session('locale', 'en') }} | {{ App::getLocale() }} | {{ __('app.welcome') }}
         </small>
       </li>
 

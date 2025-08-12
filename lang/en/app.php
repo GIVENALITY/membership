@@ -47,6 +47,15 @@ return [
     'user_management' => 'User Management',
     'application_settings' => 'Application Settings',
     'onboarding' => 'Onboarding',
+    'transactions' => 'Transactions',
+    'hotel' => 'Hotel',
+    'hotel_profile' => 'Hotel Profile',
+    'users' => 'Users',
+    'add_user' => 'Add User',
+    'general_settings' => 'General Settings',
+    'points_system' => 'Points System',
+    'email_templates' => 'Email Templates',
+    'discount_rules' => 'Discount Rules',
 
     // Members
     'member' => 'Member',

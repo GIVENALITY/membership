@@ -45,7 +45,7 @@
     <li class="menu-item active">
       <a href="{{ route('dashboard') }}" class="menu-link">
         <i class="icon-base ri ri-dashboard-line menu-icon"></i>
-        <div data-i18n="Dashboard">Dashboard</div>
+        <div>{{ __('app.dashboard') }}</div>
       </a>
     </li>
 
@@ -53,27 +53,27 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-team-line menu-icon"></i>
-        <div data-i18n="Members Management">Members Management</div>
+        <div>{{ __('app.members') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('members.index') }}" class="menu-link">
-            <div data-i18n="All Members">All Members</div>
+            <div>{{ __('app.members_list') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('members.search-page') }}" class="menu-link">
-            <div data-i18n="Search Members">Search Members</div>
+            <div>{{ __('app.search') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('members.create') }}" class="menu-link">
-            <div data-i18n="Add Member">Add Member</div>
+            <div>{{ __('app.add_member') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('membership-types.index') }}" class="menu-link">
-            <div data-i18n="Membership Types">Membership Types</div>
+            <div>{{ __('app.membership_types') }}</div>
           </a>
         </li>
       </ul>
@@ -83,17 +83,17 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-exchange-line menu-icon"></i>
-        <div data-i18n="Transactions">Transactions</div>
+        <div>{{ __('app.transactions') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('cashier.index') }}" class="menu-link">
-            <div data-i18n="Cashier">Cashier</div>
+            <div>{{ __('app.cashier') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('discounts.index') }}" class="menu-link">
-            <div data-i18n="Discounts">Discounts</div>
+            <div>{{ __('app.discounts') }}</div>
           </a>
         </li>
       </ul>
@@ -103,17 +103,17 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-restaurant-line menu-icon"></i>
-        <div data-i18n="Dining Management">Dining Management</div>
+        <div>{{ __('app.dining_management') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('dining.index') }}" class="menu-link">
-            <div data-i18n="Record Visits">Record Visits</div>
+            <div>{{ __('app.record_visit') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('dining.history') }}" class="menu-link">
-            <div data-i18n="Dining History">Dining History</div>
+            <div>{{ __('app.visit_history') }}</div>
           </a>
         </li>
       </ul>
@@ -123,22 +123,22 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-file-chart-line menu-icon"></i>
-        <div data-i18n="Reports">Reports</div>
+        <div>{{ __('app.reports') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('reports.members') }}" class="menu-link">
-            <div data-i18n="Member Reports">Member Reports</div>
+            <div>{{ __('app.members_report') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.dining') }}" class="menu-link">
-            <div data-i18n="Dining Reports">Dining Reports</div>
+            <div>{{ __('app.dining_report') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('reports.discounts') }}" class="menu-link">
-            <div data-i18n="Discount Reports">Discount Reports</div>
+            <div>{{ __('app.discounts_report') }}</div>
           </a>
         </li>
       </ul>
@@ -148,27 +148,27 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-settings-3-line menu-icon"></i>
-        <div data-i18n="Application Settings">Application Settings</div>
+        <div>{{ __('app.application_settings') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('settings.index') }}" class="menu-link">
-            <div data-i18n="General Settings">General Settings</div>
+            <div>{{ __('app.general_settings') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('settings.points') }}" class="menu-link">
-            <div data-i18n="Points System">Points System</div>
+            <div>{{ __('app.points_system') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('settings.email') }}" class="menu-link">
-            <div data-i18n="Email Templates">Email Templates</div>
+            <div>{{ __('app.email_templates') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('settings.discounts') }}" class="menu-link">
-            <div data-i18n="Discount Rules">Discount Rules</div>
+            <div>{{ __('app.discount_rules') }}</div>
           </a>
         </li>
       </ul>
@@ -178,17 +178,17 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-building-line menu-icon"></i>
-        <div data-i18n="Hotel Management">Hotel Management</div>
+        <div>{{ __('app.hotel') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('hotel.profile') }}" class="menu-link">
-            <div data-i18n="Hotel Profile">Hotel Profile</div>
+            <div>{{ __('app.hotel_profile') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('hotel.account') }}" class="menu-link">
-            <div data-i18n="Account Settings">Account Settings</div>
+            <div>{{ __('app.settings') }}</div>
           </a>
         </li>
       </ul>
@@ -199,17 +199,17 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="icon-base ri ri-user-settings-line menu-icon"></i>
-        <div data-i18n="User Management">User Management</div>
+        <div>{{ __('app.user_management') }}</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="{{ route('user-management.index') }}" class="menu-link">
-            <div data-i18n="All Users">All Users</div>
+            <div>{{ __('app.users') }}</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ route('user-management.create') }}" class="menu-link">
-            <div data-i18n="Add User">Add User</div>
+            <div>{{ __('app.add_user') }}</div>
           </a>
         </li>
       </ul>
@@ -220,7 +220,7 @@
     <li class="menu-item">
       <a href="{{ route('onboarding.index') }}" class="menu-link">
         <i class="icon-base ri ri-book-open-line menu-icon"></i>
-        <div data-i18n="Onboarding Guide">Onboarding Guide</div>
+        <div>{{ __('app.onboarding') }}</div>
       </a>
     </li>
   </ul>
