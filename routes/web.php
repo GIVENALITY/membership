@@ -10,6 +10,8 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\DiningVisitController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\DashboardController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -28,9 +30,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->midd
 
 // Protected Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/users', function () {
         return view('users.index');
@@ -151,4 +151,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('users.profile.update');
     Route::get('/profile/change-password', [UserController::class, 'changePassword'])->name('users.change-password');
     Route::put('/profile/change-password', [UserController::class, 'updatePassword'])->name('users.password.update');
+
+    // User Management Routes
+    Route::resource('user-management', UserManagementController::class);
+    Route::patch('/user-management/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('user-management.toggle-status');
 });

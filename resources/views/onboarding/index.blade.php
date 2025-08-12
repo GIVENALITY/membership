@@ -386,6 +386,73 @@
             </div>
         </div>
 
+        <!-- Dining Management Tutorial -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="avatar avatar-sm">
+                                <span class="avatar-initial rounded bg-label-warning">
+                                    <i class="icon-base ri ri-restaurant-line"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="card-title mb-0">Dining Management Tutorial</h5>
+                            <small class="text-muted">Complete member dining workflow</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-warning mb-2">
+                            <i class="icon-base ri ri-information-line me-2"></i>
+                            How the Dining Process Works
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-success">Step 1: Check-in Process</h6>
+                                <ol class="small mb-0">
+                                    <li>Member arrives at restaurant</li>
+                                    <li>Front desk searches member by name/number</li>
+                                    <li>System shows member details & preferences</li>
+                                    <li>Record number of guests</li>
+                                    <li>Add special notes for waiters</li>
+                                    <li>Check-in member (visit stays open)</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-warning">Step 2: Payment Process</h6>
+                                <ol class="small mb-0">
+                                    <li>Member finishes dining</li>
+                                    <li>Cashier finds member in "Current Visits"</li>
+                                    <li>Enter total bill amount</li>
+                                    <li>System calculates automatic discount</li>
+                                    <li>Upload receipt</li>
+                                    <li>Close visit & update points</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <h6 class="mb-2">
+                            <i class="icon-base ri ri-lightbulb-line me-2"></i>
+                            Key Benefits
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li><strong>Preference Communication:</strong> Waiters see allergies, dietary needs, special requests</li>
+                            <li><strong>Automatic Discounts:</strong> System calculates discounts based on membership & points</li>
+                            <li><strong>Complete Records:</strong> Full audit trail of all visits and payments</li>
+                            <li><strong>Points Integration:</strong> Automatic points earning and redemption</li>
+                        </ul>
+                    </div>
+                    <a href="{{ route('dining.index') }}" class="btn btn-warning btn-sm">
+                        <i class="icon-base ri ri-play-line me-2"></i>
+                        Try Dining Management
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Support & Next Steps -->
         <div class="row">
             <div class="col-md-8">

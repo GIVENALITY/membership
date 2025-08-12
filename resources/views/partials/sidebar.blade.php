@@ -272,6 +272,28 @@
       </ul>
     </li>
 
+                <!-- User Management (Admin/Manager Only) -->
+                @if(Auth::user()->canManageUsers())
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon icon-base ri ri-team-line"></i>
+                        <div data-i18n="User Management">User Management</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('user-management.index') }}" class="menu-link">
+                                <div data-i18n="All Users">All Users</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('user-management.create') }}" class="menu-link">
+                                <div data-i18n="Add User">Add User</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+
     @stack('sidebar-menu')
   </ul>
 </aside>

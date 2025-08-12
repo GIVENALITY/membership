@@ -27,14 +27,13 @@ class User extends Authenticatable
         'phone',
         'address',
         'bio',
-        'avatar_path',
-        'last_login_at',
+        'avatar',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -52,12 +51,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
-            'last_login_at' => 'datetime',
         ];
     }
 
     /**
-     * Get the hotel associated with this user.
+     * Get the hotel that owns the user.
      */
     public function hotel()
     {
@@ -65,7 +63,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is an admin.
+     * Check if user has a specific role
+     */
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Check if user has any of the specified roles
+     */
+    public function hasAnyRole($roles)
+    {
+        return in_array($this->role, (array) $roles);
+    }
+
+    /**
+     * Check if user is admin
      */
     public function isAdmin()
     {
@@ -73,7 +87,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is a manager.
+     * Check if user is manager
      */
     public function isManager()
     {
@@ -81,22 +95,49 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is staff.
+     * Check if user is cashier
      */
-    public function isStaff()
+    public function isCashier()
     {
-        return $this->role === 'staff';
+        return $this->role === 'cashier';
     }
 
     /**
-     * Check if user has any of the given roles.
+     * Check if user is frontdesk
      */
-    public function hasRole($roles)
+    public function isFrontdesk()
     {
-        if (is_array($roles)) {
-            return in_array($this->role, $roles);
-        }
-        return $this->role === $roles;
+        return $this->role === 'frontdesk';
+    }
+
+    /**
+     * Check if user can manage other users
+     */
+    public function canManageUsers()
+    {
+        return in_array($this->role, ['admin', 'manager']);
+    }
+
+    /**
+     * Get role display name
+     */
+    public function getRoleDisplayNameAttribute()
+    {
+        return ucfirst($this->role);
+    }
+
+    /**
+     * Get role badge color
+     */
+    public function getRoleBadgeColorAttribute()
+    {
+        return match($this->role) {
+            'admin' => 'danger',
+            'manager' => 'primary',
+            'cashier' => 'warning',
+            'frontdesk' => 'info',
+            default => 'secondary'
+        };
     }
 
     /**
