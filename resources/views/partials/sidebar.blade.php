@@ -1,3 +1,4 @@
+<!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo">
     <a href="{{ route('dashboard') }}" class="app-brand-link">
@@ -30,7 +31,13 @@
           </g>
         </svg>
       </span>
-      <span class="app-brand-text demo menu-text fw-bold ms-2">Membership MS</span>
+      <span class="app-brand-text demo menu-text fw-bold ms-2">
+        @if(auth()->user()->role === 'superadmin')
+          {{ __('app.system_admin') }}
+        @else
+          {{ $hotel->name ?? 'Membership MS' }}
+        @endif
+      </span>
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -40,225 +47,9 @@
 
   <div class="menu-inner-shadow"></div>
 
-  <ul class="menu-inner py-1">
-    <!-- Dashboard -->
-    <li class="menu-item active">
-      <a href="{{ route('dashboard') }}" class="menu-link">
-        <i class="icon-base ri ri-dashboard-line menu-icon"></i>
-        <div>{{ __('app.dashboard') }}</div>
-      </a>
-    </li>
-
-    <!-- Members Management -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-team-line menu-icon"></i>
-        <div>{{ __('app.members') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('members.index') }}" class="menu-link">
-            <div>{{ __('app.members_list') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('members.search-page') }}" class="menu-link">
-            <div>{{ __('app.search') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('members.create') }}" class="menu-link">
-            <div>{{ __('app.add_member') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('membership-types.index') }}" class="menu-link">
-            <div>{{ __('app.membership_types') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- Transactions -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-exchange-line menu-icon"></i>
-        <div>{{ __('app.transactions') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('cashier.index') }}" class="menu-link">
-            <div>{{ __('app.cashier') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('discounts.index') }}" class="menu-link">
-            <div>{{ __('app.discounts') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- Dining Management -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-restaurant-line menu-icon"></i>
-        <div>{{ __('app.dining_management') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('dining.index') }}" class="menu-link">
-            <div>{{ __('app.record_visit') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('dining.history') }}" class="menu-link">
-            <div>{{ __('app.visit_history') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- Reports -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-file-chart-line menu-icon"></i>
-        <div>{{ __('app.reports') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('reports.members') }}" class="menu-link">
-            <div>{{ __('app.members_report') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('reports.dining') }}" class="menu-link">
-            <div>{{ __('app.dining_report') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('reports.discounts') }}" class="menu-link">
-            <div>{{ __('app.discounts_report') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- Application Settings -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-settings-3-line menu-icon"></i>
-        <div>{{ __('app.application_settings') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('settings.index') }}" class="menu-link">
-            <div>{{ __('app.general_settings') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('settings.points') }}" class="menu-link">
-            <div>{{ __('app.points_system') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('settings.email') }}" class="menu-link">
-            <div>{{ __('app.email_templates') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('settings.discounts') }}" class="menu-link">
-            <div>{{ __('app.discount_rules') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- Hotel Management -->
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-building-line menu-icon"></i>
-        <div>{{ __('app.hotel') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('hotel.profile') }}" class="menu-link">
-            <div>{{ __('app.hotel_profile') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('hotel.account') }}" class="menu-link">
-            <div>{{ __('app.settings') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- User Management (Manager Only) -->
-    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-user-settings-line menu-icon"></i>
-        <div>{{ __('app.user_management') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('user-management.index') }}" class="menu-link">
-            <div>{{ __('app.users') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('user-management.create') }}" class="menu-link">
-            <div>{{ __('app.add_user') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    @endif
-
-    <!-- Superadmin Section (Superadmin Only) -->
-    @if(auth()->user()->role === 'superadmin')
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="icon-base ri ri-settings-4-line menu-icon"></i>
-        <div>{{ __('app.superadmin') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{{ route('superadmin.dashboard') }}" class="menu-link">
-            <div>{{ __('app.superadmin_dashboard') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('superadmin.translations') }}" class="menu-link">
-            <div>{{ __('app.translation_management') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('superadmin.hotels') }}" class="menu-link">
-            <div>{{ __('app.all_hotels') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('superadmin.users') }}" class="menu-link">
-            <div>{{ __('app.all_users') }}</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('superadmin.logs') }}" class="menu-link">
-            <div>{{ __('app.system_logs') }}</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    @endif
-
-    <!-- Onboarding -->
-    <li class="menu-item">
-      <a href="{{ route('onboarding.index') }}" class="menu-link">
-        <i class="icon-base ri ri-book-open-line menu-icon"></i>
-        <div>{{ __('app.onboarding') }}</div>
-      </a>
-    </li>
-  </ul>
+  @if(auth()->user()->role === 'superadmin')
+    @include('partials.sidebar-superadmin')
+  @else
+    @include('partials.sidebar-hotel')
+  @endif
 </aside> 
