@@ -238,9 +238,16 @@ class MemberController extends Controller
             'email' => 'required|email|unique:members,email,' . $member->id,
             'phone' => 'required|string|max:20',
             'address' => 'nullable|string',
-            'birth_date' => 'required|date',
+            'birth_date' => 'nullable|date',
             'membership_type_id' => 'required|exists:membership_types,id',
             'status' => 'required|in:active,inactive,suspended',
+            'allergies' => 'nullable|string',
+            'dietary_preferences' => 'nullable|string',
+            'special_requests' => 'nullable|string',
+            'additional_notes' => 'nullable|string',
+            'emergency_contact_name' => 'nullable|string|max:255',
+            'emergency_contact_phone' => 'nullable|string|max:20',
+            'emergency_contact_relationship' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
