@@ -19,7 +19,9 @@ class LanguageController extends Controller
             'locale' => $locale,
             'current_locale' => App::getLocale(),
             'session_locale' => Session::get('locale'),
-            'user_agent' => request()->userAgent()
+            'cookie_locale' => request()->cookie('locale'),
+            'user_agent' => request()->userAgent(),
+            'session_id' => Session::getId()
         ]);
 
         // Validate the locale
@@ -32,6 +34,9 @@ class LanguageController extends Controller
 
         // Set the locale in the session
         Session::put('locale', $locale);
+        
+        // Also set it in a cookie as fallback (Laravel 11 session persistence issue)
+        cookie()->queue('locale', $locale, 60 * 24 * 365); // 1 year
         
         // For Laravel 11, set the locale in multiple places to ensure it persists
         // Set the application locale
@@ -52,10 +57,12 @@ class LanguageController extends Controller
         Log::info('Language switched successfully', [
             'new_locale' => $locale,
             'session_locale' => Session::get('locale'),
+            'cookie_locale' => request()->cookie('locale'),
             'app_locale' => App::getLocale(),
             'request_locale' => request()->getLocale(),
             'app_instance_locale' => app()->getLocale(),
-            'config_locale' => config('app.locale')
+            'config_locale' => config('app.locale'),
+            'session_id' => Session::getId()
         ]);
 
         // Redirect back to the previous page

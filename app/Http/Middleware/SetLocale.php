@@ -19,8 +19,22 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        // Get locale from session, fallback to config default
-        $locale = Session::get('locale', config('app.locale'));
+        // Get locale from session, fallback to cookie, then config default
+        $locale = Session::get('locale');
+        
+        // If session is null (Laravel 11 session persistence issue), try cookie
+        if ($locale === null) {
+            $locale = $request->cookie('locale');
+            Log::info('Session locale is null, using cookie fallback', [
+                'cookie_locale' => $locale,
+                'session_id' => Session::getId()
+            ]);
+        }
+        
+        // Final fallback to config
+        if ($locale === null) {
+            $locale = config('app.locale');
+        }
         
         // Validate locale
         $availableLocales = ['en', 'sw'];
@@ -46,12 +60,14 @@ class SetLocale
             Log::info('SetLocale middleware executed', [
                 'request_path' => $request->path(),
                 'session_locale' => Session::get('locale'),
+                'cookie_locale' => $request->cookie('locale'),
                 'config_locale' => config('app.locale'),
                 'final_locale' => $locale,
                 'app_locale' => App::getLocale(),
                 'request_locale' => $request->getLocale(),
                 'app_instance_locale' => app()->getLocale(),
-                'container_locale' => $this->app->getLocale()
+                'container_locale' => $this->app->getLocale(),
+                'session_id' => Session::getId()
             ]);
         }
         

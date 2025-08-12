@@ -65,12 +65,15 @@
                 <strong>Locale Debug Info:</strong><br>
                 Current: {{ app()->getLocale() }}<br>
                 Session: {{ session('locale', 'none') }}<br>
+                Cookie: {{ request()->cookie('locale', 'none') }}<br>
                 Config: {{ config('app.locale') }}<br>
                 Request: {{ request()->getLocale() }}<br>
                 App Facade: {{ App::getLocale() }}<br>
                 <strong>Translation Test:</strong><br>
                 Welcome: {{ __('app.welcome') }}<br>
-                Dashboard: {{ __('app.dashboard') }}
+                Dashboard: {{ __('app.dashboard') }}<br>
+                <strong>Session Debug:</strong><br>
+                Session ID: {{ session()->getId() }}
               </small>
             </div>
           </li>
