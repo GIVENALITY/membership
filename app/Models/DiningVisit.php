@@ -26,6 +26,13 @@ class DiningVisit extends Model
         'checked_out_by',
     ];
 
+    protected $attributes = [
+        'amount_spent' => 0,
+        'discount_amount' => 0,
+        'final_amount' => 0,
+        'is_checked_out' => false,
+    ];
+
     protected $casts = [
         'is_checked_out' => 'boolean',
         'amount_spent' => 'decimal:2',

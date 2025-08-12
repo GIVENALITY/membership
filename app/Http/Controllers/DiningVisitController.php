@@ -254,6 +254,9 @@ class DiningVisitController extends Controller
                 'notes' => $request->notes,
                 'is_checked_out' => false,
                 'recorded_by' => $user->id,
+                'amount_spent' => 0,
+                'discount_amount' => 0,
+                'final_amount' => 0,
             ];
 
             $visit = DiningVisit::create($visitData);
