@@ -311,9 +311,47 @@ class DiningVisitController extends Controller
                 $receiptPath = $request->file('receipt')->store('receipts', 'public');
             }
 
-            // Calculate discount based on points system
+            // Get member and validate spending requirements
             $member = $visit->member;
-            $discountPercentage = $member->getSpecialDiscountPercentage();
+            $perPersonSpending = $request->amount_spent / $visit->number_of_people;
+            $currentVisitCount = $member->total_visits + 1; // Include this visit
+
+            // Validate minimum spending per person (50k minimum)
+            $minSpendingPerPerson = 50000;
+            $spendingQualified = $perPersonSpending >= $minSpendingPerPerson;
+
+            // Calculate discount based on current visit count (including this visit)
+            $discountPercentage = 0;
+            $discountReason = '';
+
+            if ($spendingQualified) {
+                // Get base discount for current visit count
+                $baseDiscount = $member->membershipType ? 
+                    $member->membershipType->calculateDiscountForVisits($currentVisitCount) : 
+                    5.0;
+
+                // Check if member qualifies for points-based discount
+                $currentPoints = $member->current_points_balance;
+                $pointsQualified = $currentPoints >= 5;
+
+                if ($pointsQualified) {
+                    $discountPercentage = max($baseDiscount, 10.0); // Minimum 10% for qualified members
+                    $discountReason = "Points qualification ({$currentPoints} points) + Visit progression ({$currentVisitCount} visits)";
+                } else {
+                    $discountPercentage = $baseDiscount;
+                    $discountReason = "Visit progression ({$currentVisitCount} visits)";
+                }
+
+                // Check for special bonuses (birthday, consecutive visits)
+                $specialDiscount = $member->getSpecialDiscountPercentage($currentVisitCount);
+                if ($specialDiscount > $discountPercentage) {
+                    $discountPercentage = $specialDiscount;
+                    $discountReason = "Special bonus applied";
+                }
+            } else {
+                $discountReason = "Minimum spending not met (TZS " . number_format($minSpendingPerPerson) . " per person required)";
+            }
+
             $discountAmount = ($request->amount_spent * $discountPercentage) / 100;
             $finalAmount = $request->amount_spent - $discountAmount;
 
@@ -329,8 +367,11 @@ class DiningVisitController extends Controller
                 'checked_out_by' => $user->id,
             ]);
 
-            // Add points for this visit
-            $pointRecord = $member->addPoints($request->amount_spent, $visit->number_of_people, $visit->id);
+            // Add points for this visit (only if spending qualified)
+            $pointRecord = null;
+            if ($spendingQualified) {
+                $pointRecord = $member->addPoints($request->amount_spent, $visit->number_of_people, $visit->id);
+            }
 
             // Update member statistics
             $member->increment('total_visits');
@@ -341,19 +382,33 @@ class DiningVisitController extends Controller
                 'current_discount_rate' => $member->calculateDiscountRate(),
             ]);
 
-            // Prepare success message with points information
-            $pointsMessage = '';
-            if ($pointRecord->points_earned > 0) {
-                $pointsMessage = " Earned {$pointRecord->points_earned} points.";
+            // Prepare success message
+            $message = "Checkout completed for {$member->full_name}. ";
+            $message .= "Amount: TZS " . number_format($request->amount_spent) . " ";
+            
+            if ($discountPercentage > 0) {
+                $message .= "Discount: TZS " . number_format($discountAmount) . " ({$discountPercentage}%) ";
+                $message .= "Final: TZS " . number_format($finalAmount) . ". ";
+                $message .= "Reason: {$discountReason}. ";
+            } else {
+                $message .= "No discount applied. {$discountReason}. ";
             }
             
-            if ($pointRecord->is_birthday_visit) {
-                $pointsMessage .= " 🎂 Birthday visit - special treatment applied!";
+            if ($pointRecord && $pointRecord->points_earned > 0) {
+                $message .= "Earned {$pointRecord->points_earned} points. ";
+            }
+            
+            if ($pointRecord && $pointRecord->is_birthday_visit) {
+                $message .= "🎂 Birthday visit - special treatment applied! ";
+            }
+
+            if (!$spendingQualified) {
+                $message .= "Note: Minimum TZS " . number_format($minSpendingPerPerson) . " per person required for points and discounts.";
             }
 
             DB::commit();
 
-            return back()->with('success', "Checkout completed for {$member->full_name}. Amount: TZS " . number_format($request->amount_spent) . ", Discount: TZS " . number_format($discountAmount) . " ({$discountPercentage}%), Final: TZS " . number_format($finalAmount) . "." . $pointsMessage);
+            return back()->with('success', $message);
 
         } catch (\Exception $e) {
             DB::rollBack();

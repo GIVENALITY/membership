@@ -291,9 +291,14 @@ class Member extends Model
     /**
      * Get special discount percentage for qualified members
      */
-    public function getSpecialDiscountPercentage(): float
+    public function getSpecialDiscountPercentage(int $currentVisitCount = null): float
     {
-        $baseDiscount = $this->calculateDiscountRate();
+        // Use provided visit count or fall back to stored total
+        $visitCount = $currentVisitCount ?? $this->total_visits;
+        
+        $baseDiscount = $this->membershipType ? 
+            $this->membershipType->calculateDiscountForVisits($visitCount) : 
+            5.0;
         $specialDiscount = $baseDiscount;
 
         // Check for consecutive visit bonus (membership type specific)
