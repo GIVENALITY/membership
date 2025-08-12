@@ -64,7 +64,7 @@
                   </td>
                   <td>{{ $member->phone }}</td>
                   <td>{{ $member->total_visits }} {{ __('app.total_visits') }}</td>
-                  <td>{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : 'Never' }}</td>
+                  <td>{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : __('app.never') }}</td>
                   <td>
                     @if($member->status === 'active')
                       <span class="badge bg-label-success">{{ __('app.active') }}</span>

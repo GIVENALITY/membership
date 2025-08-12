@@ -87,6 +87,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is superadmin
+     */
+    public function isSuperAdmin()
+    {
+        return $this->role === 'superadmin';
+    }
+
+    /**
      * Check if user is manager
      */
     public function isManager()
@@ -115,7 +123,15 @@ class User extends Authenticatable
      */
     public function canManageUsers()
     {
-        return in_array($this->role, ['admin', 'manager']);
+        return in_array($this->role, ['superadmin', 'admin', 'manager']);
+    }
+
+    /**
+     * Check if user can access superadmin features
+     */
+    public function canAccessSuperAdmin()
+    {
+        return $this->role === 'superadmin';
     }
 
     /**
@@ -132,6 +148,7 @@ class User extends Authenticatable
     public function getRoleBadgeColorAttribute()
     {
         return match($this->role) {
+            'superadmin' => 'dark',
             'admin' => 'danger',
             'manager' => 'primary',
             'cashier' => 'warning',

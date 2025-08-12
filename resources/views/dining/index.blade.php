@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dining Management - ' . (Auth::user()->hotel->name ?? 'Membership MS'))
+@section('title', __('app.dining_management') . ' - ' . (Auth::user()->hotel->name ?? 'Membership MS'))
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -8,24 +8,24 @@
         <div class="col-12">
             <!-- Process Flow Guide -->
             <div class="alert alert-info">
-                <h6><i class="icon-base ri ri-information-line me-2"></i>Dining Process Flow</h6>
+                <h6><i class="icon-base ri ri-information-line me-2"></i>{{ __('app.dining_process_flow') }}</h6>
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>Step 1 - Check-in:</strong>
+                        <strong>{{ __('app.step_1_checkin') }}:</strong>
                         <ol class="mb-0 small">
-                            <li>Search member by name/number</li>
-                            <li>Record number of guests</li>
-                            <li>Review member preferences</li>
-                            <li>Check-in member (visit stays open)</li>
+                            <li>{{ __('app.search_member_by_name_number') }}</li>
+                            <li>{{ __('app.record_number_of_guests') }}</li>
+                            <li>{{ __('app.review_member_preferences') }}</li>
+                            <li>{{ __('app.checkin_member_visit_stays_open') }}</li>
                         </ol>
                     </div>
                     <div class="col-md-6">
-                        <strong>Step 2 - Checkout:</strong>
+                        <strong>{{ __('app.step_2_checkout') }}:</strong>
                         <ol class="mb-0 small">
-                            <li>Find member in "Current Visits"</li>
-                            <li>Enter bill amount</li>
-                            <li>System calculates discount</li>
-                            <li>Upload receipt & close visit</li>
+                            <li>{{ __('app.find_member_in_current_visits') }}</li>
+                            <li>{{ __('app.enter_bill_amount') }}</li>
+                            <li>{{ __('app.system_calculates_discount') }}</li>
+                            <li>{{ __('app.upload_receipt_close_visit') }}</li>
                         </ol>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                 <div class="card-header">
                     <h4 class="card-title">
                         <i class="icon-base ri ri-user-add-line me-2"></i>
-                        Step 1: Member Check-in
+                        {{ __('app.step_1_member_checkin') }}
                     </h4>
                 </div>
                 <div class="card-body">
@@ -58,22 +58,22 @@
                     <div class="mb-4">
                         <label for="memberSearch" class="form-label">
                             <i class="icon-base ri ri-search-line me-2"></i>
-                            Search Member (Name or Membership Number)
+                            {{ __('app.search_member_name_or_number') }}
                         </label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="memberSearch" 
-                                   placeholder="Type member name or number (e.g., John Doe or MS001)">
+                                   placeholder="{{ __('app.type_member_name_or_number') }}">
                             <button class="btn btn-outline-primary" type="button" onclick="searchMembers()">
                                 <i class="icon-base ri ri-search-line"></i>
-                                Search
+                                {{ __('app.search') }}
                             </button>
                         </div>
-                        <small class="text-muted">Search by member name or membership ID to begin check-in process</small>
+                        <small class="text-muted">{{ __('app.search_by_member_name_or_id') }}</small>
                     </div>
 
                     <!-- Search Results -->
                     <div id="searchResults" class="mb-4" style="display: none;">
-                        <h6>Search Results:</h6>
+                        <h6>{{ __('app.search_results') }}:</h6>
                         <div id="memberResults" class="list-group"></div>
                     </div>
 
@@ -83,7 +83,7 @@
                             <div class="col-md-6">
                                 <div class="card border-primary">
                                     <div class="card-header bg-primary text-white">
-                                        <h6 class="mb-0">Member Information</h6>
+                                        <h6 class="mb-0">{{ __('app.member_information') }}</h6>
                                     </div>
                                     <div class="card-body" id="memberInfo">
                                         <!-- Member details will be populated here -->
@@ -93,7 +93,7 @@
                             <div class="col-md-6">
                                 <div class="card border-success">
                                     <div class="card-header bg-success text-white">
-                                        <h6 class="mb-0">Check-in Details</h6>
+                                        <h6 class="mb-0">{{ __('app.checkin_details') }}</h6>
                                     </div>
                                     <div class="card-body">
                                         <form id="checkinFormElement">

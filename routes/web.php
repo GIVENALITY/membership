@@ -11,6 +11,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\SuperAdminController;
 
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {
@@ -276,4 +277,17 @@ Route::middleware('auth')->group(function () {
     // User Management Routes
     Route::resource('user-management', UserManagementController::class);
     Route::patch('/user-management/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('user-management.toggle-status');
+
+    // Superadmin Routes (only for superadmin users)
+    Route::middleware('auth')->group(function () {
+        Route::prefix('superadmin')->name('superadmin.')->group(function () {
+            Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('/translations', [SuperAdminController::class, 'translations'])->name('translations');
+            Route::post('/translations/update', [SuperAdminController::class, 'updateTranslations'])->name('translations.update');
+            Route::get('/system-settings', [SuperAdminController::class, 'systemSettings'])->name('system-settings');
+            Route::get('/hotels', [SuperAdminController::class, 'hotels'])->name('hotels');
+            Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
+            Route::get('/logs', [SuperAdminController::class, 'logs'])->name('logs');
+        });
+    });
 });

@@ -216,6 +216,43 @@
     </li>
     @endif
 
+    <!-- Superadmin Section (Superadmin Only) -->
+    @if(auth()->user()->role === 'superadmin')
+    <li class="menu-item">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="icon-base ri ri-settings-4-line menu-icon"></i>
+        <div>{{ __('app.superadmin') }}</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="{{ route('superadmin.dashboard') }}" class="menu-link">
+            <div>{{ __('app.superadmin_dashboard') }}</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('superadmin.translations') }}" class="menu-link">
+            <div>{{ __('app.translation_management') }}</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('superadmin.hotels') }}" class="menu-link">
+            <div>{{ __('app.all_hotels') }}</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('superadmin.users') }}" class="menu-link">
+            <div>{{ __('app.all_users') }}</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{ route('superadmin.logs') }}" class="menu-link">
+            <div>{{ __('app.system_logs') }}</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+    @endif
+
     <!-- Onboarding -->
     <li class="menu-item">
       <a href="{{ route('onboarding.index') }}" class="menu-link">

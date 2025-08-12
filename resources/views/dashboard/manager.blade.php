@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manager Dashboard - ' . ($hotel->name ?? 'Membership MS'))
+@section('title', __('app.dashboard') . ' - ' . ($hotel->name ?? 'Membership MS'))
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -18,11 +18,11 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h4 class="mb-1">Welcome back, {{ $user->name }}!</h4>
-                            <p class="mb-0 text-muted">Manager Dashboard - {{ $hotel->name }}</p>
+                            <h4 class="mb-1">{{ __('app.welcome_back') }}, {{ $user->name }}!</h4>
+                            <p class="mb-0 text-muted">{{ __('app.dashboard') }} - {{ $hotel->name }}</p>
                         </div>
                         <div class="flex-shrink-0">
-                            <span class="badge bg-primary fs-6">Manager</span>
+                            <span class="badge bg-primary fs-6">{{ __('app.manager') }}</span>
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-1">{{ number_format($stats['total_members']) }}</h5>
-                            <p class="mb-0 text-muted">Total Members</p>
+                            <p class="mb-0 text-muted">{{ __('app.total_members') }}</p>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-1">{{ number_format($stats['total_visits']) }}</h5>
-                            <p class="mb-0 text-muted">Total Visits</p>
+                            <p class="mb-0 text-muted">{{ __('app.total_visits') }}</p>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-1">{{ number_format($stats['active_visits']) }}</h5>
-                            <p class="mb-0 text-muted">Active Visits</p>
+                            <p class="mb-0 text-muted">{{ __('app.active_visits') }}</p>
                         </div>
                     </div>
                 </div>
@@ -98,14 +98,14 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
                             <div class="avatar avatar-sm">
-                                <span class="avatar-initial rounded bg-label-primary">
-                                    <i class="icon-base ri ri-money-dollar-circle-line"></i>
+                                <span class="avatar-initial rounded bg-label-danger">
+                                    <i class="icon-base ri ri-calendar-line"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-1">TZS {{ number_format($monthlyStats['monthly_revenue']) }}</h5>
-                            <p class="mb-0 text-muted">Monthly Revenue</p>
+                            <h5 class="mb-1">{{ number_format($stats['today_visits']) }}</h5>
+                            <p class="mb-0 text-muted">{{ __('app.today_visits') }}</p>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">
                         <i class="icon-base ri ri-flashlight-line me-2"></i>
-                        Quick Actions
+                        {{ __('app.quick_actions') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -128,25 +128,25 @@
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('members.create') }}" class="btn btn-primary w-100">
                                 <i class="icon-base ri ri-user-add-line me-2"></i>
-                                Add New Member
+                                {{ __('app.add_new_member') }}
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('dining.index') }}" class="btn btn-success w-100">
                                 <i class="icon-base ri ri-restaurant-line me-2"></i>
-                                Manage Dining
+                                {{ __('app.manage_dining') }}
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('user-management.create') }}" class="btn btn-info w-100">
                                 <i class="icon-base ri ri-team-line me-2"></i>
-                                Add Team Member
+                                {{ __('app.add_team_member') }}
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('reports.members') }}" class="btn btn-warning w-100">
                                 <i class="icon-base ri ri-file-chart-line me-2"></i>
-                                View Reports
+                                {{ __('app.view_reports') }}
                             </a>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">
                         <i class="icon-base ri ri-time-line me-2"></i>
-                        Recent Visits
+                        {{ __('app.recent_visits') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -172,10 +172,10 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Member</th>
-                                        <th>Status</th>
-                                        <th>Amount</th>
-                                        <th>Time</th>
+                                        <th>{{ __('app.member') }}</th>
+                                        <th>{{ __('app.status') }}</th>
+                                        <th>{{ __('app.amount') }}</th>
+                                        <th>{{ __('app.time') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -196,9 +196,9 @@
                                             </td>
                                             <td>
                                                 @if($visit->is_checked_out)
-                                                    <span class="badge bg-success">Completed</span>
+                                                    <span class="badge bg-success">{{ __('app.completed') }}</span>
                                                 @else
-                                                    <span class="badge bg-warning">Active</span>
+                                                    <span class="badge bg-warning">{{ __('app.active') }}</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -219,8 +219,8 @@
                     @else
                         <div class="text-center py-4">
                             <i class="icon-base ri ri-time-line icon-3x text-muted mb-3"></i>
-                            <h6>No Recent Visits</h6>
-                            <p class="text-muted">No visits recorded yet</p>
+                            <h6>{{ __('app.no_recent_visits') }}</h6>
+                            <p class="text-muted">{{ __('app.no_visits_recorded') }}</p>
                         </div>
                     @endif
                 </div>
@@ -233,13 +233,13 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">
                         <i class="icon-base ri ri-bar-chart-line me-2"></i>
-                        This Month
+                        {{ __('app.this_month') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">Visits</span>
+                            <span class="text-muted">{{ __('app.visits') }}</span>
                             <span class="fw-bold">{{ number_format($monthlyStats['monthly_visits']) }}</span>
                         </div>
                         <div class="progress" style="height: 6px;">
@@ -249,7 +249,7 @@
 
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">Revenue</span>
+                            <span class="text-muted">{{ __('app.revenue') }}</span>
                             <span class="fw-bold">TZS {{ number_format($monthlyStats['monthly_revenue']) }}</span>
                         </div>
                         <div class="progress" style="height: 6px;">
@@ -259,7 +259,7 @@
 
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">New Members</span>
+                            <span class="text-muted">{{ __('app.new_members') }}</span>
                             <span class="fw-bold">{{ number_format($monthlyStats['monthly_members']) }}</span>
                         </div>
                         <div class="progress" style="height: 6px;">
@@ -270,7 +270,7 @@
                     <div class="text-center mt-4">
                         <a href="{{ route('reports.members') }}" class="btn btn-outline-primary btn-sm">
                             <i class="icon-base ri ri-file-chart-line me-2"></i>
-                            View Detailed Reports
+                            {{ __('app.view_detailed_reports') }}
                         </a>
                     </div>
                 </div>
@@ -285,7 +285,7 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">
                         <i class="icon-base ri ri-vip-crown-line me-2"></i>
-                        Membership Types
+                        {{ __('app.membership_types') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -298,11 +298,11 @@
                                             <h6 class="card-title text-primary">{{ $type->name }}</h6>
                                             <p class="text-muted mb-2">{{ $type->description }}</p>
                                             <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Price:</span>
+                                                <span class="text-muted">{{ __('app.price') }}:</span>
                                                 <span class="fw-bold">TZS {{ number_format($type->price) }}</span>
                                             </div>
                                             <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Discount:</span>
+                                                <span class="text-muted">{{ __('app.discount') }}:</span>
                                                 <span class="fw-bold text-success">{{ $type->discount_rate }}%</span>
                                             </div>
                                         </div>
@@ -313,11 +313,11 @@
                     @else
                         <div class="text-center py-4">
                             <i class="icon-base ri ri-vip-crown-line icon-3x text-muted mb-3"></i>
-                            <h6>No Membership Types</h6>
-                            <p class="text-muted">Create membership types to get started</p>
+                            <h6>{{ __('app.no_membership_types') }}</h6>
+                            <p class="text-muted">{{ __('app.create_membership_types_to_get_started') }}</p>
                             <a href="{{ route('membership-types.create') }}" class="btn btn-primary">
                                 <i class="icon-base ri ri-add-line me-2"></i>
-                                Create Membership Type
+                                {{ __('app.create_membership_type') }}
                             </a>
                         </div>
                     @endif
