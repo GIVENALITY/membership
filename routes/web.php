@@ -12,8 +12,21 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 
-// Language switching routes
-Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
+// Language switching routes - must be first to avoid wildcard conflicts
+Route::get('/switch-language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
+
+// Test route for debugging language switching
+Route::get('/test-language', function () {
+    return response()->json([
+        'current_locale' => app()->getLocale(),
+        'session_locale' => session('locale'),
+        'config_locale' => config('app.locale'),
+        'available_locales' => ['en', 'sw'],
+        'test_translation' => __('app.welcome'),
+        'session_id' => session()->getId(),
+        'session_data' => session()->all()
+    ]);
+})->name('test.language');
 
 Route::get('/', function () {
     return redirect('/login');

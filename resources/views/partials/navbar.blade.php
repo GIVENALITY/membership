@@ -57,6 +57,17 @@
               </div>
             </a>
           </li>
+          <!-- Debug info -->
+          <li class="dropdown-divider"></li>
+          <li>
+            <div class="dropdown-item">
+              <small class="text-muted">
+                Current: {{ app()->getLocale() }}<br>
+                Session: {{ session('locale', 'none') }}<br>
+                Config: {{ config('app.locale') }}
+              </small>
+            </div>
+          </li>
         </ul>
       </li>
       <!-- /Language Switcher -->
