@@ -26,7 +26,7 @@ class MemberController extends Controller
         $members = Member::with('membershipType')
             ->where('hotel_id', $user->hotel_id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(20);
         return view('members.index', compact('members'));
     }
 
