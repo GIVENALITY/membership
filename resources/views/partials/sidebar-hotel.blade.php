@@ -144,13 +144,13 @@
   @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="icon-base ri ri-building-line menu-icon"></i>
-      <div>{{ __('app.hotel') }}</div>
+      <i class="icon-base ri ri-restaurant-line menu-icon"></i>
+      <div>{{ __('app.restaurant') }}</div>
     </a>
     <ul class="menu-sub">
       <li class="menu-item {{ request()->routeIs('hotel.profile') ? 'active' : '' }}">
         <a href="{{ route('hotel.profile') }}" class="menu-link">
-          <div>{{ __('app.hotel_profile') }}</div>
+          <div>{{ __('app.restaurant_profile') }}</div>
         </a>
       </li>
       <li class="menu-item {{ request()->routeIs('hotel.account') ? 'active' : '' }}">

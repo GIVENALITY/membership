@@ -86,7 +86,7 @@
                         <!-- Hotel Images -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_logo" class="form-label">Hotel Logo</label>
+                                <label for="hotel_logo" class="form-label">Restaurant Logo</label>
                                 @if($hotel->logo_path)
                                     <div class="mb-2">
                                         <img src="{{ $hotel->logo_url }}" alt="Current Logo" class="img-thumbnail" style="max-height: 100px;">
@@ -114,7 +114,7 @@
                                     <i class="icon-base ri ri-palette-line me-2"></i>
                                     Branding Colors
                                 </h6>
-                                <small class="text-muted">Customize your hotel's color scheme</small>
+                                <small class="text-muted">Customize your restaurant's color scheme</small>
                             </div>
                             <div class="card-body">
                                 <div class="row">

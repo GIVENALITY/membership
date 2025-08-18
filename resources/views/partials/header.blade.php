@@ -39,20 +39,20 @@
     <!-- Page CSS -->
     @stack('page-css')
 
-    <!-- Hotel Branding CSS -->
+    <!-- Restaurant Branding CSS -->
     <style>
         :root {
-            --hotel-primary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }};
-            --hotel-secondary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }};
+            --restaurant-primary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }};
+            --restaurant-secondary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }};
         }
         
-        /* Apply hotel branding colors to all buttons */
+        /* Apply restaurant branding colors to all buttons */
         .btn-primary,
         .btn-success,
         .btn-info,
         .btn-warning {
-            background-color: var(--hotel-primary-color) !important;
-            border-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
             color: white !important;
         }
         
@@ -60,16 +60,16 @@
         .btn-success:hover,
         .btn-info:hover,
         .btn-warning:hover {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
-            border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}dd !important;
+            border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}dd !important;
         }
         
         .btn-outline-primary,
         .btn-outline-success,
         .btn-outline-info,
         .btn-outline-warning {
-            color: var(--hotel-primary-color) !important;
-            border-color: var(--hotel-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
             background-color: transparent !important;
         }
         
@@ -77,15 +77,15 @@
         .btn-outline-success:hover,
         .btn-outline-info:hover,
         .btn-outline-warning:hover {
-            background-color: var(--hotel-primary-color) !important;
-            border-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
             color: white !important;
         }
         
         /* Secondary buttons use the secondary color */
         .btn-secondary {
-            background-color: var(--hotel-secondary-color) !important;
-            border-color: var(--hotel-secondary-color) !important;
+            background-color: var(--restaurant-secondary-color) !important;
+            border-color: var(--restaurant-secondary-color) !important;
             color: white !important;
         }
         
@@ -95,14 +95,14 @@
         }
         
         .btn-outline-secondary {
-            color: var(--hotel-secondary-color) !important;
-            border-color: var(--hotel-secondary-color) !important;
+            color: var(--restaurant-secondary-color) !important;
+            border-color: var(--restaurant-secondary-color) !important;
             background-color: transparent !important;
         }
         
         .btn-outline-secondary:hover {
-            background-color: var(--hotel-secondary-color) !important;
-            border-color: var(--hotel-secondary-color) !important;
+            background-color: var(--restaurant-secondary-color) !important;
+            border-color: var(--restaurant-secondary-color) !important;
             color: white !important;
         }
         
@@ -131,114 +131,114 @@
         }
         
         .text-primary {
-            color: var(--hotel-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .text-secondary {
-            color: var(--hotel-secondary-color) !important;
+            color: var(--restaurant-secondary-color) !important;
         }
         
         .bg-primary {
-            background-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
         }
         
         .bg-secondary {
-            background-color: var(--hotel-secondary-color) !important;
+            background-color: var(--restaurant-secondary-color) !important;
         }
         
         .border-primary {
-            border-color: var(--hotel-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
         }
         
         .border-secondary {
-            border-color: var(--hotel-secondary-color) !important;
+            border-color: var(--restaurant-secondary-color) !important;
         }
         
         .bg-label-primary {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
-            color: var(--hotel-primary-color) !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}15 !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .bg-label-secondary {
             background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }}15 !important;
-            color: var(--hotel-secondary-color) !important;
+            color: var(--restaurant-secondary-color) !important;
         }
         
         .badge.bg-primary {
-            background-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
         }
         
         .badge.bg-secondary {
-            background-color: var(--hotel-secondary-color) !important;
+            background-color: var(--restaurant-secondary-color) !important;
         }
         
         .nav-link.active {
-            background-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
         }
         
         .menu-item.active > .menu-link {
-            background-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
         }
         
         .form-check-input:checked {
-            background-color: var(--hotel-primary-color) !important;
-            border-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
         }
         
         .form-control:focus {
-            border-color: var(--hotel-primary-color) !important;
-            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}40 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}40 !important;
         }
         
         .form-select:focus {
-            border-color: var(--hotel-primary-color) !important;
-            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}40 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            box-shadow: 0 0 0 0.2rem {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}40 !important;
         }
         
         .page-link {
-            color: var(--hotel-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .page-item.active .page-link {
-            background-color: var(--hotel-primary-color) !important;
-            border-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
+            border-color: var(--restaurant-primary-color) !important;
         }
         
         /* Additional brand color applications */
         .alert-primary {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
-            border-color: var(--hotel-primary-color) !important;
-            color: var(--hotel-primary-color) !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}15 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .alert-info {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
-            border-color: var(--hotel-primary-color) !important;
-            color: var(--hotel-primary-color) !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}15 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .alert-success {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
-            border-color: var(--hotel-primary-color) !important;
-            color: var(--hotel-primary-color) !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}15 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .alert-warning {
-            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
-            border-color: var(--hotel-primary-color) !important;
-            color: var(--hotel-primary-color) !important;
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}15 !important;
+            border-color: var(--restaurant-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .progress-bar {
-            background-color: var(--hotel-primary-color) !important;
+            background-color: var(--restaurant-primary-color) !important;
         }
         
         .spinner-border.text-primary {
-            color: var(--hotel-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
         
         .spinner-grow.text-primary {
-            color: var(--hotel-primary-color) !important;
+            color: var(--restaurant-primary-color) !important;
         }
     </style>
 
