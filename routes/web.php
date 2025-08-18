@@ -196,18 +196,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/members/search-page', function () {
         return view('members.search');
     })->name('members.search-page');
-    Route::get('/members/{member}/points-history', function ($member) {
-        return view('members.points-history', compact('member'));
-    })->name('members.points-history');
-    Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
-    Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
     
-    // Member Import Routes
+    // Member Import Routes (MUST come before resource route)
     Route::get('/members/import', [MemberImportController::class, 'index'])->name('members.import');
     Route::post('/members/import', [MemberImportController::class, 'import'])->name('members.import.process');
     Route::post('/members/import/storage', [MemberImportController::class, 'importFromStorage'])->name('members.import.storage');
     Route::get('/members/import/membership-types', [MemberImportController::class, 'getMembershipTypes'])->name('members.import.membership-types');
     Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
+    
+    Route::get('/members/{member}/points-history', function ($member) {
+        return view('members.points-history', compact('member'));
+    })->name('members.points-history');
+    Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
     
     // Resource route comes LAST to avoid catching specific routes
     Route::resource('members', MemberController::class);

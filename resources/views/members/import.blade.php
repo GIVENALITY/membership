@@ -57,7 +57,7 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <form action="{{ route('members.import') }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('members.import.process') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         
                                         <div class="mb-3">
