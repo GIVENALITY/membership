@@ -62,13 +62,13 @@
                                             
                                             @if($type->has_special_birthday_discount)
                                                 <div class="mb-2">
-                                                    <strong>Birthday Rate:</strong> {{ $type->birthday_discount_rate }}%
+                                                    <strong>Birthday Rate:</strong> {{ $type->birthday_discount_rate ? $type->birthday_discount_rate . '%' : 'Not enabled' }}
                                                 </div>
                                             @endif
                                             
                                             @if($type->has_consecutive_visit_bonus)
                                                 <div class="mb-2">
-                                                    <strong>Consecutive Bonus:</strong> {{ $type->consecutive_visit_bonus_rate }}% after {{ $type->consecutive_visits_for_bonus }} visits
+                                                    <strong>Consecutive Bonus:</strong> {{ $type->consecutive_visit_bonus_rate ? $type->consecutive_visit_bonus_rate . '% after ' . $type->consecutive_visits_for_bonus . ' visits' : 'Not enabled' }}
                                                 </div>
                                             @endif
                                             

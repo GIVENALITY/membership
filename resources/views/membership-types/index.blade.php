@@ -84,7 +84,7 @@
                       </div>
                     </div>
                     @if($type->has_special_birthday_discount)
-                      <small class="text-muted d-block">🎂 Birthday: {{ $type->birthday_discount_rate }}%</small>
+                                              <small class="text-muted d-block">🎂 Birthday: {{ $type->birthday_discount_rate ? $type->birthday_discount_rate . '%' : 'Not enabled' }}</small>
                     @endif
                   </div>
 

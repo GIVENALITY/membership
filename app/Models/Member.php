@@ -304,14 +304,17 @@ class Member extends Model
         // Check for consecutive visit bonus (membership type specific)
         if ($this->membershipType && 
             $this->membershipType->qualifiesForConsecutiveBonus() &&
-            $this->consecutive_visits >= $this->membershipType->consecutive_visits_for_bonus) {
+            $this->membershipType->consecutive_visits_for_bonus &&
+            $this->consecutive_visits >= $this->membershipType->consecutive_visits_for_bonus &&
+            $this->membershipType->consecutive_visit_bonus_rate) {
             $specialDiscount = max($specialDiscount, $this->membershipType->consecutive_visit_bonus_rate);
         }
 
         // Check for birthday discount (membership type specific)
         if ($this->isBirthdayVisit() && 
             $this->membershipType && 
-            $this->membershipType->qualifiesForBirthdayDiscount()) {
+            $this->membershipType->qualifiesForBirthdayDiscount() &&
+            $this->membershipType->birthday_discount_rate) {
             $specialDiscount = max($specialDiscount, $this->membershipType->birthday_discount_rate);
         }
 
