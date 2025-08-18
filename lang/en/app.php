@@ -467,4 +467,5 @@ return [
     'membership_type_id' => 'Membership Type ID',
     'member_membership_type_name' => 'Name of the membership type (e.g., VIP, Standard, Premium)',
     'member_membership_type_id' => 'ID of the membership type (numeric)',
+    'available_membership_types' => 'Available Membership Types',
 ]; 

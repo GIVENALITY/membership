@@ -19,7 +19,17 @@ class MemberImportController extends Controller
     public function index()
     {
         $hotels = Hotel::active()->get();
-        return view('members.import', compact('hotels'));
+        
+        // Get membership types for the first hotel (if any) to show as example
+        $exampleMembershipTypes = collect();
+        if ($hotels->isNotEmpty()) {
+            $exampleMembershipTypes = MembershipType::where('hotel_id', $hotels->first()->id)
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        }
+        
+        return view('members.import', compact('hotels', 'exampleMembershipTypes'));
     }
 
     /**
@@ -313,12 +323,17 @@ class MemberImportController extends Controller
         // Priority order for membership type determination:
         // 1. Explicit membership type name in data
         // 2. Membership type ID in data
-        // 3. Default to first available membership type
+        // 3. Keyword-based matching
+        // 4. Default to first available membership type
+        
+        $requestedTypeName = null;
+        $requestedTypeId = null;
         
         // Check if membership type name is provided in the data
         if (!empty($memberData['membership_type_name'])) {
-            $membershipType = $membershipTypes->first(function($type) use ($memberData) {
-                return strtolower(trim($type->name)) === strtolower(trim($memberData['membership_type_name']));
+            $requestedTypeName = trim($memberData['membership_type_name']);
+            $membershipType = $membershipTypes->first(function($type) use ($requestedTypeName) {
+                return strtolower(trim($type->name)) === strtolower($requestedTypeName);
             });
             
             if ($membershipType) {
@@ -328,13 +343,30 @@ class MemberImportController extends Controller
         
         // Check if membership type ID is provided in the data
         if (!empty($memberData['membership_type_id'])) {
-            $membershipType = $membershipTypes->first(function($type) use ($memberData) {
-                return $type->id == $memberData['membership_type_id'];
+            $requestedTypeId = trim($memberData['membership_type_id']);
+            $membershipType = $membershipTypes->first(function($type) use ($requestedTypeId) {
+                return $type->id == $requestedTypeId;
             });
             
             if ($membershipType) {
                 return $membershipType;
             }
+        }
+        
+        // If explicit membership type was requested but not found, throw an error
+        if ($requestedTypeName || $requestedTypeId) {
+            $availableTypes = $membershipTypes->pluck('name')->implode(', ');
+            $errorMessage = 'Requested membership type not found. ';
+            
+            if ($requestedTypeName) {
+                $errorMessage .= "Requested: '{$requestedTypeName}'. ";
+            }
+            if ($requestedTypeId) {
+                $errorMessage .= "Requested ID: '{$requestedTypeId}'. ";
+            }
+            
+            $errorMessage .= "Available types: {$availableTypes}";
+            throw new \Exception($errorMessage);
         }
         
         // Check for VIP indicators in member data

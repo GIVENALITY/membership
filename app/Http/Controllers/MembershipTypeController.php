@@ -37,8 +37,13 @@ class MembershipTypeController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id) {
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:membership_types,name',
+            'name' => 'required|string|max:255|unique:membership_types,name,NULL,id,hotel_id,' . $user->hotel_id,
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|in:monthly,yearly',
@@ -48,15 +53,19 @@ class MembershipTypeController extends Controller
             'discount_rate' => 'required|numeric|min:0|max:100',
             'points_required_for_discount' => 'required|integer|min:1',
             'has_special_birthday_discount' => 'nullable|boolean',
-            'birthday_discount_rate' => 'required|numeric|min:0|max:100',
+            'birthday_discount_rate' => 'nullable|numeric|min:0|max:100',
             'has_consecutive_visit_bonus' => 'nullable|boolean',
-            'consecutive_visits_for_bonus' => 'required|integer|min:1',
-            'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
+            'consecutive_visits_for_bonus' => 'nullable|integer|min:1',
+            'consecutive_visit_bonus_rate' => 'nullable|numeric|min:0|max:100',
             'points_reset_after_redemption' => 'nullable|boolean',
             'points_reset_threshold' => 'nullable|integer|min:1',
             'points_reset_notes' => 'nullable|string|max:500',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'progression_visits' => 'nullable|array',
+            'progression_visits.*' => 'nullable|integer|min:1',
+            'progression_discounts' => 'nullable|array',
+            'progression_discounts.*' => 'nullable|numeric|min:0|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -66,10 +75,6 @@ class MembershipTypeController extends Controller
         }
 
         try {
-            $user = auth()->user();
-            if (!$user || !$user->hotel_id) {
-                return back()->withErrors(['error' => 'User not associated with a hotel.']);
-            }
 
             $perks = array_filter($request->perks); // Remove empty perks
 
@@ -101,13 +106,13 @@ class MembershipTypeController extends Controller
                 'discount_progression' => $discountProgression,
                 'points_required_for_discount' => $request->points_required_for_discount,
                 'has_special_birthday_discount' => $request->boolean('has_special_birthday_discount'),
-                'birthday_discount_rate' => $request->birthday_discount_rate,
+                'birthday_discount_rate' => $request->has_special_birthday_discount ? $request->birthday_discount_rate : null,
                 'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
-                'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
-                'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
+                'consecutive_visits_for_bonus' => $request->has_consecutive_visit_bonus ? $request->consecutive_visits_for_bonus : null,
+                'consecutive_visit_bonus_rate' => $request->has_consecutive_visit_bonus ? $request->consecutive_visit_bonus_rate : null,
                 'points_reset_after_redemption' => $request->boolean('points_reset_after_redemption'),
-                'points_reset_threshold' => $request->points_reset_threshold,
-                'points_reset_notes' => $request->points_reset_notes,
+                'points_reset_threshold' => $request->points_reset_after_redemption ? $request->points_reset_threshold : null,
+                'points_reset_notes' => $request->points_reset_after_redemption ? $request->points_reset_notes : null,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);
@@ -160,7 +165,7 @@ class MembershipTypeController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:membership_types,name,' . $membershipType->id,
+            'name' => 'required|string|max:255|unique:membership_types,name,' . $membershipType->id . ',id,hotel_id,' . $user->hotel_id,
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|in:monthly,yearly',
@@ -170,15 +175,19 @@ class MembershipTypeController extends Controller
             'discount_rate' => 'required|numeric|min:0|max:100',
             'points_required_for_discount' => 'required|integer|min:1',
             'has_special_birthday_discount' => 'nullable|boolean',
-            'birthday_discount_rate' => 'required|numeric|min:0|max:100',
+            'birthday_discount_rate' => 'nullable|numeric|min:0|max:100',
             'has_consecutive_visit_bonus' => 'nullable|boolean',
-            'consecutive_visits_for_bonus' => 'required|integer|min:1',
-            'consecutive_visit_bonus_rate' => 'required|numeric|min:0|max:100',
+            'consecutive_visits_for_bonus' => 'nullable|integer|min:1',
+            'consecutive_visit_bonus_rate' => 'nullable|numeric|min:0|max:100',
             'points_reset_after_redemption' => 'nullable|boolean',
             'points_reset_threshold' => 'nullable|integer|min:1',
             'points_reset_notes' => 'nullable|string|max:500',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'progression_visits' => 'nullable|array',
+            'progression_visits.*' => 'nullable|integer|min:1',
+            'progression_discounts' => 'nullable|array',
+            'progression_discounts.*' => 'nullable|numeric|min:0|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -217,13 +226,13 @@ class MembershipTypeController extends Controller
                 'discount_progression' => $discountProgression,
                 'points_required_for_discount' => $request->points_required_for_discount,
                 'has_special_birthday_discount' => $request->boolean('has_special_birthday_discount'),
-                'birthday_discount_rate' => $request->birthday_discount_rate,
+                'birthday_discount_rate' => $request->has_special_birthday_discount ? $request->birthday_discount_rate : null,
                 'has_consecutive_visit_bonus' => $request->boolean('has_consecutive_visit_bonus'),
-                'consecutive_visits_for_bonus' => $request->consecutive_visits_for_bonus,
-                'consecutive_visit_bonus_rate' => $request->consecutive_visit_bonus_rate,
+                'consecutive_visits_for_bonus' => $request->has_consecutive_visit_bonus ? $request->consecutive_visits_for_bonus : null,
+                'consecutive_visit_bonus_rate' => $request->has_consecutive_visit_bonus ? $request->consecutive_visit_bonus_rate : null,
                 'points_reset_after_redemption' => $request->boolean('points_reset_after_redemption'),
-                'points_reset_threshold' => $request->points_reset_threshold,
-                'points_reset_notes' => $request->points_reset_notes,
+                'points_reset_threshold' => $request->points_reset_after_redemption ? $request->points_reset_threshold : null,
+                'points_reset_notes' => $request->points_reset_after_redemption ? $request->points_reset_notes : null,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
             ]);

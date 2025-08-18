@@ -449,4 +449,5 @@ return [
     'membership_type_id' => 'Kitambulisho cha Aina ya Uanachama',
     'member_membership_type_name' => 'Jina la aina ya uanachama (mfano: VIP, Standard, Premium)',
     'member_membership_type_id' => 'Kitambulisho cha aina ya uanachama (nambari)',
+    'available_membership_types' => 'Aina za Uanachama Zilizopo',
 ]; 

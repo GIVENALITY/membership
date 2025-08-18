@@ -78,6 +78,15 @@
                                                 <i class="icon-base ri ri-information-line me-2"></i>
                                                 {{ __('app.membership_type_assignment_description') }}
                                             </div>
+                                            
+                                            @if($exampleMembershipTypes->isNotEmpty())
+                                                <div class="mt-2">
+                                                    <small class="text-muted">
+                                                        <strong>{{ __('app.available_membership_types') }}:</strong>
+                                                        {{ $exampleMembershipTypes->pluck('name')->implode(', ') }}
+                                                    </small>
+                                                </div>
+                                            @endif
                                         </div>
 
                                         <div class="mb-3">
@@ -130,6 +139,15 @@
                                                 <i class="icon-base ri ri-information-line me-2"></i>
                                                 {{ __('app.membership_type_assignment_description') }}
                                             </div>
+                                            
+                                            @if($exampleMembershipTypes->isNotEmpty())
+                                                <div class="mt-2">
+                                                    <small class="text-muted">
+                                                        <strong>{{ __('app.available_membership_types') }}:</strong>
+                                                        {{ $exampleMembershipTypes->pluck('name')->implode(', ') }}
+                                                    </small>
+                                                </div>
+                                            @endif
                                         </div>
 
                                         <button type="submit" class="btn btn-success">
