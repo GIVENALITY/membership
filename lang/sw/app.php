@@ -397,4 +397,13 @@ return [
     'error' => 'Hitilafu',
     'success' => 'Mafanikio',
     'info' => 'Maelezo',
+    
+    // Impersonation
+    'impersonate_managers' => 'Jifanye Meneja',
+    'managers' => 'Wameneja',
+    'impersonation_mode' => 'Hali ya Kujifanya',
+    'stop_impersonating' => 'Acha Kujifanya',
+    'login_as_manager' => 'Ingia kama Meneja',
+    'currently_impersonating' => 'Kujifanya sasa',
+    'return_to_superadmin' => 'Rudi kwa Msimamizi Mkuu',
 ]; 

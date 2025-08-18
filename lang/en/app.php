@@ -415,4 +415,13 @@ return [
     'error' => 'Error',
     'success' => 'Success',
     'info' => 'Information',
+    
+    // Impersonation
+    'impersonate_managers' => 'Impersonate Managers',
+    'managers' => 'Managers',
+    'impersonation_mode' => 'Impersonation Mode',
+    'stop_impersonating' => 'Stop Impersonating',
+    'login_as_manager' => 'Login as Manager',
+    'currently_impersonating' => 'Currently impersonating',
+    'return_to_superadmin' => 'Return to Super Admin',
 ]; 

@@ -12,6 +12,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\ImpersonationController;
 
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {
@@ -287,5 +288,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/hotels', [SuperAdminController::class, 'hotels'])->name('hotels');
         Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
         Route::get('/logs', [SuperAdminController::class, 'logs'])->name('logs');
+    });
+
+    // Impersonation Routes
+    Route::prefix('impersonate')->name('impersonate.')->group(function () {
+        Route::get('/start/{userId}', [ImpersonationController::class, 'start'])->name('start');
+        Route::get('/stop', [ImpersonationController::class, 'stop'])->name('stop');
+        Route::get('/status', [ImpersonationController::class, 'status'])->name('status');
     });
 });

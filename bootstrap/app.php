@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Temporarily disable SetLocale middleware - causing blank page after language switch
         // $middleware->append(\App\Http\Middleware\SetLocale::class);
         
+        // Add impersonation middleware
+        $middleware->append(\App\Http\Middleware\ImpersonationMiddleware::class);
+        
         // Temporarily disable web middleware locale setting
         // $middleware->web(function ($request, $next) {
         //     $locale = Session::get('locale', config('app.locale'));

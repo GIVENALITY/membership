@@ -149,6 +149,12 @@
                                 {{ __('app.view_logs') }}
                             </a>
                         </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ route('superadmin.hotels') }}" class="btn btn-secondary w-100">
+                                <i class="icon-base ri ri-user-settings-line me-2"></i>
+                                {{ __('app.impersonate_managers') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

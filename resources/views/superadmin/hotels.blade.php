@@ -25,6 +25,8 @@
                                     <th>{{ __('app.city') }}</th>
                                     <th>{{ __('app.status') }}</th>
                                     <th>{{ __('app.users') }}</th>
+                                    <th>{{ __('app.managers') }}</th>
+                                    <th>{{ __('app.actions') }}</th>
                                     <th>{{ __('app.created') }}</th>
                                 </tr>
                             </thead>
@@ -64,11 +66,38 @@
                                     <td>
                                         <span class="badge bg-info">{{ $hotel->users_count ?? 0 }}</span>
                                     </td>
+                                    <td>
+                                        @if($hotel->users->count() > 0)
+                                            <div class="d-flex flex-column gap-1">
+                                                @foreach($hotel->users as $manager)
+                                                    <span class="badge bg-primary">{{ $manager->name }}</span>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-muted">No managers</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($hotel->users->count() > 0)
+                                            <div class="d-flex gap-1">
+                                                @foreach($hotel->users as $manager)
+                                                    <a href="{{ route('impersonate.start', $manager->id) }}" 
+                                                       class="btn btn-sm btn-outline-primary"
+                                                       title="Login as {{ $manager->name }}"
+                                                       onclick="return confirm('Are you sure you want to login as {{ $manager->name }}?')">
+                                                        <i class="icon-base ri ri-user-settings-line"></i>
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-muted">No managers</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $hotel->created_at->format('M d, Y') }}</td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="icon-base ri ri-building-line fs-1 mb-3"></i>
                                             <h6>{{ __('app.no_hotels_found') }}</h6>

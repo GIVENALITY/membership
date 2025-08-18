@@ -133,7 +133,11 @@ class SuperAdminController extends Controller
     public function hotels()
     {
         $this->checkSuperAdmin();
-        $hotels = Hotel::withCount('users')->paginate(20);
+        $hotels = Hotel::withCount('users')
+            ->with(['users' => function($query) {
+                $query->where('role', 'manager')->where('is_active', true);
+            }])
+            ->paginate(20);
         return view('superadmin.hotels', compact('hotels'));
     }
 
