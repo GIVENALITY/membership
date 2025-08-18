@@ -66,6 +66,12 @@ class MembershipTypeController extends Controller
             'progression_visits.*' => 'nullable|integer|min:1',
             'progression_discounts' => 'nullable|array',
             'progression_discounts.*' => 'nullable|numeric|min:0|max:100',
+            'card_template_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'card_field_mappings' => 'nullable|array',
+            'card_field_mappings.*.field' => 'required_with:card_field_mappings|string',
+            'card_field_mappings.*.x' => 'required_with:card_field_mappings|integer|min:0',
+            'card_field_mappings.*.y' => 'required_with:card_field_mappings|integer|min:0',
+            'card_field_mappings.*.font_size' => 'required_with:card_field_mappings|integer|min:8|max:72',
         ]);
 
         if ($validator->fails()) {
@@ -94,6 +100,28 @@ class MembershipTypeController extends Controller
                 }
             }
 
+            // Handle card template upload
+            $cardTemplatePath = null;
+            if ($request->hasFile('card_template_image')) {
+                $cardTemplatePath = $request->file('card_template_image')->store('card-templates', 'public');
+            }
+
+            // Build card field mappings
+            $cardFieldMappings = [];
+            if ($request->has('card_field_mappings')) {
+                $mappings = $request->card_field_mappings;
+                foreach ($mappings as $mapping) {
+                    if (!empty($mapping['field']) && isset($mapping['x']) && isset($mapping['y'])) {
+                        $cardFieldMappings[] = [
+                            'field' => $mapping['field'],
+                            'x' => (int)$mapping['x'],
+                            'y' => (int)$mapping['y'],
+                            'font_size' => (int)($mapping['font_size'] ?? 16),
+                        ];
+                    }
+                }
+            }
+
             MembershipType::create([
                 'hotel_id' => $user->hotel_id,
                 'name' => $request->name,
@@ -115,6 +143,8 @@ class MembershipTypeController extends Controller
                 'points_reset_notes' => $request->points_reset_after_redemption ? $request->points_reset_notes : null,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
+                'card_template_image' => $cardTemplatePath,
+                'card_field_mappings' => $cardFieldMappings,
             ]);
 
             return redirect()->route('membership-types.index')
@@ -188,6 +218,12 @@ class MembershipTypeController extends Controller
             'progression_visits.*' => 'nullable|integer|min:1',
             'progression_discounts' => 'nullable|array',
             'progression_discounts.*' => 'nullable|numeric|min:0|max:100',
+            'card_template_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'card_field_mappings' => 'nullable|array',
+            'card_field_mappings.*.field' => 'required_with:card_field_mappings|string',
+            'card_field_mappings.*.x' => 'required_with:card_field_mappings|integer|min:0',
+            'card_field_mappings.*.y' => 'required_with:card_field_mappings|integer|min:0',
+            'card_field_mappings.*.font_size' => 'required_with:card_field_mappings|integer|min:8|max:72',
         ]);
 
         if ($validator->fails()) {
@@ -215,6 +251,32 @@ class MembershipTypeController extends Controller
                 }
             }
 
+            // Handle card template upload
+            $cardTemplatePath = $membershipType->card_template_image;
+            if ($request->hasFile('card_template_image')) {
+                // Delete old template if exists
+                if ($cardTemplatePath && \Storage::disk('public')->exists($cardTemplatePath)) {
+                    \Storage::disk('public')->delete($cardTemplatePath);
+                }
+                $cardTemplatePath = $request->file('card_template_image')->store('card-templates', 'public');
+            }
+
+            // Build card field mappings
+            $cardFieldMappings = [];
+            if ($request->has('card_field_mappings')) {
+                $mappings = $request->card_field_mappings;
+                foreach ($mappings as $mapping) {
+                    if (!empty($mapping['field']) && isset($mapping['x']) && isset($mapping['y'])) {
+                        $cardFieldMappings[] = [
+                            'field' => $mapping['field'],
+                            'x' => (int)$mapping['x'],
+                            'y' => (int)$mapping['y'],
+                            'font_size' => (int)($mapping['font_size'] ?? 16),
+                        ];
+                    }
+                }
+            }
+
             $membershipType->update([
                 'name' => $request->name,
                 'description' => $request->description,
@@ -235,6 +297,8 @@ class MembershipTypeController extends Controller
                 'points_reset_notes' => $request->points_reset_after_redemption ? $request->points_reset_notes : null,
                 'is_active' => $request->boolean('is_active'),
                 'sort_order' => $request->sort_order ?? 0,
+                'card_template_image' => $cardTemplatePath,
+                'card_field_mappings' => $cardFieldMappings,
             ]);
 
             return redirect()->route('membership-types.index')

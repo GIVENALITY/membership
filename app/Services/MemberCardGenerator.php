@@ -12,40 +12,65 @@ class MemberCardGenerator
      */
     public function generate(Member $member): string
     {
+        $membershipType = $member->membershipType;
+        
+        // Check if membership type has custom card template
+        if ($membershipType && $membershipType->hasCardTemplate()) {
+            return $this->generateWithCustomTemplate($member, $membershipType);
+        }
+        
+        // Fallback to default template
+        return $this->generateWithDefaultTemplate($member);
+    }
+
+    /**
+     * Generate card using custom template and field mappings
+     */
+    private function generateWithCustomTemplate(Member $member, $membershipType): string
+    {
+        // Load custom template
+        $templatePath = storage_path('app/public/' . $membershipType->card_template_image);
+        if (!file_exists($templatePath)) {
+            throw new \RuntimeException('Card template not found at ' . $templatePath);
+        }
+
+        $image = $this->loadImage($templatePath);
+        $white = imagecolorallocate($image, 255, 255, 255);
+        $fontPath = $this->findFontPath();
+
+        // Get member data
+        $memberData = $this->getMemberData($member);
+
+        // Apply field mappings
+        foreach ($membershipType->card_field_mappings as $mapping) {
+            $field = $mapping['field'];
+            $x = $mapping['x'];
+            $y = $mapping['y'];
+            $fontSize = $mapping['font_size'] ?? 16;
+
+            if (isset($memberData[$field])) {
+                $text = $memberData[$field];
+                $this->drawText($image, $text, $x, $y, $fontSize, $white, $fontPath);
+            }
+        }
+
+        return $this->saveImage($image, $member->membership_id);
+    }
+
+    /**
+     * Generate card using default template
+     */
+    private function generateWithDefaultTemplate(Member $member): string
+    {
         // --- Template (PNG recommended for this artwork) ---
         $templatePath = public_path('assets/img/platinumcard.png');
         if (!file_exists($templatePath)) {
             throw new \RuntimeException('Card template not found at ' . $templatePath);
         }
 
-        // Load template
-        $ext = strtolower(pathinfo($templatePath, PATHINFO_EXTENSION));
-        if ($ext === 'png') {
-            $image = imagecreatefrompng($templatePath);
-            if ($image === false) throw new \RuntimeException('Failed to load PNG template');
-            // keep alpha if ever needed
-            imagesavealpha($image, true);
-        } elseif (in_array($ext, ['jpg', 'jpeg'])) {
-            $image = imagecreatefromjpeg($templatePath);
-            if ($image === false) throw new \RuntimeException('Failed to load JPG template');
-        } else {
-            throw new \RuntimeException('Unsupported template format: ' . $ext);
-        }
-
-        // --- Colors (template uses white text) ---
+        $image = $this->loadImage($templatePath);
         $white = imagecolorallocate($image, 255, 255, 255);
-
-        // --- Font discovery ---
-        $fontPathCandidates = [
-            public_path('assets/fonts/Inter-Regular.ttf'),
-            public_path('assets/fonts/Inter.ttf'),
-            public_path('assets/fonts/Roboto.ttf'),
-            base_path('vendor/google/fonts/apache/inter/Inter-Regular.ttf'),
-        ];
-        $fontPath = null;
-        foreach ($fontPathCandidates as $candidate) {
-            if (file_exists($candidate)) { $fontPath = $candidate; break; }
-        }
+        $fontPath = $this->findFontPath();
 
         // --- Values ---
         $fullName     = trim($member->first_name . ' ' . $member->last_name);
@@ -56,7 +81,79 @@ class MemberCardGenerator
         $nameX = 58; $nameY = 360; // "NAME & SURNAME" line
         $idX   = 58; $idY   = 405; // membership number line
 
-        // --- Draw (TTF preferred with auto-fit; fallback to bitmap) ---
+        $this->drawText($image, $fullName, $nameX, $nameY, 37, $white, $fontPath);
+        $this->drawText($image, $membershipId, $idX, $idY, 37, $white, $fontPath);
+
+        return $this->saveImage($image, $member->membership_id);
+    }
+
+    /**
+     * Load image from file
+     */
+    private function loadImage(string $path)
+    {
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        
+        if ($ext === 'png') {
+            $image = imagecreatefrompng($path);
+            if ($image === false) throw new \RuntimeException('Failed to load PNG template');
+            imagesavealpha($image, true);
+        } elseif (in_array($ext, ['jpg', 'jpeg'])) {
+            $image = imagecreatefromjpeg($path);
+            if ($image === false) throw new \RuntimeException('Failed to load JPG template');
+        } else {
+            throw new \RuntimeException('Unsupported template format: ' . $ext);
+        }
+
+        return $image;
+    }
+
+    /**
+     * Find available font path
+     */
+    private function findFontPath(): ?string
+    {
+        $fontPathCandidates = [
+            public_path('assets/fonts/Inter-Regular.ttf'),
+            public_path('assets/fonts/Inter.ttf'),
+            public_path('assets/fonts/Roboto.ttf'),
+            base_path('vendor/google/fonts/apache/inter/Inter-Regular.ttf'),
+        ];
+        
+        foreach ($fontPathCandidates as $candidate) {
+            if (file_exists($candidate)) {
+                return $candidate;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get member data for card generation
+     */
+    private function getMemberData(Member $member): array
+    {
+        return [
+            'first_name' => $member->first_name,
+            'last_name' => $member->last_name,
+            'full_name' => trim($member->first_name . ' ' . $member->last_name),
+            'membership_id' => (string) $member->membership_id,
+            'email' => $member->email,
+            'phone' => $member->phone,
+            'address' => $member->address,
+            'birth_date' => $member->birth_date ? date('M d, Y', strtotime($member->birth_date)) : '',
+            'join_date' => $member->join_date ? date('M d, Y', strtotime($member->join_date)) : '',
+            'membership_type_name' => $member->membershipType ? $member->membershipType->name : '',
+            'hotel_name' => $member->hotel ? $member->hotel->name : '',
+        ];
+    }
+
+    /**
+     * Draw text on image with auto-fitting
+     */
+    private function drawText($image, string $text, int $x, int $y, int $fontSize, int $color, ?string $fontPath): void
+    {
         if ($fontPath && function_exists('imagettftext')) {
             // Convert PX → PT for GD's imagettftext
             $pxToPt = static fn (float $px): float => $px / 1.333;
@@ -77,27 +174,27 @@ class MemberCardGenerator
                 return $current;
             };
 
-            // Safe widths for this layout
-            $nameMax = 540 - 58; // ≈ 482px (from left margin ~58 to safe right ~540)
-            $idMax   = 360;      // number block
+            // Safe width (adjust based on your template)
+            $maxWidth = 400;
+            $adjustedFontSize = $fitFontPx($text, $fontPath, $fontSize, $maxWidth);
 
-            $basePx  = 37.0;
-            $namePx  = $fitFontPx($fullName,     $fontPath, $basePx, $nameMax);
-            $idPx    = $fitFontPx($membershipId, $fontPath, $basePx, $idMax);
-
-            imagettftext($image, $pxToPt($namePx), 0, $nameX, $nameY, $white, $fontPath, $fullName);
-            imagettftext($image, $pxToPt($idPx),   0, $idX,   $idY,   $white, $fontPath, $membershipId);
+            imagettftext($image, $pxToPt($adjustedFontSize), 0, $x, $y, $color, $fontPath, $text);
         } else {
-            // Fallback bitmap rendering (sizes limited)
+            // Fallback bitmap rendering
             $font = 5; // GD built-in font
-            imagestring($image, $font, $nameX, $nameY - 12, $fullName, $white);
-            imagestring($image, $font, $idX,   $idY   - 12, $membershipId, $white);
+            imagestring($image, $font, $x, $y - 12, $text, $color);
         }
+    }
 
-        // --- Save to public storage (web-accessible via `storage:link`) ---
-        $fileName     = $membershipId . '.jpg';
-        $relativePath = 'cards/' . $fileName;               // storage/app/public/cards/xxx.jpg
+    /**
+     * Save image to storage
+     */
+    private function saveImage($image, string $membershipId): string
+    {
+        $fileName = $membershipId . '.jpg';
+        $relativePath = 'cards/' . $fileName;
         $absolutePath = storage_path('app/public/' . $relativePath);
+        
         if (!is_dir(dirname($absolutePath))) {
             @mkdir(dirname($absolutePath), 0775, true);
         }

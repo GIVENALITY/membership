@@ -291,6 +291,72 @@
             @enderror
           </div>
 
+          <!-- Card Template Configuration -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="icon-base ri ri-card-text-line me-2"></i>
+                Membership Card Template (Optional)
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-info">
+                <i class="icon-base ri ri-information-line me-2"></i>
+                Upload a card template image and define field positions for automatic card generation.
+              </div>
+
+              <div class="mb-3">
+                <label for="card_template_image" class="form-label">Card Template Image</label>
+                <input type="file" class="form-control @error('card_template_image') is-invalid @enderror" 
+                       id="card_template_image" name="card_template_image" accept="image/*">
+                <small class="text-muted">Upload a PNG, JPG, or JPEG image (max 2MB)</small>
+                @error('card_template_image')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Field Mappings</label>
+                <div id="field-mappings-container">
+                  <div class="field-mapping-item mb-2">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <select class="form-select" name="card_field_mappings[0][field]">
+                          <option value="">Select field</option>
+                          @foreach(\App\Models\MembershipType::getAvailableMemberFields() as $key => $label)
+                            <option value="{{ $key }}">{{ $label }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                      <div class="col-md-2">
+                        <input type="number" class="form-control" name="card_field_mappings[0][x]" 
+                               placeholder="X" min="0" title="X coordinate">
+                      </div>
+                      <div class="col-md-2">
+                        <input type="number" class="form-control" name="card_field_mappings[0][y]" 
+                               placeholder="Y" min="0" title="Y coordinate">
+                      </div>
+                      <div class="col-md-2">
+                        <input type="number" class="form-control" name="card_field_mappings[0][font_size]" 
+                               placeholder="Font" min="8" max="72" value="16" title="Font size">
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger remove-field-mapping" style="display: none;">
+                          <i class="icon-base ri ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="add-field-mapping">
+                  <i class="icon-base ri ri-add-line me-1"></i>
+                  Add Field Mapping
+                </button>
+                <small class="text-muted d-block mt-1">Define which member fields appear where on the card</small>
+              </div>
+            </div>
+          </div>
+
           <div class="mb-3">
             <div class="form-check">
               <input type="hidden" name="is_active" value="0">
@@ -461,6 +527,68 @@ document.addEventListener('DOMContentLoaded', function() {
   toggleBirthdayFields();
   toggleConsecutiveFields();
   togglePointsResetFields();
+
+  // Field mappings functionality
+  const fieldMappingsContainer = document.getElementById('field-mappings-container');
+  const addFieldMappingBtn = document.getElementById('add-field-mapping');
+
+  // Show/hide remove buttons for field mappings
+  function updateFieldMappingRemoveButtons() {
+    const items = fieldMappingsContainer.querySelectorAll('.field-mapping-item');
+    items.forEach((item, index) => {
+      const removeBtn = item.querySelector('.remove-field-mapping');
+      removeBtn.style.display = items.length > 1 ? 'block' : 'none';
+    });
+  }
+
+  // Add new field mapping
+  addFieldMappingBtn.addEventListener('click', function() {
+    const itemCount = fieldMappingsContainer.querySelectorAll('.field-mapping-item').length;
+    const newItem = document.createElement('div');
+    newItem.className = 'field-mapping-item mb-2';
+    newItem.innerHTML = `
+      <div class="row">
+        <div class="col-md-4">
+          <select class="form-select" name="card_field_mappings[${itemCount}][field]">
+            <option value="">Select field</option>
+            @foreach(\App\Models\MembershipType::getAvailableMemberFields() as $key => $label)
+              <option value="{{ $key }}">{{ $label }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control" name="card_field_mappings[${itemCount}][x]" 
+                 placeholder="X" min="0" title="X coordinate">
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control" name="card_field_mappings[${itemCount}][y]" 
+                 placeholder="Y" min="0" title="Y coordinate">
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control" name="card_field_mappings[${itemCount}][font_size]" 
+                 placeholder="Font" min="8" max="72" value="16" title="Font size">
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-outline-danger remove-field-mapping">
+            <i class="icon-base ri ri-delete-bin-line"></i>
+          </button>
+        </div>
+      </div>
+    `;
+    fieldMappingsContainer.appendChild(newItem);
+    updateFieldMappingRemoveButtons();
+  });
+
+  // Remove field mapping
+  fieldMappingsContainer.addEventListener('click', function(e) {
+    if (e.target.closest('.remove-field-mapping')) {
+      e.target.closest('.field-mapping-item').remove();
+      updateFieldMappingRemoveButtons();
+    }
+  });
+
+  // Initialize field mapping remove buttons
+  updateFieldMappingRemoveButtons();
 });
 </script>
 @endsection 

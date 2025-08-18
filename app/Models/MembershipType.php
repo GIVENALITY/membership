@@ -31,12 +31,15 @@ class MembershipType extends Model
         'points_reset_notes',
         'is_active',
         'sort_order',
+        'card_template_image',
+        'card_field_mappings',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'perks' => 'array',
         'discount_progression' => 'array',
+        'card_field_mappings' => 'array',
         'discount_rate' => 'decimal:2',
         'birthday_discount_rate' => 'decimal:2',
         'consecutive_visit_bonus_rate' => 'decimal:2',
@@ -297,5 +300,59 @@ class MembershipType extends Model
     public function getPointsResetNotesAttribute(): string
     {
         return $this->points_reset_notes ?? 'No additional notes';
+    }
+
+    /**
+     * Get card field mappings with default structure
+     */
+    public function getCardFieldMappingsAttribute($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
+    }
+
+    /**
+     * Get available member fields for card mapping
+     */
+    public static function getAvailableMemberFields(): array
+    {
+        return [
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'full_name' => 'Full Name',
+            'membership_id' => 'Membership ID',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'address' => 'Address',
+            'birth_date' => 'Birth Date',
+            'join_date' => 'Join Date',
+            'membership_type_name' => 'Membership Type Name',
+            'hotel_name' => 'Hotel Name',
+        ];
+    }
+
+    /**
+     * Get card template URL
+     */
+    public function getCardTemplateUrlAttribute(): ?string
+    {
+        if (!$this->card_template_image) {
+            return null;
+        }
+        return asset('storage/' . $this->card_template_image);
+    }
+
+    /**
+     * Check if card template is configured
+     */
+    public function hasCardTemplate(): bool
+    {
+        return !empty($this->card_template_image) && !empty($this->card_field_mappings);
     }
 } 
