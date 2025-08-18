@@ -46,27 +46,112 @@
             --hotel-secondary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }};
         }
         
-        /* Apply hotel branding colors */
-        .btn-primary {
+        /* Apply hotel branding colors to all buttons */
+        .btn-primary,
+        .btn-success,
+        .btn-info,
+        .btn-warning {
             background-color: var(--hotel-primary-color) !important;
             border-color: var(--hotel-primary-color) !important;
+            color: white !important;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover,
+        .btn-success:hover,
+        .btn-info:hover,
+        .btn-warning:hover {
             background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
             border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}dd !important;
+        }
+        
+        .btn-outline-primary,
+        .btn-outline-success,
+        .btn-outline-info,
+        .btn-outline-warning {
+            color: var(--hotel-primary-color) !important;
+            border-color: var(--hotel-primary-color) !important;
+            background-color: transparent !important;
+        }
+        
+        .btn-outline-primary:hover,
+        .btn-outline-success:hover,
+        .btn-outline-info:hover,
+        .btn-outline-warning:hover {
+            background-color: var(--hotel-primary-color) !important;
+            border-color: var(--hotel-primary-color) !important;
+            color: white !important;
+        }
+        
+        /* Secondary buttons use the secondary color */
+        .btn-secondary {
+            background-color: var(--hotel-secondary-color) !important;
+            border-color: var(--hotel-secondary-color) !important;
+            color: white !important;
+        }
+        
+        .btn-secondary:hover {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }}dd !important;
+            border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }}dd !important;
+        }
+        
+        .btn-outline-secondary {
+            color: var(--hotel-secondary-color) !important;
+            border-color: var(--hotel-secondary-color) !important;
+            background-color: transparent !important;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--hotel-secondary-color) !important;
+            border-color: var(--hotel-secondary-color) !important;
+            color: white !important;
+        }
+        
+        /* Danger buttons keep red color for destructive actions */
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
+        }
+        
+        .btn-outline-danger {
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            background-color: transparent !important;
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
         }
         
         .text-primary {
             color: var(--hotel-primary-color) !important;
         }
         
+        .text-secondary {
+            color: var(--hotel-secondary-color) !important;
+        }
+        
         .bg-primary {
             background-color: var(--hotel-primary-color) !important;
         }
         
+        .bg-secondary {
+            background-color: var(--hotel-secondary-color) !important;
+        }
+        
         .border-primary {
             border-color: var(--hotel-primary-color) !important;
+        }
+        
+        .border-secondary {
+            border-color: var(--hotel-secondary-color) !important;
         }
         
         .bg-label-primary {
@@ -74,8 +159,17 @@
             color: var(--hotel-primary-color) !important;
         }
         
+        .bg-label-secondary {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }}15 !important;
+            color: var(--hotel-secondary-color) !important;
+        }
+        
         .badge.bg-primary {
             background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .badge.bg-secondary {
+            background-color: var(--hotel-secondary-color) !important;
         }
         
         .nav-link.active {
@@ -108,6 +202,43 @@
         .page-item.active .page-link {
             background-color: var(--hotel-primary-color) !important;
             border-color: var(--hotel-primary-color) !important;
+        }
+        
+        /* Additional brand color applications */
+        .alert-primary {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
+            border-color: var(--hotel-primary-color) !important;
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .alert-info {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
+            border-color: var(--hotel-primary-color) !important;
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .alert-success {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
+            border-color: var(--hotel-primary-color) !important;
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .alert-warning {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#000000') : '#000000' }}15 !important;
+            border-color: var(--hotel-primary-color) !important;
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .progress-bar {
+            background-color: var(--hotel-primary-color) !important;
+        }
+        
+        .spinner-border.text-primary {
+            color: var(--hotel-primary-color) !important;
+        }
+        
+        .spinner-grow.text-primary {
+            color: var(--hotel-primary-color) !important;
         }
     </style>
 

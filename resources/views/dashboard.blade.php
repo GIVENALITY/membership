@@ -14,11 +14,11 @@
 
                 <div class="d-flex gap-2">
       <a href="{{ route('members.create') }}" class="btn btn-sm btn-outline-primary">Add New Member</a>
-      <a href="{{ route('dining.history') }}" class="btn btn-sm btn-outline-info">
+      <a href="{{ route('dining.history') }}" class="btn btn-sm btn-outline-primary">
         <i class="ri ri-history-line me-1"></i>
         Dining History
       </a>
-      <a href="{{ route('onboarding.index') }}" class="btn btn-sm btn-outline-secondary">
+      <a href="{{ route('onboarding.index') }}" class="btn btn-sm btn-outline-primary">
         <i class="ri ri-rocket-line me-1"></i>
         System Guide
       </a>
@@ -198,7 +198,7 @@
                    <i class="icon-base ri ri-search-line me-2"></i>
                    Search Members
                  </a>
-                 <a href="{{ route('cashier.index') }}" class="btn btn-outline-warning">
+                 <a href="{{ route('cashier.index') }}" class="btn btn-outline-primary">
                    <i class="icon-base ri ri-bank-card-line me-2"></i>
                    Cashier Dashboard
                  </a>
@@ -206,7 +206,7 @@
                    <i class="icon-base ri ri-user-add-line me-2"></i>
                    Add New Member
                  </a>
-                 <a href="{{ route('dining.index') }}" class="btn btn-outline-success">
+                 <a href="{{ route('dining.index') }}" class="btn btn-outline-primary">
                    <i class="icon-base ri ri-restaurant-line me-2"></i>
                    Record Visit
                  </a>
