@@ -162,7 +162,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">Update Hotel Profile</button>
+                            <button type="submit" class="btn btn-primary">Update Restaurant Profile</button>
                         </div>
                     </form>
                 </div>
