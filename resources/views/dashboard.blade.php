@@ -42,7 +42,7 @@
                   <h5 class="mb-0" style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};">
                     {{ Auth::user()->hotel->name ?? 'Membership MS' }}
                   </h5>
-                  <small class="text-muted">Restaurant Management</small>
+                  <small class="text-muted">Restaurant Management System</small>
                 </div>
               </div>
             @endif

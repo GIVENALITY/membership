@@ -158,8 +158,8 @@
                     <i class="ri ri-restaurant-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
                 </div>
             @endif
-            <h1 class="display-4 fw-bold" style="color: var(--hotel-primary-color);">
-                {{ Auth::user()->hotel->name ?? 'Membership MS' }} - System Guide
+            <h1 class="display-4 fw-bold" style="color: var(--restaurant-primary-color);">
+                {{ Auth::user()->hotel->name ?? 'Restaurant MS' }} - System Guide
             </h1>
             <p class="lead text-muted">Learn about all the features and capabilities of your restaurant loyalty management system.</p>
             
