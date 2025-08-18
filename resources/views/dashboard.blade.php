@@ -37,10 +37,10 @@
               <div class="d-flex align-items-center justify-content-center" style="height: 140px;">
                 <div class="text-center">
                   <div class="mb-2">
-                    <i class="icon-base ri ri-restaurant-line" style="font-size: 3rem; color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};"></i>
+                    <i class="icon-base ri ri-restaurant-line" style="font-size: 3rem; color: {{ Auth::user()->hotel->primary_color ?? '#007bff' }};"></i>
                   </div>
-                  <h5 class="mb-0" style="color: {{ Auth::user()->hotel->primary_color ?? '#000000' }};">
-                    {{ Auth::user()->hotel->name ?? 'Membership MS' }}
+                  <h5 class="mb-0" style="color: {{ Auth::user()->hotel->primary_color ?? '#007bff' }};">
+                                          {{ Auth::user()->hotel->name ?? 'Restaurant MS' }}
                   </h5>
                   <small class="text-muted">Restaurant Management System</small>
                 </div>

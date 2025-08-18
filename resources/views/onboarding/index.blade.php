@@ -134,12 +134,12 @@
         }
         
         .quick-action:hover {
-            border-color: var(--hotel-primary-color);
+            border-color: var(--restaurant-primary-color);
             background: #f8f9fa;
         }
         
         .stats-card {
-            background: linear-gradient(135deg, var(--hotel-primary-color) 0%, {{ Auth::user()->hotel->primary_color ?? '#000000' }}dd 100%);
+            background: linear-gradient(135deg, var(--restaurant-primary-color) 0%, {{ Auth::user()->hotel->primary_color ?? '#007bff' }}dd 100%);
             color: white;
             border-radius: 15px;
             padding: 1.5rem;
@@ -155,7 +155,7 @@
                 <img src="{{ Auth::user()->hotel->logo_url }}" alt="{{ Auth::user()->hotel->name }}" class="hotel-logo">
             @else
                 <div class="hotel-logo d-flex align-items-center justify-content-center bg-light rounded">
-                    <i class="ri ri-restaurant-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
+                    <i class="ri ri-restaurant-line" style="font-size: 2rem; color: var(--restaurant-primary-color);"></i>
                 </div>
             @endif
             <h1 class="display-4 fw-bold" style="color: var(--restaurant-primary-color);">
@@ -185,7 +185,7 @@
         <div class="feature-card">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 class="fw-bold mb-3" style="color: var(--hotel-primary-color);">
+                    <h2 class="fw-bold mb-3" style="color: var(--restaurant-primary-color);">
                         <i class="ri ri-rocket-line me-2"></i>
                         What Membership MS Can Do For You
                     </h2>
