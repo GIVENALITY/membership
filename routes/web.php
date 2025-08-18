@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ImpersonationController;
+use App\Http\Controllers\MemberImportController;
 
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {
@@ -200,6 +201,13 @@ Route::middleware('auth')->group(function () {
     })->name('members.points-history');
     Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
     Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
+    
+    // Member Import Routes
+    Route::get('/members/import', [MemberImportController::class, 'index'])->name('members.import');
+    Route::post('/members/import', [MemberImportController::class, 'import'])->name('members.import.process');
+    Route::post('/members/import/storage', [MemberImportController::class, 'importFromStorage'])->name('members.import.storage');
+    Route::get('/members/import/membership-types', [MemberImportController::class, 'getMembershipTypes'])->name('members.import.membership-types');
+    Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
     
     // Resource route comes LAST to avoid catching specific routes
     Route::resource('members', MemberController::class);

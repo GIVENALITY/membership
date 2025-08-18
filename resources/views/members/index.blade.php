@@ -8,10 +8,16 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title">{{ __('app.members') }}</h4>
-        <a href="{{ route('members.create') }}" class="btn btn-primary">
-          <i class="icon-base ri ri-user-add-line me-2"></i>
-          {{ __('app.add_member') }}
-        </a>
+        <div class="d-flex gap-2">
+          <a href="{{ route('members.import') }}" class="btn btn-success">
+            <i class="icon-base ri ri-upload-line me-2"></i>
+            {{ __('app.import_members') }}
+          </a>
+          <a href="{{ route('members.create') }}" class="btn btn-primary">
+            <i class="icon-base ri ri-user-add-line me-2"></i>
+            {{ __('app.add_member') }}
+          </a>
+        </div>
       </div>
       <div class="card-body">
         @if (session('success'))
