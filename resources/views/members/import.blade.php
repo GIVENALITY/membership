@@ -98,6 +98,18 @@
                                             </div>
                                         </div>
 
+                                        <div class="mb-3">
+                                            <label for="duplicate_handling" class="form-label">{{ __('app.duplicate_handling') }}</label>
+                                            <select class="form-select" id="duplicate_handling" name="duplicate_handling">
+                                                <option value="error">{{ __('app.duplicate_handling_error') }}</option>
+                                                <option value="skip">{{ __('app.duplicate_handling_skip') }}</option>
+                                                <option value="update">{{ __('app.duplicate_handling_update') }}</option>
+                                            </select>
+                                            <div class="form-text">
+                                                {{ __('app.duplicate_handling_description') }}
+                                            </div>
+                                        </div>
+
                                         <button type="submit" class="btn btn-primary">
                                             <i class="icon-base ri ri-upload-line me-2"></i>
                                             {{ __('app.import_members') }}
@@ -148,6 +160,18 @@
                                                     </small>
                                                 </div>
                                             @endif
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="storage_duplicate_handling" class="form-label">{{ __('app.duplicate_handling') }}</label>
+                                            <select class="form-select" id="storage_duplicate_handling" name="duplicate_handling">
+                                                <option value="error">{{ __('app.duplicate_handling_error') }}</option>
+                                                <option value="skip">{{ __('app.duplicate_handling_skip') }}</option>
+                                                <option value="update">{{ __('app.duplicate_handling_update') }}</option>
+                                            </select>
+                                            <div class="form-text">
+                                                {{ __('app.duplicate_handling_description') }}
+                                            </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-success">

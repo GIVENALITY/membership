@@ -449,5 +449,10 @@ return [
     'membership_type_id' => 'Kitambulisho cha Aina ya Uanachama',
     'member_membership_type_name' => 'Jina la aina ya uanachama (mfano: VIP, Standard, Premium)',
     'member_membership_type_id' => 'Kitambulisho cha aina ya uanachama (nambari)',
+    'duplicate_handling' => 'Usimamizi wa Nakala Mbili',
+    'duplicate_handling_error' => 'Simama kwenye Hitilafu (Chaguo-msingi)',
+    'duplicate_handling_skip' => 'Ruka Nakala Mbili',
+    'duplicate_handling_update' => 'Sasisha Zilizopo',
+    'duplicate_handling_description' => 'Chagua jinsi ya kushughulikia wanachama wa nakala mbili (barua pepe sawa au kitambulisho cha uanachama)',
     'available_membership_types' => 'Aina za Uanachama Zilizopo',
 ]; 

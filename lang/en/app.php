@@ -428,6 +428,11 @@ return [
     // Member Import
     'import_members' => 'Import Members',
     'import_members_description' => 'Import member data from Excel or CSV files',
+    'duplicate_handling' => 'Duplicate Handling',
+    'duplicate_handling_error' => 'Stop on Error (Default)',
+    'duplicate_handling_skip' => 'Skip Duplicates',
+    'duplicate_handling_update' => 'Update Existing',
+    'duplicate_handling_description' => 'Choose how to handle duplicate members (same email or membership ID)',
     'upload_file' => 'Upload File',
     'import_from_storage' => 'Import from Storage',
     'import_from_storage_description' => 'Import from the existing members.xlsx file in storage',

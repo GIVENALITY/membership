@@ -40,6 +40,7 @@ class MemberImportController extends Controller
         $request->validate([
             'hotel_id' => 'required|exists:hotels,id',
             'import_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // 10MB max
+            'duplicate_handling' => 'nullable|in:skip,update,error'
         ]);
 
         try {
@@ -56,6 +57,8 @@ class MemberImportController extends Controller
             if ($membershipTypes->isEmpty()) {
                 throw new \Exception('No active membership types found for this hotel. Please create membership types first.');
             }
+            
+            $duplicateHandling = $request->input('duplicate_handling', 'error'); // Default to error
             
             $file = $request->file('import_file');
             $filePath = $file->getRealPath();
@@ -85,7 +88,13 @@ class MemberImportController extends Controller
                 }
                 
                 try {
-                    $member = $this->createMemberFromRow($data, $hotel, $membershipTypes);
+                    $member = $this->createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling);
+                    
+                    if ($member === null) {
+                        // Member was skipped (duplicate handling = 'skip')
+                        continue;
+                    }
+                    
                     $importedCount++;
                     
                     Log::info('Member imported successfully', [
@@ -138,6 +147,7 @@ class MemberImportController extends Controller
     {
         $request->validate([
             'hotel_id' => 'required|exists:hotels,id',
+            'duplicate_handling' => 'nullable|in:skip,update,error'
         ]);
 
         try {
@@ -224,7 +234,7 @@ class MemberImportController extends Controller
     /**
      * Create a member from a data row
      */
-    private function createMemberFromRow($data, $hotel, $membershipTypes)
+    private function createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling = 'error')
     {
         // Map the data columns (adjust based on your Excel structure)
         $mappedData = $this->mapDataColumns($data);
@@ -245,7 +255,26 @@ class MemberImportController extends Controller
             ->first();
             
         if ($existingMember) {
-            throw new \Exception('Member already exists with this membership ID or email');
+            switch ($duplicateHandling) {
+                case 'skip':
+                    // Skip this member silently
+                    return null;
+                    
+                case 'update':
+                    // Update existing member with new data
+                    $mappedData['hotel_id'] = $hotel->id;
+                    $membershipType = $this->determineMembershipType($mappedData, $membershipTypes);
+                    $mappedData['membership_type_id'] = $membershipType->id;
+                    $mappedData['status'] = $mappedData['status'] ?? 'active';
+                    $mappedData['join_date'] = $mappedData['join_date'] ?? now()->toDateString();
+                    
+                    $existingMember->update($mappedData);
+                    return $existingMember;
+                    
+                case 'error':
+                default:
+                    throw new \Exception('Member already exists with this membership ID or email');
+            }
         }
         
         // Set hotel
