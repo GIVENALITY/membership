@@ -332,8 +332,21 @@ class MemberImportController extends Controller
         // Check if membership type name is provided in the data
         if (!empty($memberData['membership_type_name'])) {
             $requestedTypeName = trim($memberData['membership_type_name']);
+            
+            // First try exact match
             $membershipType = $membershipTypes->first(function($type) use ($requestedTypeName) {
                 return strtolower(trim($type->name)) === strtolower($requestedTypeName);
+            });
+            
+            if ($membershipType) {
+                return $membershipType;
+            }
+            
+            // Try fuzzy matching for common typos and variations
+            $normalizedRequested = $this->normalizeMembershipTypeName($requestedTypeName);
+            $membershipType = $membershipTypes->first(function($type) use ($normalizedRequested) {
+                $normalizedType = $this->normalizeMembershipTypeName($type->name);
+                return $normalizedType === $normalizedRequested;
             });
             
             if ($membershipType) {
@@ -359,7 +372,25 @@ class MemberImportController extends Controller
             $errorMessage = 'Requested membership type not found. ';
             
             if ($requestedTypeName) {
-                $errorMessage .= "Requested: '{$requestedTypeName}'. ";
+                $normalizedRequested = $this->normalizeMembershipTypeName($requestedTypeName);
+                $errorMessage .= "Requested: '{$requestedTypeName}'";
+                
+                // Check if it's a known typo
+                $knownTypos = [
+                    'coorporate' => 'Corporate',
+                    'corprate' => 'Corporate',
+                    'corprorate' => 'Corporate',
+                    'individaul' => 'Individual',
+                    'indivdual' => 'Individual',
+                    'famly' => 'Family',
+                    'familly' => 'Family',
+                ];
+                
+                if (isset($knownTypos[strtolower($requestedTypeName)])) {
+                    $errorMessage .= " (did you mean '{$knownTypos[strtolower($requestedTypeName)]}'?)";
+                }
+                
+                $errorMessage .= ". ";
             }
             if ($requestedTypeId) {
                 $errorMessage .= "Requested ID: '{$requestedTypeId}'. ";
@@ -416,6 +447,37 @@ class MemberImportController extends Controller
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * Normalize membership type name for fuzzy matching
+     */
+    private function normalizeMembershipTypeName($name)
+    {
+        $name = strtolower(trim($name));
+        
+        // Common typos and variations
+        $replacements = [
+            'coorporate' => 'corporate',
+            'corprate' => 'corporate',
+            'corprorate' => 'corporate',
+            'individaul' => 'individual',
+            'indivdual' => 'individual',
+            'famly' => 'family',
+            'familly' => 'family',
+            'vip' => 'vip',
+            'premium' => 'premium',
+            'basic' => 'basic',
+            'standard' => 'standard',
+        ];
+        
+        foreach ($replacements as $wrong => $correct) {
+            if ($name === $wrong) {
+                return $correct;
+            }
+        }
+        
+        return $name;
     }
 
     /**
