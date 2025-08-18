@@ -13,6 +13,10 @@
             <i class="icon-base ri ri-credit-card-line me-2"></i>
             {{ __('app.virtual_cards') }}
           </a>
+          <a href="{{ route('members.physical-cards.index') }}" class="btn btn-warning">
+            <i class="icon-base ri ri-credit-card-2-line me-2"></i>
+            {{ __('app.physical_cards') }}
+          </a>
           <a href="{{ route('members.import') }}" class="btn btn-success">
             <i class="icon-base ri ri-upload-line me-2"></i>
             {{ __('app.import_members') }}
@@ -96,6 +100,10 @@
                           {{ __('app.no_card') }}
                         </span>
                       @endif
+                      
+                      <span class="badge {{ $member->getPhysicalCardStatusBadgeClass() }}">
+                        {{ $member->getPhysicalCardStatusText() }}
+                      </span>
                     </div>
                   </td>
                   <td>
@@ -119,6 +127,22 @@
                                 <i class="icon-base ri ri-add-line me-2"></i>{{ __('app.generate_card') }}
                               </button>
                             </form>
+                          </li>
+                        @endif
+                        
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        @if($member->physical_card_status === 'not_issued')
+                          <li>
+                            <a class="dropdown-item" href="{{ route('members.physical-cards.issue-form', $member) }}">
+                              <i class="icon-base ri ri-credit-card-2-line me-2"></i>{{ __('app.issue_card') }}
+                            </a>
+                          </li>
+                        @else
+                          <li>
+                            <a class="dropdown-item" href="{{ route('members.physical-cards.index') }}?status={{ $member->physical_card_status }}">
+                              <i class="icon-base ri ri-credit-card-2-line me-2"></i>{{ __('app.physical_card_status') }}: {{ $member->getPhysicalCardStatusText() }}
+                            </a>
                           </li>
                         @endif
                         <li><hr class="dropdown-divider"></li>

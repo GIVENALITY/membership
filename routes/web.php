@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberCardController;
+use App\Http\Controllers\PhysicalCardController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\DiningVisitController;
 use App\Http\Controllers\DiningHistoryController;
@@ -213,6 +214,14 @@ Route::get('/members/{member}/cards/view', [MemberCardController::class, 'viewCa
 Route::get('/members/{member}/cards/download', [MemberCardController::class, 'downloadCard'])->name('members.cards.download');
 Route::delete('/members/{member}/cards/delete', [MemberCardController::class, 'deleteCard'])->name('members.cards.delete');
 Route::get('/members/cards/stats', [MemberCardController::class, 'getStats'])->name('members.cards.stats');
+
+// Physical Card Management Routes
+Route::get('/members/physical-cards', [PhysicalCardController::class, 'index'])->name('members.physical-cards.index');
+Route::get('/members/{member}/physical-cards/issue', [PhysicalCardController::class, 'issueForm'])->name('members.physical-cards.issue-form');
+Route::post('/members/{member}/physical-cards/issue', [PhysicalCardController::class, 'issue'])->name('members.physical-cards.issue');
+Route::post('/members/{member}/physical-cards/update-status', [PhysicalCardController::class, 'updateStatus'])->name('members.physical-cards.update-status');
+Route::post('/members/physical-cards/mass-issue', [PhysicalCardController::class, 'massIssue'])->name('members.physical-cards.mass-issue');
+Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'getStats'])->name('members.physical-cards.stats');
     
     Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));

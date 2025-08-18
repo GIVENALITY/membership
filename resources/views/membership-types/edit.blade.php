@@ -26,7 +26,7 @@
           </div>
         @endif
 
-        <form method="POST" action="{{ route('membership-types.update', $membershipType) }}">
+        <form method="POST" action="{{ route('membership-types.update', $membershipType) }}" enctype="multipart/form-data">
           @csrf
           @method('PUT')
           

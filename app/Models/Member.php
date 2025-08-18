@@ -42,6 +42,12 @@ class Member extends Model
         'average_spending_per_visit',
         'last_visit_at',
         'card_image_path',
+        'physical_card_status',
+        'physical_card_issued_date',
+        'physical_card_issued_by',
+        'physical_card_notes',
+        'physical_card_delivered_date',
+        'physical_card_delivered_by',
         'expires_at',
     ];
 
@@ -50,6 +56,8 @@ class Member extends Model
         'join_date' => 'date',
         'last_visit_at' => 'datetime',
         'last_visit_date' => 'date',
+        'physical_card_issued_date' => 'date',
+        'physical_card_delivered_date' => 'date',
         'expires_at' => 'date',
         'total_spent' => 'decimal:2',
         'current_discount_rate' => 'decimal:2',
@@ -107,6 +115,52 @@ class Member extends Model
         }
         
         return \Storage::url($this->card_image_path);
+    }
+
+    /**
+     * Check if physical card has been issued
+     */
+    public function hasPhysicalCard(): bool
+    {
+        return in_array($this->physical_card_status, ['issued', 'delivered', 'replaced']);
+    }
+
+    /**
+     * Check if physical card has been delivered
+     */
+    public function hasPhysicalCardDelivered(): bool
+    {
+        return in_array($this->physical_card_status, ['delivered', 'replaced']);
+    }
+
+    /**
+     * Get physical card status badge class
+     */
+    public function getPhysicalCardStatusBadgeClass(): string
+    {
+        return match($this->physical_card_status) {
+            'not_issued' => 'bg-label-secondary',
+            'issued' => 'bg-label-warning',
+            'delivered' => 'bg-label-success',
+            'lost' => 'bg-label-danger',
+            'replaced' => 'bg-label-info',
+            default => 'bg-label-secondary'
+        };
+    }
+
+    /**
+     * Get physical card status text
+     */
+    public function getPhysicalCardStatusText(): string
+    {
+        return match($this->physical_card_status) {
+            'not_issued' => __('app.not_issued'),
+            'issued' => __('app.issued'),
+            'delivered' => __('app.delivered'),
+            'lost' => __('app.lost'),
+            'replaced' => __('app.replaced'),
+            default => __('app.not_issued')
+        };
     }
 
     /**
