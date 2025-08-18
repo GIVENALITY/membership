@@ -152,7 +152,7 @@
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('superadmin.hotels') }}" class="btn btn-secondary w-100">
                                 <i class="icon-base ri ri-user-settings-line me-2"></i>
-                                {{ __('app.impersonate_managers') }}
+                                {{ __('app.impersonate_admins') }}
                             </a>
                         </div>
                     </div>

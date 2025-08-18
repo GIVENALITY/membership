@@ -25,7 +25,7 @@
                                     <th>{{ __('app.city') }}</th>
                                     <th>{{ __('app.status') }}</th>
                                     <th>{{ __('app.users') }}</th>
-                                    <th>{{ __('app.managers') }}</th>
+                                    <th>{{ __('app.admins_and_managers') }}</th>
                                     <th>{{ __('app.actions') }}</th>
                                     <th>{{ __('app.created') }}</th>
                                 </tr>
@@ -69,28 +69,30 @@
                                     <td>
                                         @if($hotel->users->count() > 0)
                                             <div class="d-flex flex-column gap-1">
-                                                @foreach($hotel->users as $manager)
-                                                    <span class="badge bg-primary">{{ $manager->name }}</span>
+                                                @foreach($hotel->users as $user)
+                                                    <span class="badge {{ $user->role === 'admin' ? 'bg-danger' : 'bg-primary' }}">
+                                                        {{ $user->name }} ({{ ucfirst($user->role) }})
+                                                    </span>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <span class="text-muted">No managers</span>
+                                            <span class="text-muted">No admins/managers</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($hotel->users->count() > 0)
                                             <div class="d-flex gap-1">
-                                                @foreach($hotel->users as $manager)
-                                                    <a href="{{ route('impersonate.start', $manager->id) }}" 
-                                                       class="btn btn-sm btn-outline-primary"
-                                                       title="Login as {{ $manager->name }}"
-                                                       onclick="return confirm('Are you sure you want to login as {{ $manager->name }}?')">
+                                                @foreach($hotel->users as $user)
+                                                    <a href="{{ route('impersonate.start', $user->id) }}" 
+                                                       class="btn btn-sm {{ $user->role === 'admin' ? 'btn-outline-danger' : 'btn-outline-primary' }}"
+                                                       title="Login as {{ $user->name }} ({{ ucfirst($user->role) }})"
+                                                       onclick="return confirm('Are you sure you want to login as {{ $user->name }} ({{ ucfirst($user->role) }})?')">
                                                         <i class="icon-base ri ri-user-settings-line"></i>
                                                     </a>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <span class="text-muted">No managers</span>
+                                            <span class="text-muted">No admins/managers</span>
                                         @endif
                                     </td>
                                     <td>{{ $hotel->created_at->format('M d, Y') }}</td>

@@ -135,7 +135,7 @@ class SuperAdminController extends Controller
         $this->checkSuperAdmin();
         $hotels = Hotel::withCount('users')
             ->with(['users' => function($query) {
-                $query->where('role', 'manager')->where('is_active', true);
+                $query->whereIn('role', ['admin', 'manager'])->where('is_active', true);
             }])
             ->paginate(20);
         return view('superadmin.hotels', compact('hotels'));

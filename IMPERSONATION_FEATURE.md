@@ -2,14 +2,14 @@
 
 ## Overview
 
-The impersonation feature allows super admins to temporarily login as hotel managers to provide support, troubleshoot issues, or perform actions on behalf of hotel staff.
+The impersonation feature allows super admins to temporarily login as hotel admins and managers to provide support, troubleshoot issues, or perform actions on behalf of hotel staff.
 
 ## Features
 
 ### 1. Impersonation Capabilities
 - **Super Admin Only**: Only users with the `superadmin` role can impersonate other users
-- **Manager Impersonation**: Super admins can impersonate hotel managers (users with `manager` role)
-- **Security**: Cannot impersonate other super admins
+- **Admin & Manager Impersonation**: Super admins can impersonate hotel admins and managers (users with `admin` or `manager` role)
+- **Security**: Cannot impersonate other super admins or lower-level roles
 - **Session Management**: Maintains original super admin session data for easy return
 
 ### 2. Visual Indicators
@@ -32,14 +32,14 @@ The impersonation feature allows super admins to temporarily login as hotel mana
    - View the list of all hotels
 
 2. **Start Impersonation**:
-   - Find the hotel with the manager you want to impersonate
-   - Click the impersonation button (user settings icon) next to the manager's name
+   - Find the hotel with the admin or manager you want to impersonate
+   - Click the impersonation button (user settings icon) next to the user's name
    - Confirm the action when prompted
 
 3. **During Impersonation**:
    - You'll see a red banner at the top indicating you're impersonating
-   - You have full access to the manager's dashboard and features
-   - All actions are performed as the manager user
+   - You have full access to the admin/manager's dashboard and features
+   - All actions are performed as the impersonated user
 
 4. **Stop Impersonation**:
    - Click "Stop Impersonating" in the banner
@@ -75,6 +75,7 @@ App\Http\Middleware\ImpersonationMiddleware
 ### Access Control
 - Only super admins can initiate impersonation
 - Cannot impersonate other super admins
+- Can only impersonate users with `admin` or `manager` roles
 - Target user must be active and have a valid role
 
 ### Session Management

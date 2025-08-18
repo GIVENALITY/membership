@@ -27,6 +27,11 @@ class ImpersonationController extends Controller
             return back()->with('error', 'Cannot impersonate another superadmin.');
         }
 
+        // Only allow impersonating admins and managers
+        if (!in_array($targetUser->role, ['admin', 'manager'])) {
+            return back()->with('error', 'Can only impersonate admins and managers.');
+        }
+
         // Store the original user's ID in session
         session([
             'impersonator_id' => auth()->id(),

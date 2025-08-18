@@ -399,11 +399,11 @@ return [
     'info' => 'Maelezo',
     
     // Impersonation
-    'impersonate_managers' => 'Jifanye Meneja',
-    'managers' => 'Wameneja',
+    'impersonate_admins' => 'Jifanye Wasimamizi',
+    'admins_and_managers' => 'Wasimamizi & Wameneja',
     'impersonation_mode' => 'Hali ya Kujifanya',
     'stop_impersonating' => 'Acha Kujifanya',
-    'login_as_manager' => 'Ingia kama Meneja',
+    'login_as_admin' => 'Ingia kama Msimamizi',
     'currently_impersonating' => 'Kujifanya sasa',
     'return_to_superadmin' => 'Rudi kwa Msimamizi Mkuu',
 ]; 

@@ -417,11 +417,11 @@ return [
     'info' => 'Information',
     
     // Impersonation
-    'impersonate_managers' => 'Impersonate Managers',
-    'managers' => 'Managers',
+    'impersonate_admins' => 'Impersonate Admins',
+    'admins_and_managers' => 'Admins & Managers',
     'impersonation_mode' => 'Impersonation Mode',
     'stop_impersonating' => 'Stop Impersonating',
-    'login_as_manager' => 'Login as Manager',
+    'login_as_admin' => 'Login as Admin',
     'currently_impersonating' => 'Currently impersonating',
     'return_to_superadmin' => 'Return to Super Admin',
 ]; 
