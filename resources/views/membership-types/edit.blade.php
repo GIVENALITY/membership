@@ -108,6 +108,210 @@
             </div>
           </div>
 
+          <!-- Discount Progression Section -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="icon-base ri ri-trending-up-line me-2"></i>
+                Discount Progression Rules (Optional)
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-info">
+                <i class="icon-base ri ri-information-line me-2"></i>
+                These settings are optional. You can configure basic discount rules or add advanced progression features.
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="points_required_for_discount" class="form-label">Points Required for Discount</label>
+                  <input type="number" class="form-control @error('points_required_for_discount') is-invalid @enderror" 
+                         id="points_required_for_discount" name="points_required_for_discount" min="1" 
+                         placeholder="5" value="{{ old('points_required_for_discount', $membershipType->points_required_for_discount) }}">
+                  <small class="text-muted">Minimum points needed to qualify for enhanced discounts</small>
+                  @error('points_required_for_discount')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="consecutive_visits_for_bonus" class="form-label">Consecutive Visits for Bonus</label>
+                  <input type="number" class="form-control @error('consecutive_visits_for_bonus') is-invalid @enderror" 
+                         id="consecutive_visits_for_bonus" name="consecutive_visits_for_bonus" min="1" 
+                         placeholder="5" value="{{ old('consecutive_visits_for_bonus', $membershipType->consecutive_visits_for_bonus) }}">
+                  <small class="text-muted">Number of consecutive visits needed for bonus discount (optional)</small>
+                  @error('consecutive_visits_for_bonus')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="consecutive_visit_bonus_rate" class="form-label">Consecutive Visit Bonus Rate (%)</label>
+                  <input type="number" class="form-control @error('consecutive_visit_bonus_rate') is-invalid @enderror" 
+                         id="consecutive_visit_bonus_rate" name="consecutive_visit_bonus_rate" step="0.1" min="0" max="100" 
+                         placeholder="20.0" value="{{ old('consecutive_visit_bonus_rate', $membershipType->consecutive_visit_bonus_rate) }}">
+                  <small class="text-muted">Special discount rate for consecutive visits (optional)</small>
+                  @error('consecutive_visit_bonus_rate')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="birthday_discount_rate" class="form-label">Birthday Discount Rate (%)</label>
+                  <input type="number" class="form-control @error('birthday_discount_rate') is-invalid @enderror" 
+                         id="birthday_discount_rate" name="birthday_discount_rate" step="0.1" min="0" max="100" 
+                         placeholder="25.0" value="{{ old('birthday_discount_rate', $membershipType->birthday_discount_rate) }}">
+                  <small class="text-muted">Special discount rate for birthday visits (optional)</small>
+                  @error('birthday_discount_rate')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-check">
+                    <input type="hidden" name="has_special_birthday_discount" value="0">
+                    <input class="form-check-input" type="checkbox" id="has_special_birthday_discount" 
+                           name="has_special_birthday_discount" value="1"
+                           {{ old('has_special_birthday_discount', $membershipType->has_special_birthday_discount) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="has_special_birthday_discount">
+                      Enable Birthday Discount
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-check">
+                    <input type="hidden" name="has_consecutive_visit_bonus" value="0">
+                    <input class="form-check-input" type="checkbox" id="has_consecutive_visit_bonus" 
+                           name="has_consecutive_visit_bonus" value="1"
+                           {{ old('has_consecutive_visit_bonus', $membershipType->has_consecutive_visit_bonus) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="has_consecutive_visit_bonus">
+                      Enable Consecutive Visit Bonus
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Points Reset Configuration -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">
+                    <i class="icon-base ri ri-refresh-line me-2"></i>
+                    Points Reset Configuration
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-check">
+                        <input type="hidden" name="points_reset_after_redemption" value="0">
+                        <input class="form-check-input" type="checkbox" id="points_reset_after_redemption" 
+                               name="points_reset_after_redemption" value="1"
+                               {{ old('points_reset_after_redemption', $membershipType->points_reset_after_redemption) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="points_reset_after_redemption">
+                          Enable Points Reset After Redemption
+                        </label>
+                        <small class="text-muted d-block">When enabled, points will reset to 0 after being used for discounts</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="points_reset_threshold" class="form-label">Points Reset Threshold</label>
+                      <input type="number" class="form-control @error('points_reset_threshold') is-invalid @enderror" 
+                             id="points_reset_threshold" name="points_reset_threshold" min="1" 
+                             placeholder="Leave empty for immediate reset" value="{{ old('points_reset_threshold', $membershipType->points_reset_threshold) }}">
+                      <small class="text-muted">Points will reset when reaching this threshold (optional)</small>
+                      @error('points_reset_threshold')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="points_reset_notes" class="form-label">Points Reset Notes</label>
+                    <textarea class="form-control @error('points_reset_notes') is-invalid @enderror" 
+                              id="points_reset_notes" name="points_reset_notes" rows="2" 
+                              placeholder="Optional notes about points reset policy...">{{ old('points_reset_notes', $membershipType->points_reset_notes) }}</textarea>
+                    <small class="text-muted">Additional information about the points reset policy</small>
+                    @error('points_reset_notes')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+
+              <!-- Discount Progression Table -->
+              <div class="mb-3">
+                <label class="form-label">Discount Progression by Visits (Optional)</label>
+                <div id="progression-container">
+                  @if(old('progression_visits') && old('progression_discounts'))
+                    @for($i = 0; $i < count(old('progression_visits')); $i++)
+                      <div class="progression-item mb-2">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <input type="number" class="form-control" name="progression_visits[]" 
+                                   placeholder="Number of visits" min="1" value="{{ old('progression_visits')[$i] }}">
+                          </div>
+                          <div class="col-md-5">
+                            <input type="number" class="form-control" name="progression_discounts[]" 
+                                   placeholder="Discount %" step="0.1" min="0" max="100" value="{{ old('progression_discounts')[$i] }}">
+                          </div>
+                          <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger remove-progression">
+                              <i class="icon-base ri ri-delete-bin-line"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    @endfor
+                  @elseif($membershipType->discount_progression)
+                    @foreach($membershipType->discount_progression as $progression)
+                      <div class="progression-item mb-2">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <input type="number" class="form-control" name="progression_visits[]" 
+                                   placeholder="Number of visits" min="1" value="{{ $progression['visits'] ?? '' }}">
+                          </div>
+                          <div class="col-md-5">
+                            <input type="number" class="form-control" name="progression_discounts[]" 
+                                   placeholder="Discount %" step="0.1" min="0" max="100" value="{{ $progression['discount'] ?? '' }}">
+                          </div>
+                          <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger remove-progression">
+                              <i class="icon-base ri ri-delete-bin-line"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+                  @else
+                    <div class="progression-item mb-2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="number" class="form-control" name="progression_visits[]" 
+                                 placeholder="Number of visits" min="1">
+                        </div>
+                        <div class="col-md-5">
+                          <input type="number" class="form-control" name="progression_discounts[]" 
+                                 placeholder="Discount %" step="0.1" min="0" max="100">
+                        </div>
+                        <div class="col-md-1">
+                          <button type="button" class="btn btn-outline-danger remove-progression" style="display: none;">
+                            <i class="icon-base ri ri-delete-bin-line"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  @endif
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="add-progression">
+                  <i class="icon-base ri ri-add-line me-1"></i>
+                  Add Progression Level
+                </button>
+                <small class="text-muted d-block mt-1">Define how discount increases with visit count (optional)</small>
+              </div>
+            </div>
+          </div>
+
           <div class="mb-3">
             <label class="form-label">Perks/Benefits</label>
             <div id="perks-container">
@@ -174,6 +378,56 @@
 document.addEventListener('DOMContentLoaded', function() {
   const perksContainer = document.getElementById('perks-container');
   const addPerkBtn = document.getElementById('add-perk');
+  const perkItems = perksContainer.querySelectorAll('.perk-item');
+
+  // Progression table functionality
+  const progressionContainer = document.getElementById('progression-container');
+  const addProgressionBtn = document.getElementById('add-progression');
+
+  // Show/hide remove buttons for progression
+  function updateProgressionRemoveButtons() {
+    const items = progressionContainer.querySelectorAll('.progression-item');
+    items.forEach((item, index) => {
+      const removeBtn = item.querySelector('.remove-progression');
+      removeBtn.style.display = items.length > 1 ? 'block' : 'none';
+    });
+  }
+
+  // Add new progression level
+  addProgressionBtn.addEventListener('click', function() {
+    const newItem = document.createElement('div');
+    newItem.className = 'progression-item mb-2';
+    newItem.innerHTML = `
+      <div class="row">
+        <div class="col-md-6">
+          <input type="number" class="form-control" name="progression_visits[]" 
+                 placeholder="Number of visits" min="1">
+        </div>
+        <div class="col-md-5">
+          <input type="number" class="form-control" name="progression_discounts[]" 
+                 placeholder="Discount %" step="0.1" min="0" max="100">
+        </div>
+        <div class="col-md-1">
+          <button type="button" class="btn btn-outline-danger remove-progression">
+            <i class="icon-base ri ri-delete-bin-line"></i>
+          </button>
+        </div>
+      </div>
+    `;
+    progressionContainer.appendChild(newItem);
+    updateProgressionRemoveButtons();
+  });
+
+  // Remove progression level
+  progressionContainer.addEventListener('click', function(e) {
+    if (e.target.closest('.remove-progression')) {
+      e.target.closest('.progression-item').remove();
+      updateProgressionRemoveButtons();
+    }
+  });
+
+  // Initialize progression remove buttons
+  updateProgressionRemoveButtons();
 
   // Show/hide remove buttons based on number of perks
   function updateRemoveButtons() {
@@ -211,6 +465,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize remove buttons
   updateRemoveButtons();
+
+  // Conditional field visibility for optional features
+  const birthdayCheckbox = document.getElementById('has_special_birthday_discount');
+  const birthdayRateField = document.getElementById('birthday_discount_rate').closest('.col-md-6');
+  
+  const consecutiveCheckbox = document.getElementById('has_consecutive_visit_bonus');
+  const consecutiveVisitsField = document.getElementById('consecutive_visits_for_bonus').closest('.col-md-6');
+  const consecutiveRateField = document.getElementById('consecutive_visit_bonus_rate').closest('.col-md-6');
+  
+  const pointsResetCheckbox = document.getElementById('points_reset_after_redemption');
+  const pointsResetThresholdField = document.getElementById('points_reset_threshold').closest('.col-md-6');
+  const pointsResetNotesField = document.getElementById('points_reset_notes').closest('.mb-3');
+
+  function toggleBirthdayFields() {
+    if (birthdayCheckbox.checked) {
+      birthdayRateField.style.display = 'block';
+    } else {
+      birthdayRateField.style.display = 'none';
+      document.getElementById('birthday_discount_rate').value = '';
+    }
+  }
+
+  function toggleConsecutiveFields() {
+    if (consecutiveCheckbox.checked) {
+      consecutiveVisitsField.style.display = 'block';
+      consecutiveRateField.style.display = 'block';
+    } else {
+      consecutiveVisitsField.style.display = 'none';
+      consecutiveRateField.style.display = 'none';
+      document.getElementById('consecutive_visits_for_bonus').value = '';
+      document.getElementById('consecutive_visit_bonus_rate').value = '';
+    }
+  }
+
+  function togglePointsResetFields() {
+    if (pointsResetCheckbox.checked) {
+      pointsResetThresholdField.style.display = 'block';
+      pointsResetNotesField.style.display = 'block';
+    } else {
+      pointsResetThresholdField.style.display = 'none';
+      pointsResetNotesField.style.display = 'none';
+      document.getElementById('points_reset_threshold').value = '';
+      document.getElementById('points_reset_notes').value = '';
+    }
+  }
+
+  // Add event listeners
+  birthdayCheckbox.addEventListener('change', toggleBirthdayFields);
+  consecutiveCheckbox.addEventListener('change', toggleConsecutiveFields);
+  pointsResetCheckbox.addEventListener('change', togglePointsResetFields);
+
+  // Initialize field visibility
+  toggleBirthdayFields();
+  toggleConsecutiveFields();
+  togglePointsResetFields();
 });
 </script>
 @endsection 
