@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberCardController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\DiningVisitController;
 use App\Http\Controllers\DiningHistoryController;
@@ -198,11 +199,20 @@ Route::middleware('auth')->group(function () {
     })->name('members.search-page');
     
     // Member Import Routes (MUST come before resource route)
-    Route::get('/members/import', [MemberImportController::class, 'index'])->name('members.import');
-    Route::post('/members/import', [MemberImportController::class, 'import'])->name('members.import.process');
-    Route::post('/members/import/storage', [MemberImportController::class, 'importFromStorage'])->name('members.import.storage');
-    Route::get('/members/import/membership-types', [MemberImportController::class, 'getMembershipTypes'])->name('members.import.membership-types');
-    Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
+Route::get('/members/import', [MemberImportController::class, 'index'])->name('members.import');
+Route::post('/members/import', [MemberImportController::class, 'import'])->name('members.import.process');
+Route::post('/members/import/storage', [MemberImportController::class, 'importFromStorage'])->name('members.import.storage');
+Route::get('/members/import/membership-types', [MemberImportController::class, 'getMembershipTypes'])->name('members.import.membership-types');
+Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
+
+// Member Card Management Routes
+Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
+Route::post('/members/cards/mass-generate', [MemberCardController::class, 'massGenerate'])->name('members.cards.mass-generate');
+Route::post('/members/{member}/cards/generate', [MemberCardController::class, 'generateCard'])->name('members.cards.generate');
+Route::get('/members/{member}/cards/view', [MemberCardController::class, 'viewCard'])->name('members.cards.view');
+Route::get('/members/{member}/cards/download', [MemberCardController::class, 'downloadCard'])->name('members.cards.download');
+Route::delete('/members/{member}/cards/delete', [MemberCardController::class, 'deleteCard'])->name('members.cards.delete');
+Route::get('/members/cards/stats', [MemberCardController::class, 'getStats'])->name('members.cards.stats');
     
     Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));

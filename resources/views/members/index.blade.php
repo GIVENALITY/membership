@@ -9,6 +9,10 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title">{{ __('app.members') }}</h4>
         <div class="d-flex gap-2">
+          <a href="{{ route('members.cards.index') }}" class="btn btn-info">
+            <i class="icon-base ri ri-credit-card-line me-2"></i>
+            {{ __('app.virtual_cards') }}
+          </a>
           <a href="{{ route('members.import') }}" class="btn btn-success">
             <i class="icon-base ri ri-upload-line me-2"></i>
             {{ __('app.import_members') }}
@@ -72,13 +76,27 @@
                   <td>{{ $member->total_visits }} {{ __('app.total_visits') }}</td>
                   <td>{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : __('app.never') }}</td>
                   <td>
-                    @if($member->status === 'active')
-                      <span class="badge bg-label-success">{{ __('app.active') }}</span>
-                    @elseif($member->status === 'inactive')
-                      <span class="badge bg-label-secondary">{{ __('app.inactive') }}</span>
-                    @else
-                      <span class="badge bg-label-danger">{{ __('app.suspended') }}</span>
-                    @endif
+                    <div class="d-flex flex-column gap-1">
+                      @if($member->status === 'active')
+                        <span class="badge bg-label-success">{{ __('app.active') }}</span>
+                      @elseif($member->status === 'inactive')
+                        <span class="badge bg-label-secondary">{{ __('app.inactive') }}</span>
+                      @else
+                        <span class="badge bg-label-danger">{{ __('app.suspended') }}</span>
+                      @endif
+                      
+                      @if($member->card_image_path)
+                        <span class="badge bg-label-success">
+                          <i class="icon-base ri ri-check-line me-1"></i>
+                          {{ __('app.card_available') }}
+                        </span>
+                      @else
+                        <span class="badge bg-label-warning">
+                          <i class="icon-base ri ri-error-warning-line me-1"></i>
+                          {{ __('app.no_card') }}
+                        </span>
+                      @endif
+                    </div>
                   </td>
                   <td>
                     <div class="dropdown">
@@ -89,6 +107,20 @@
                         <li><a class="dropdown-item" href="{{ route('members.show', $member) }}"><i class="icon-base ri ri-eye-line me-2"></i>{{ __('app.view') }}</a></li>
                         <li><a class="dropdown-item" href="{{ route('members.edit', $member) }}"><i class="icon-base ri ri-edit-line me-2"></i>{{ __('app.edit') }}</a></li>
                         <li><a class="dropdown-item" href="#"><i class="icon-base ri ri-restaurant-line me-2"></i>{{ __('app.record_visit') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        @if($member->card_image_path)
+                          <li><a class="dropdown-item" href="{{ route('members.cards.view', $member) }}" target="_blank"><i class="icon-base ri ri-credit-card-line me-2"></i>{{ __('app.view_card') }}</a></li>
+                          <li><a class="dropdown-item" href="{{ route('members.cards.download', $member) }}"><i class="icon-base ri ri-download-line me-2"></i>{{ __('app.download_card') }}</a></li>
+                        @else
+                          <li>
+                            <form action="{{ route('members.cards.generate', $member) }}" method="POST" class="d-inline">
+                              @csrf
+                              <button type="submit" class="dropdown-item">
+                                <i class="icon-base ri ri-add-line me-2"></i>{{ __('app.generate_card') }}
+                              </button>
+                            </form>
+                          </li>
+                        @endif
                         <li><hr class="dropdown-divider"></li>
                         <li>
                           <form action="{{ route('members.destroy', $member) }}" method="POST" style="display: inline;">

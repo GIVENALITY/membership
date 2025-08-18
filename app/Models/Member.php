@@ -90,6 +90,26 @@ class Member extends Model
     }
 
     /**
+     * Check if member has a virtual card
+     */
+    public function hasCard(): bool
+    {
+        return !empty($this->card_image_path);
+    }
+
+    /**
+     * Get the card URL
+     */
+    public function getCardUrlAttribute(): ?string
+    {
+        if (!$this->card_image_path) {
+            return null;
+        }
+        
+        return \Storage::url($this->card_image_path);
+    }
+
+    /**
      * Get the member's membership type
      */
     public function membershipType(): BelongsTo
