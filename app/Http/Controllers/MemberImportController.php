@@ -29,7 +29,6 @@ class MemberImportController extends Controller
     {
         $request->validate([
             'hotel_id' => 'required|exists:hotels,id',
-            'membership_type_id' => 'required|exists:membership_types,id',
             'import_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // 10MB max
         ]);
 
@@ -37,7 +36,16 @@ class MemberImportController extends Controller
             DB::beginTransaction();
 
             $hotel = Hotel::findOrFail($request->hotel_id);
-            $membershipType = MembershipType::findOrFail($request->membership_type_id);
+            
+            // Get all active membership types for this hotel
+            $membershipTypes = MembershipType::where('hotel_id', $hotel->id)
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+                
+            if ($membershipTypes->isEmpty()) {
+                throw new \Exception('No active membership types found for this hotel. Please create membership types first.');
+            }
             
             $file = $request->file('import_file');
             $filePath = $file->getRealPath();
@@ -67,13 +75,14 @@ class MemberImportController extends Controller
                 }
                 
                 try {
-                    $member = $this->createMemberFromRow($data, $hotel, $membershipType);
+                    $member = $this->createMemberFromRow($data, $hotel, $membershipTypes);
                     $importedCount++;
                     
                     Log::info('Member imported successfully', [
                         'membership_id' => $member->membership_id,
                         'name' => $member->full_name,
                         'hotel' => $hotel->name,
+                        'membership_type' => $member->membershipType->name,
                         'row' => $rowNumber
                     ]);
                     
@@ -119,14 +128,22 @@ class MemberImportController extends Controller
     {
         $request->validate([
             'hotel_id' => 'required|exists:hotels,id',
-            'membership_type_id' => 'required|exists:membership_types,id',
         ]);
 
         try {
             DB::beginTransaction();
 
             $hotel = Hotel::findOrFail($request->hotel_id);
-            $membershipType = MembershipType::findOrFail($request->membership_type_id);
+            
+            // Get all active membership types for this hotel
+            $membershipTypes = MembershipType::where('hotel_id', $hotel->id)
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+                
+            if ($membershipTypes->isEmpty()) {
+                throw new \Exception('No active membership types found for this hotel. Please create membership types first.');
+            }
             
             $filePath = storage_path('members.xlsx');
             
@@ -197,7 +214,7 @@ class MemberImportController extends Controller
     /**
      * Create a member from a data row
      */
-    private function createMemberFromRow($data, $hotel, $membershipType)
+    private function createMemberFromRow($data, $hotel, $membershipTypes)
     {
         // Map the data columns (adjust based on your Excel structure)
         $mappedData = $this->mapDataColumns($data);
@@ -221,8 +238,11 @@ class MemberImportController extends Controller
             throw new \Exception('Member already exists with this membership ID or email');
         }
         
-        // Set hotel and membership type
+        // Set hotel
         $mappedData['hotel_id'] = $hotel->id;
+        
+        // Determine membership type based on data
+        $membershipType = $this->determineMembershipType($mappedData, $membershipTypes);
         $mappedData['membership_type_id'] = $membershipType->id;
         
         // Set default values
@@ -252,6 +272,8 @@ class MemberImportController extends Controller
             'birth_date' => null,
             'join_date' => null,
             'membership_id' => '',
+            'membership_type_name' => '',
+            'membership_type_id' => '',
             'allergies' => '',
             'dietary_preferences' => '',
             'special_requests' => '',
@@ -270,15 +292,82 @@ class MemberImportController extends Controller
         if (isset($data[5])) $mapped['birth_date'] = $this->parseDate($data[5]);
         if (isset($data[6])) $mapped['join_date'] = $this->parseDate($data[6]);
         if (isset($data[7])) $mapped['membership_id'] = trim($data[7]);
-        if (isset($data[8])) $mapped['allergies'] = trim($data[8]);
-        if (isset($data[9])) $mapped['dietary_preferences'] = trim($data[9]);
-        if (isset($data[10])) $mapped['special_requests'] = trim($data[10]);
-        if (isset($data[11])) $mapped['additional_notes'] = trim($data[11]);
-        if (isset($data[12])) $mapped['emergency_contact_name'] = trim($data[12]);
-        if (isset($data[13])) $mapped['emergency_contact_phone'] = trim($data[13]);
-        if (isset($data[14])) $mapped['emergency_contact_relationship'] = trim($data[14]);
+        if (isset($data[8])) $mapped['membership_type_name'] = trim($data[8]);
+        if (isset($data[9])) $mapped['membership_type_id'] = trim($data[9]);
+        if (isset($data[10])) $mapped['allergies'] = trim($data[10]);
+        if (isset($data[11])) $mapped['dietary_preferences'] = trim($data[11]);
+        if (isset($data[12])) $mapped['special_requests'] = trim($data[12]);
+        if (isset($data[13])) $mapped['additional_notes'] = trim($data[13]);
+        if (isset($data[14])) $mapped['emergency_contact_name'] = trim($data[14]);
+        if (isset($data[15])) $mapped['emergency_contact_phone'] = trim($data[15]);
+        if (isset($data[16])) $mapped['emergency_contact_relationship'] = trim($data[16]);
         
         return $mapped;
+    }
+
+    /**
+     * Determine membership type based on member data
+     */
+    private function determineMembershipType($memberData, $membershipTypes)
+    {
+        // Priority order for membership type determination:
+        // 1. Explicit membership type name in data
+        // 2. Membership type ID in data
+        // 3. Default to first available membership type
+        
+        // Check if membership type name is provided in the data
+        if (!empty($memberData['membership_type_name'])) {
+            $membershipType = $membershipTypes->first(function($type) use ($memberData) {
+                return strtolower(trim($type->name)) === strtolower(trim($memberData['membership_type_name']));
+            });
+            
+            if ($membershipType) {
+                return $membershipType;
+            }
+        }
+        
+        // Check if membership type ID is provided in the data
+        if (!empty($memberData['membership_type_id'])) {
+            $membershipType = $membershipTypes->first(function($type) use ($memberData) {
+                return $type->id == $memberData['membership_type_id'];
+            });
+            
+            if ($membershipType) {
+                return $membershipType;
+            }
+        }
+        
+        // Check for VIP indicators in member data
+        $vipIndicators = ['vip', 'premium', 'gold', 'platinum', 'diamond', 'executive'];
+        $memberText = strtolower(implode(' ', array_filter([
+            $memberData['first_name'] ?? '',
+            $memberData['last_name'] ?? '',
+            $memberData['additional_notes'] ?? '',
+            $memberData['special_requests'] ?? ''
+        ])));
+        
+        foreach ($membershipTypes as $type) {
+            $typeName = strtolower($type->name);
+            foreach ($vipIndicators as $indicator) {
+                if (strpos($typeName, $indicator) !== false && strpos($memberText, $indicator) !== false) {
+                    return $type;
+                }
+            }
+        }
+        
+        // Check for standard indicators
+        $standardIndicators = ['standard', 'basic', 'regular', 'silver', 'bronze'];
+        foreach ($membershipTypes as $type) {
+            $typeName = strtolower($type->name);
+            foreach ($standardIndicators as $indicator) {
+                if (strpos($typeName, $indicator) !== false) {
+                    return $type;
+                }
+            }
+        }
+        
+        // Default to the first available membership type
+        return $membershipTypes->first();
     }
 
     /**
@@ -340,6 +429,8 @@ class MemberImportController extends Controller
                 'Birth Date',
                 'Join Date',
                 'Membership ID',
+                'Membership Type Name',
+                'Membership Type ID',
                 'Allergies',
                 'Dietary Preferences',
                 'Special Requests',
@@ -359,6 +450,8 @@ class MemberImportController extends Controller
                 '1990-05-15',
                 '2024-01-01',
                 'MS001',
+                'VIP',
+                '',
                 'None',
                 'Vegetarian',
                 'Window seat preferred',

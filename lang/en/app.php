@@ -461,4 +461,10 @@ return [
     'sample_template_description' => 'Download a sample CSV template with the correct format',
     'download_template' => 'Download Template',
     'import_errors_occurred' => 'Import Errors Occurred',
+    'membership_type_assignment' => 'Membership Type Assignment',
+    'membership_type_assignment_description' => 'Membership types will be automatically assigned based on data in your file. You can specify membership type name or ID in the import file, or the system will use intelligent matching based on member information.',
+    'membership_type_name' => 'Membership Type Name',
+    'membership_type_id' => 'Membership Type ID',
+    'member_membership_type_name' => 'Name of the membership type (e.g., VIP, Standard, Premium)',
+    'member_membership_type_id' => 'ID of the membership type (numeric)',
 ]; 

@@ -58,6 +58,8 @@ The member import feature allows you to bulk import member data from Excel or CS
 - **Birth Date** - Format: YYYY-MM-DD
 - **Join Date** - Format: YYYY-MM-DD
 - **Membership ID** - Auto-generated if not provided
+- **Membership Type Name** - Name of membership type (e.g., "VIP", "Standard", "Premium")
+- **Membership Type ID** - ID of membership type (numeric)
 - **Allergies** - Member's allergies
 - **Dietary Preferences** - Member's dietary preferences
 - **Special Requests** - Special requests or notes
@@ -69,8 +71,9 @@ The member import feature allows you to bulk import member data from Excel or CS
 ### Sample Data Format
 
 ```csv
-First Name,Last Name,Email,Phone,Address,Birth Date,Join Date,Membership ID,Allergies,Dietary Preferences,Special Requests,Additional Notes,Emergency Contact Name,Emergency Contact Phone,Emergency Contact Relationship
-John,Doe,john.doe@example.com,+255123456789,123 Main Street Dar es Salaam,1990-05-15,2024-01-01,MS001,None,Vegetarian,Window seat preferred,VIP customer,Jane Doe,+255987654321,Spouse
+First Name,Last Name,Email,Phone,Address,Birth Date,Join Date,Membership ID,Membership Type Name,Membership Type ID,Allergies,Dietary Preferences,Special Requests,Additional Notes,Emergency Contact Name,Emergency Contact Phone,Emergency Contact Relationship
+John,Doe,john.doe@example.com,+255123456789,123 Main Street Dar es Salaam,1990-05-15,2024-01-01,MS001,VIP,,None,Vegetarian,Window seat preferred,VIP customer,Jane Doe,+255987654321,Spouse
+Jane,Smith,jane.smith@example.com,+255123456790,456 Oak Avenue Dar es Salaam,1985-08-20,2024-01-02,MS002,Standard,,Peanuts,None,Quiet table preferred,Regular customer,John Smith,+255987654322,Spouse
 ```
 
 ## Technical Implementation
@@ -94,6 +97,36 @@ GET  /members/import/template           # Download template
 - Automatic membership ID generation
 - Hotel and membership type association
 - Transaction-based import for data integrity
+
+### Membership Type Assignment Logic
+
+The importer uses intelligent membership type assignment with the following priority order:
+
+1. **Explicit Membership Type Name** - If provided in the import file
+2. **Explicit Membership Type ID** - If provided in the import file
+3. **VIP Indicators** - Automatic detection based on keywords in member data
+4. **Standard Indicators** - Automatic detection for standard memberships
+5. **Default Assignment** - Falls back to the first available membership type
+
+#### VIP Detection Keywords:
+- "VIP", "Premium", "Gold", "Platinum", "Diamond", "Executive"
+- Searches in: First Name, Last Name, Additional Notes, Special Requests
+
+#### Standard Detection Keywords:
+- "Standard", "Basic", "Regular", "Silver", "Bronze"
+- Searches in membership type names
+
+#### Example Assignment Logic:
+```php
+// Member with "VIP" in notes gets VIP membership type
+"John Doe" + "VIP customer" → VIP Membership Type
+
+// Member with "Standard" in membership type name
+"Jane Smith" + Standard Membership Type → Standard Membership Type
+
+// Member with no indicators gets default membership type
+"Bob Wilson" → First Available Membership Type
+```
 
 ## Error Handling
 

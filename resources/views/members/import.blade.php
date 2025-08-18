@@ -73,10 +73,11 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="membership_type_id" class="form-label">{{ __('app.select_membership_type') }}</label>
-                                            <select class="form-select" id="membership_type_id" name="membership_type_id" required>
-                                                <option value="">{{ __('app.choose_membership_type') }}</option>
-                                            </select>
+                                            <label class="form-label">{{ __('app.membership_type_assignment') }}</label>
+                                            <div class="alert alert-info">
+                                                <i class="icon-base ri ri-information-line me-2"></i>
+                                                {{ __('app.membership_type_assignment_description') }}
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">
@@ -124,10 +125,11 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="storage_membership_type_id" class="form-label">{{ __('app.select_membership_type') }}</label>
-                                            <select class="form-select" id="storage_membership_type_id" name="membership_type_id" required>
-                                                <option value="">{{ __('app.choose_membership_type') }}</option>
-                                            </select>
+                                            <label class="form-label">{{ __('app.membership_type_assignment') }}</label>
+                                            <div class="alert alert-info">
+                                                <i class="icon-base ri ri-information-line me-2"></i>
+                                                {{ __('app.membership_type_assignment_description') }}
+                                            </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-success">
@@ -168,6 +170,8 @@
                                                 <li><strong>{{ __('app.birth_date') }}</strong> - {{ __('app.member_birth_date') }}</li>
                                                 <li><strong>{{ __('app.join_date') }}</strong> - {{ __('app.member_join_date') }}</li>
                                                 <li><strong>{{ __('app.membership_id') }}</strong> - {{ __('app.member_membership_id') }}</li>
+                                                <li><strong>{{ __('app.membership_type_name') }}</strong> - {{ __('app.member_membership_type_name') }}</li>
+                                                <li><strong>{{ __('app.membership_type_id') }}</strong> - {{ __('app.member_membership_type_id') }}</li>
                                                 <li><strong>{{ __('app.allergies') }}</strong> - {{ __('app.member_allergies') }}</li>
                                                 <li><strong>{{ __('app.dietary_preferences') }}</strong> - {{ __('app.member_dietary_preferences') }}</li>
                                             </ul>

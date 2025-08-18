@@ -443,4 +443,10 @@ return [
     'sample_template_description' => 'Pakua kigezo cha CSV cha mfano na muundo sahihi',
     'download_template' => 'Pakua Kigezo',
     'import_errors_occurred' => 'Makosa ya Kuingiza Yalitokea',
+    'membership_type_assignment' => 'Mgawo wa Aina ya Uanachama',
+    'membership_type_assignment_description' => 'Aina za uanachama zitagawanywa moja kwa moja kulingana na data kwenye faili yako. Unaweza kubainisha jina la aina ya uanachama au kitambulisho kwenye faili ya kuingiza, au mfumo utatumia mechi ya busara kulingana na maelezo ya mwanachama.',
+    'membership_type_name' => 'Jina la Aina ya Uanachama',
+    'membership_type_id' => 'Kitambulisho cha Aina ya Uanachama',
+    'member_membership_type_name' => 'Jina la aina ya uanachama (mfano: VIP, Standard, Premium)',
+    'member_membership_type_id' => 'Kitambulisho cha aina ya uanachama (nambari)',
 ]; 
