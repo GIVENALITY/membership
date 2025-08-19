@@ -42,6 +42,11 @@
           <a href="{{ route('members.points-history', $member) }}" class="btn btn-sm btn-outline-info">
             <i class="icon-base ri ri-star-line me-1"></i> Points History
           </a>
+          @if(!$member->hasCard())
+            <a href="{{ route('members.cards.generate', $member) }}" class="btn btn-sm btn-outline-success" onclick="return confirm('Generate virtual card for this member?')">
+              <i class="icon-base ri ri-image-add-line me-1"></i> Generate Card
+            </a>
+          @endif
           <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-outline-secondary">
             <i class="icon-base ri ri-edit-line me-1"></i> Edit
           </a>
@@ -65,6 +70,10 @@
               @endif
             </div>
           </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6"><strong>Birth Date</strong><div>{{ $member->birth_date ? $member->birth_date->format('M d, Y') : 'Not provided' }}</div></div>
+          <div class="col-md-6"><strong>Address</strong><div>{{ $member->address ?: 'Not provided' }}</div></div>
         </div>
         <div class="row mb-3">
           <div class="col-md-4"><strong>Total Visits</strong><div>{{ $member->total_visits }}</div></div>
@@ -110,7 +119,6 @@
     </div>
 
     <!-- Member Preferences & Details -->
-    @if($member->allergies || $member->dietary_preferences || $member->special_requests || $member->additional_notes || $member->emergency_contact_name)
     <div class="card mb-4">
       <div class="card-header">
         <h6 class="mb-0">
@@ -126,6 +134,11 @@
                 <strong class="text-danger">⚠️ Allergies:</strong>
                 <div class="text-danger">{{ $member->allergies }}</div>
               </div>
+            @else
+              <div class="mb-3">
+                <strong class="text-muted">⚠️ Allergies:</strong>
+                <div class="text-muted">None reported</div>
+              </div>
             @endif
             
             @if($member->dietary_preferences)
@@ -133,12 +146,22 @@
                 <strong>🍽️ Dietary Preferences:</strong>
                 <div>{{ $member->dietary_preferences }}</div>
               </div>
+            @else
+              <div class="mb-3">
+                <strong class="text-muted">🍽️ Dietary Preferences:</strong>
+                <div class="text-muted">None specified</div>
+              </div>
             @endif
             
             @if($member->special_requests)
               <div class="mb-3">
                 <strong>🎯 Special Requests:</strong>
                 <div>{{ $member->special_requests }}</div>
+              </div>
+            @else
+              <div class="mb-3">
+                <strong class="text-muted">🎯 Special Requests:</strong>
+                <div class="text-muted">None specified</div>
               </div>
             @endif
           </div>
@@ -148,6 +171,11 @@
               <div class="mb-3">
                 <strong>📝 Additional Notes:</strong>
                 <div>{{ $member->additional_notes }}</div>
+              </div>
+            @else
+              <div class="mb-3">
+                <strong class="text-muted">📝 Additional Notes:</strong>
+                <div class="text-muted">None</div>
               </div>
             @endif
             
@@ -165,12 +193,82 @@
                   </a>
                 </div>
               </div>
+            @else
+              <div class="mb-3">
+                <strong class="text-muted">🚨 Emergency Contact:</strong>
+                <div class="text-muted">Not provided</div>
+              </div>
             @endif
           </div>
         </div>
       </div>
     </div>
-    @endif
+
+    <!-- Physical Card Information -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+          <i class="icon-base ri ri-card-line me-2"></i>
+          Physical Card Information
+        </h6>
+        <div class="d-flex gap-2">
+          <a href="{{ route('members.physical-cards.issue-form', $member) }}" class="btn btn-sm btn-outline-primary">
+            <i class="icon-base ri ri-card-line me-1"></i> Issue Card
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <strong>Card Status:</strong>
+              <div>
+                <span class="badge {{ $member->getPhysicalCardStatusBadgeClass() }}">
+                  {{ $member->getPhysicalCardStatusText() }}
+                </span>
+              </div>
+            </div>
+            
+            @if($member->physical_card_issued_date)
+              <div class="mb-3">
+                <strong>Issued Date:</strong>
+                <div>{{ $member->physical_card_issued_date->format('M d, Y') }}</div>
+              </div>
+            @endif
+            
+            @if($member->physical_card_issued_by)
+              <div class="mb-3">
+                <strong>Issued By:</strong>
+                <div>{{ $member->physical_card_issued_by }}</div>
+              </div>
+            @endif
+          </div>
+          
+          <div class="col-md-6">
+            @if($member->physical_card_delivered_date)
+              <div class="mb-3">
+                <strong>Delivered Date:</strong>
+                <div>{{ $member->physical_card_delivered_date->format('M d, Y') }}</div>
+              </div>
+            @endif
+            
+            @if($member->physical_card_delivered_by)
+              <div class="mb-3">
+                <strong>Delivered By:</strong>
+                <div>{{ $member->physical_card_delivered_by }}</div>
+              </div>
+            @endif
+            
+            @if($member->physical_card_notes)
+              <div class="mb-3">
+                <strong>Notes:</strong>
+                <div>{{ $member->physical_card_notes }}</div>
+              </div>
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">

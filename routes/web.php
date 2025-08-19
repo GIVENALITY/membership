@@ -16,6 +16,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\MemberImportController;
+use App\Http\Controllers\RestaurantSettingsController;
 
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {
@@ -303,6 +304,11 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::put('/hotel/profile', [HotelController::class, 'updateProfile'])->name('hotel.profile.update');
     Route::get('/hotel/account', [HotelController::class, 'account'])->name('hotel.account');
     Route::put('/hotel/account', [HotelController::class, 'updateAccount'])->name('hotel.account.update');
+    
+    // Restaurant Settings Routes
+    Route::get('/restaurant/settings', [RestaurantSettingsController::class, 'index'])->name('restaurant.settings');
+    Route::post('/restaurant/settings', [RestaurantSettingsController::class, 'update'])->name('restaurant.settings.update');
+    Route::get('/restaurant/settings/api', [RestaurantSettingsController::class, 'getSettings'])->name('restaurant.settings.api');
 
     // User Profile Routes
     Route::get('/profile', [UserController::class, 'profile'])->name('users.profile');

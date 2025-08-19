@@ -158,6 +158,11 @@
           <div>{{ __('app.settings') }}</div>
         </a>
       </li>
+      <li class="menu-item {{ request()->routeIs('restaurant.settings') ? 'active' : '' }}">
+        <a href="{{ route('restaurant.settings') }}" class="menu-link">
+          <div>{{ __('app.restaurant_settings') }}</div>
+        </a>
+      </li>
     </ul>
   </li>
   @endif

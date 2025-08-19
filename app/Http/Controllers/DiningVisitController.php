@@ -296,11 +296,21 @@ class DiningVisitController extends Controller
             return back()->withErrors(['error' => 'Invalid visit or already checked out.']);
         }
 
-        $request->validate([
+        // Check if receipt is required based on restaurant settings
+        $receiptRequired = $user->hotel->getSetting('receipt_required', false);
+        
+        $validationRules = [
             'amount_spent' => 'required|numeric|min:0',
-            'receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'checkout_notes' => 'nullable|string|max:500',
-        ]);
+        ];
+        
+        if ($receiptRequired) {
+            $validationRules['receipt'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+        } else {
+            $validationRules['receipt'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+        
+        $request->validate($validationRules);
 
         try {
             DB::beginTransaction();

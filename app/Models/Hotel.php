@@ -67,6 +67,30 @@ class Hotel extends Model
     }
 
     /**
+     * Get the hotel's settings
+     */
+    public function settings()
+    {
+        return $this->hasMany(RestaurantSetting::class);
+    }
+
+    /**
+     * Get a specific setting value
+     */
+    public function getSetting(string $key, $default = null)
+    {
+        return RestaurantSetting::getValue($this->id, $key, $default);
+    }
+
+    /**
+     * Set a specific setting value
+     */
+    public function setSetting(string $key, $value, string $type = 'string', string $description = null): void
+    {
+        RestaurantSetting::setValue($this->id, $key, $value, $type, $description);
+    }
+
+    /**
      * Get the logo URL.
      */
     public function getLogoUrlAttribute()
