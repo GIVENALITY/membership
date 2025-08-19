@@ -238,7 +238,7 @@ Route::middleware('auth')->group(function () {
 
     // Members Routes - Specific routes must come BEFORE the resource route
     Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
-    Route::get('/members/search-page', function () {
+    Route::get('/member-search', function () {
         return view('members.search');
     })->name('members.search-page');
     

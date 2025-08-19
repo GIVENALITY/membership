@@ -306,7 +306,7 @@
       </div>
       <div class="card-body">
         <div class="d-grid gap-2">
-                           <a href="{{ route('members.search') }}" class="btn btn-primary">
+                           <a href="{{ route('members.search-page') }}" class="btn btn-primary">
                    <i class="icon-base ri ri-search-line me-2"></i>
                    Search Members
                  </a>

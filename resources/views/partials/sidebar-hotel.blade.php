@@ -39,30 +39,13 @@
   </li>
   @endif
 
-  <!-- Transactions (Admin, Manager, Cashier only) -->
+  <!-- QuickView (Admin, Manager, Cashier only) -->
   @if(in_array(auth()->user()->role, ['admin', 'manager', 'cashier']))
-  <li class="menu-item">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="icon-base ri ri-exchange-line menu-icon"></i>
-      <div>{{ __('app.transactions') }}</div>
+  <li class="menu-item {{ request()->routeIs('quickview.index') ? 'active' : '' }}">
+    <a href="{{ route('quickview.index') }}" class="menu-link">
+      <i class="icon-base ri ri-eye-line menu-icon"></i>
+      <div>QuickView</div>
     </a>
-    <ul class="menu-sub">
-               <li class="menu-item {{ request()->routeIs('quickview.index') ? 'active' : '' }}">
-           <a href="{{ route('quickview.index') }}" class="menu-link">
-             <div>QuickView</div>
-           </a>
-         </li>
-         <li class="menu-item {{ request()->routeIs('alerts.*') ? 'active' : '' }}">
-           <a href="{{ route('alerts.index') }}" class="menu-link">
-             <div>Alerts</div>
-           </a>
-         </li>
-      <li class="menu-item {{ request()->routeIs('discounts.index') ? 'active' : '' }}">
-        <a href="{{ route('discounts.index') }}" class="menu-link">
-          <div>{{ __('app.discounts') }}</div>
-        </a>
-      </li>
-    </ul>
   </li>
   @endif
 
@@ -159,6 +142,16 @@
       <li class="menu-item {{ request()->routeIs('settings.discounts') ? 'active' : '' }}">
         <a href="{{ route('settings.discounts') }}" class="menu-link">
           <div>{{ __('app.discount_rules') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('discounts.index') ? 'active' : '' }}">
+        <a href="{{ route('discounts.index') }}" class="menu-link">
+          <div>{{ __('app.discounts') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('alerts.*') ? 'active' : '' }}">
+        <a href="{{ route('alerts.index') }}" class="menu-link">
+          <div>Alerts</div>
         </a>
       </li>
     </ul>
