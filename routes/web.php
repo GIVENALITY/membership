@@ -276,10 +276,7 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
        Route::get('/birthdays/this-week', [BirthdayController::class, 'thisWeek'])->name('birthdays.this-week');
        Route::get('/birthdays/notifications', [BirthdayController::class, 'getNotifications'])->name('birthdays.notifications');
 
-       // Cashier Routes
-       Route::get('/cashier', [CashierController::class, 'index'])->name('cashier.index');
-       Route::post('/cashier/lookup', [CashierController::class, 'lookupMember'])->name('cashier.lookup');
-       Route::post('/cashier/process-payment', [CashierController::class, 'processPayment'])->name('cashier.process-payment');
+
            
        Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));
@@ -296,9 +293,9 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::delete('/membership-types/delete-all', [MembershipTypeController::class, 'deleteAll'])->name('membership-types.delete-all');
 
     // Cashier Routes
-    Route::get('/cashier', function () {
-        return view('cashier.index');
-    })->name('cashier.index');
+    Route::get('/cashier', [CashierController::class, 'index'])->name('cashier.index');
+    Route::post('/cashier/lookup', [CashierController::class, 'lookupMember'])->name('cashier.lookup');
+    Route::post('/cashier/process-payment', [CashierController::class, 'processPayment'])->name('cashier.process-payment');
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');
