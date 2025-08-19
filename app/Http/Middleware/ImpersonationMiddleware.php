@@ -17,6 +17,7 @@ class ImpersonationMiddleware
     {
         $response = $next($request);
 
+        // Impersonation banner has been removed - now using sidebar button instead
         // Only add impersonation banner for web requests
         if ($request->expectsJson() || $request->is('impersonate/*')) {
             return $response;
@@ -24,18 +25,8 @@ class ImpersonationMiddleware
 
         // Check if we're currently impersonating
         if (session('impersonator_id') && auth()->check()) {
-            // Add impersonation banner to the response
-            if ($response->headers->get('content-type') && 
-                str_contains($response->headers->get('content-type'), 'text/html')) {
-                
-                $content = $response->getContent();
-                
-                // Add impersonation banner after the opening body tag
-                $banner = $this->getImpersonationBanner();
-                $content = str_replace('<body', '<body>' . $banner, $content);
-                
-                $response->setContent($content);
-            }
+            // Banner functionality removed - using sidebar button instead
+            // Keeping this section for potential future use if needed
         }
 
         return $response;

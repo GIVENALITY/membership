@@ -1,4 +1,15 @@
 <ul class="menu-inner py-1">
+  <!-- Stop Impersonating Button (only shown when impersonating) -->
+  @if(session('impersonator_id') && auth()->check())
+    <li class="menu-item">
+      <a href="{{ route('impersonate.stop') }}" class="menu-link" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border-radius: 8px; margin: 10px 0;">
+        <i class="icon-base ri ri-logout-box-r-line menu-icon" style="color: white;"></i>
+        <div style="color: white; font-weight: 600;">Stop Impersonating</div>
+      </a>
+    </li>
+    <li class="menu-divider"></li>
+  @endif
+
   <!-- Dashboard -->
   <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
     <a href="{{ route('dashboard') }}" class="menu-link">
