@@ -19,7 +19,7 @@ use App\Http\Controllers\MemberImportController;
 use App\Http\Controllers\RestaurantSettingsController;
 
 // Landing page route
-Route::get('/', function () {
+Route::get('/landing', function () {
     try {
         return view('landing');
     } catch (\Exception $e) {
@@ -32,10 +32,10 @@ Route::get('/', function () {
     }
 })->name('landing');
 
-// Alternative landing page route
-Route::get('/home', function () {
-    return view('landing');
-})->name('home');
+// Root route redirects to landing
+Route::get('/', function () {
+    return redirect('/landing');
+});
 
 // Fallback route for root
 Route::get('/public', function () {
