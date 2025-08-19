@@ -49,21 +49,20 @@ class MemberPoint extends Model
 
     /**
      * Calculate points based on spending and number of people
+     * @deprecated Use PointsCalculationService instead
      */
     public static function calculatePoints($spendingAmount, $numberOfPeople)
     {
-        $perPersonSpending = $spendingAmount / $numberOfPeople;
+        // For backward compatibility, use the new service
+        $service = new \App\Services\PointsCalculationService();
         
-        // Minimum 50k per person required for points
-        if ($perPersonSpending < 50000) {
-            return 0;
-        }
-
-        // Maximum 4 people for points calculation
-        $eligiblePeople = min($numberOfPeople, 4);
+        // Create a temporary member for calculation (this is a fallback)
+        $tempMember = new \App\Models\Member();
+        $tempMember->hotel_id = auth()->user()->hotel_id ?? 1;
         
-        // 1 point per eligible person
-        return $eligiblePeople;
+        $result = $service->calculateDiningVisitPoints($tempMember, $spendingAmount, $numberOfPeople);
+        
+        return $result['total_points'];
     }
 
     /**

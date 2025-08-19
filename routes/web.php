@@ -20,6 +20,7 @@ use App\Http\Controllers\RestaurantSettingsController;
 use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\QuickViewController;
 use App\Http\Controllers\MemberAlertController;
+use App\Http\Controllers\PointsConfigurationController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -305,6 +306,12 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/alerts/triggers/{trigger}/acknowledge', [MemberAlertController::class, 'acknowledge'])->name('alerts.acknowledge');
     Route::post('/alerts/triggers/{trigger}/resolve', [MemberAlertController::class, 'resolve'])->name('alerts.resolve');
     Route::get('/alerts/api/active', [MemberAlertController::class, 'getActiveAlerts'])->name('alerts.api.active');
+
+    // Points Configuration Routes
+    Route::resource('points-configuration', PointsConfigurationController::class);
+    Route::post('/points-configuration/test', [PointsConfigurationController::class, 'test'])->name('points-configuration.test');
+    Route::get('/points-configuration/multipliers', [PointsConfigurationController::class, 'multipliers'])->name('points-configuration.multipliers');
+    Route::get('/points-configuration/tiers', [PointsConfigurationController::class, 'tiers'])->name('points-configuration.tiers');
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');

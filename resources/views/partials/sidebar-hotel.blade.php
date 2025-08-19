@@ -154,6 +154,11 @@
           <div>Alerts</div>
         </a>
       </li>
+      <li class="menu-item {{ request()->routeIs('points-configuration.*') ? 'active' : '' }}">
+        <a href="{{ route('points-configuration.index') }}" class="menu-link">
+          <div>Points Configuration</div>
+        </a>
+      </li>
     </ul>
   </li>
   @endif
