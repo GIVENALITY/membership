@@ -108,8 +108,8 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="hotel_name" class="form-label">Hotel Name *</label>
-                                            <input type="text" class="form-control" id="hotel_name" name="hotel_name" placeholder="Enter hotel name" value="{{ old('hotel_name') }}" required />
+                                                                    <label for="hotel_name" class="form-label">Restaurant Name *</label>
+                        <input type="text" class="form-control" id="hotel_name" name="hotel_name" placeholder="Enter restaurant name" value="{{ old('hotel_name') }}" required />
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="hotel_email" class="form-label">Hotel Email *</label>

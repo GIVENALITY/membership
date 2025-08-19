@@ -180,6 +180,13 @@
             background-color: var(--restaurant-primary-color) !important;
         }
         
+        /* Override the default template gradient with brand colors */
+        .menu-item.active > .menu-link:not(.menu-toggle) {
+            background: linear-gradient(270deg, var(--restaurant-primary-color) 0%, color-mix(in sRGB, var(--restaurant-primary-color) 52%, var(--bs-white)) 100%) !important;
+            box-shadow: var(--bs-box-shadow-sm) !important;
+            color: var(--bs-menu-active-color) !important;
+        }
+        
         .form-check-input:checked {
             background-color: var(--restaurant-primary-color) !important;
             border-color: var(--restaurant-primary-color) !important;

@@ -34,12 +34,12 @@
                         <!-- Hotel Information -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_name" class="form-label">Hotel Name *</label>
+                                <label for="hotel_name" class="form-label">Restaurant Name *</label>
                                 <input type="text" class="form-control" id="hotel_name" name="hotel_name" 
                                        value="{{ old('hotel_name', $hotel->name) }}" required />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_email" class="form-label">Hotel Email *</label>
+                                <label for="hotel_email" class="form-label">Restaurant Email *</label>
                                 <input type="email" class="form-control" id="hotel_email" name="hotel_email" 
                                        value="{{ old('hotel_email', $hotel->email) }}" required />
                             </div>
@@ -47,12 +47,12 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_phone" class="form-label">Hotel Phone</label>
+                                <label for="hotel_phone" class="form-label">Restaurant Phone</label>
                                 <input type="text" class="form-control" id="hotel_phone" name="hotel_phone" 
                                        value="{{ old('hotel_phone', $hotel->phone) }}" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_website" class="form-label">Hotel Website</label>
+                                <label for="hotel_website" class="form-label">Restaurant Website</label>
                                 <input type="url" class="form-control" id="hotel_website" name="hotel_website" 
                                        value="{{ old('hotel_website', $hotel->website) }}" placeholder="https://example.com" />
                             </div>
@@ -96,7 +96,7 @@
                                 <small class="form-text text-muted">Upload a new logo to replace the current one</small>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="hotel_banner" class="form-label">Hotel Banner</label>
+                                <label for="hotel_banner" class="form-label">Restaurant Banner</label>
                                 @if($hotel->banner_path)
                                     <div class="mb-2">
                                         <img src="{{ $hotel->banner_url }}" alt="Current Banner" class="img-thumbnail" style="max-height: 100px;">
@@ -123,11 +123,11 @@
                                         <div class="input-group">
                                             <input type="color" class="form-control form-control-color" 
                                                    id="primary_color" name="primary_color" 
-                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#000000') }}" 
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#007bff') }}" 
                                                    title="Choose primary color">
                                             <input type="text" class="form-control" 
-                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#000000') }}" 
-                                                   id="primary_color_text" placeholder="#000000">
+                                                   value="{{ old('primary_color', $hotel->primary_color ?? '#007bff') }}" 
+                                                   id="primary_color_text" placeholder="#007bff">
                                         </div>
                                         <small class="form-text text-muted">Used for buttons, links, and primary elements</small>
                                     </div>
@@ -150,7 +150,7 @@
                                 <div class="mt-3">
                                     <label class="form-label">Color Preview</label>
                                     <div class="d-flex gap-3">
-                                        <div class="color-preview" style="background-color: {{ $hotel->primary_color ?? '#000000' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                        <div class="color-preview" style="background-color: {{ $hotel->primary_color ?? '#007bff' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
                                             Primary
                                         </div>
                                         <div class="color-preview" style="background-color: {{ $hotel->secondary_color ?? '#6c757d' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
