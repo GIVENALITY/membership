@@ -5,255 +5,195 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use App\Models\DiningVisit;
 use App\Models\MembershipType;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     /**
-     * Display the appropriate dashboard based on user role.
+     * Show the dashboard with real statistics
      */
     public function index()
     {
-        try {
-            // Simple test first
-            if (request()->has('test')) {
-                return response()->json([
-                    'status' => 'working',
-                    'user' => auth()->user()->name,
-                    'hotel' => auth()->user()->hotel->name ?? 'No Hotel',
-                    'role' => auth()->user()->role
-                ]);
-            }
-
-            $user = auth()->user();
-            $hotel = $user->hotel;
-
-            // Get basic statistics for all roles
-            $stats = $this->getBasicStats($user->hotel_id);
-
-            // Return role-specific dashboard
-            switch ($user->role) {
-                case 'admin':
-                case 'manager':
-                    return $this->managerDashboard($user, $hotel, $stats);
-                case 'cashier':
-                    return $this->cashierDashboard($user, $hotel, $stats);
-                case 'frontdesk':
-                    return $this->frontdeskDashboard($user, $hotel, $stats);
-                default:
-                    return $this->managerDashboard($user, $hotel, $stats);
-            }
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Dashboard error: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            // Fallback to a simple dashboard if there are any errors
-            return $this->fallbackDashboard();
-        }
-    }
-
-    /**
-     * Fallback dashboard for when there are database errors
-     */
-    private function fallbackDashboard()
-    {
-        $user = auth()->user();
-        $hotel = $user->hotel ?? null;
+        $user = Auth::user();
+        $hotelId = $user->hotel_id;
         
-        $stats = [
-            'total_members' => 0,
-            'active_members' => 0,
-            'total_visits' => 0,
-            'today_visits' => 0,
-            'active_visits' => 0,
+        // Get current month and previous month for comparisons
+        $currentMonth = Carbon::now()->startOfMonth();
+        $previousMonth = Carbon::now()->subMonth()->startOfMonth();
+        
+        // Total members statistics
+        $totalMembers = Member::where('hotel_id', $hotelId)->where('status', 'active')->count();
+        $newMembersThisMonth = Member::where('hotel_id', $hotelId)
+            ->where('status', 'active')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $newMembersLastMonth = Member::where('hotel_id', $hotelId)
+            ->where('status', 'active')
+            ->whereMonth('created_at', $previousMonth->month)
+            ->whereYear('created_at', $previousMonth->year)
+            ->count();
+        
+        // Calculate member growth percentage
+        $memberGrowthPercentage = $newMembersLastMonth > 0 
+            ? round((($newMembersThisMonth - $newMembersLastMonth) / $newMembersLastMonth) * 100, 1)
+            : ($newMembersThisMonth > 0 ? 100 : 0);
+        
+        // Today's visits
+        $todaysVisits = DiningVisit::where('hotel_id', $hotelId)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+        $yesterdaysVisits = DiningVisit::where('hotel_id', $hotelId)
+            ->whereDate('created_at', Carbon::yesterday())
+            ->count();
+        
+        // Calculate visit growth percentage
+        $visitGrowthPercentage = $yesterdaysVisits > 0 
+            ? round((($todaysVisits - $yesterdaysVisits) / $yesterdaysVisits) * 100, 1)
+            : ($todaysVisits > 0 ? 100 : 0);
+        
+        // Discounts given this month
+        $discountsThisMonth = DiningVisit::where('hotel_id', $hotelId)
+            ->where('is_checked_out', true)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('discount_amount');
+        
+        // Average visits per member
+        $totalVisits = DiningVisit::where('hotel_id', $hotelId)->count();
+        $avgVisitsPerMember = $totalMembers > 0 ? round($totalVisits / $totalMembers, 1) : 0;
+        
+        // Recent member activity (last 5 members with recent visits)
+        $recentActivity = DiningVisit::where('hotel_id', $hotelId)
+            ->with(['member'])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->unique('member_id')
+            ->take(5);
+        
+        // Birthday statistics
+        $todayBirthdays = Member::where('hotel_id', $hotelId)
+            ->whereNotNull('birth_date')
+            ->whereRaw('DATE_FORMAT(birth_date, "%m-%d") = ?', [Carbon::today()->format('m-d')])
+            ->where('status', 'active')
+            ->count();
+        
+        $thisWeekBirthdays = Member::where('hotel_id', $hotelId)
+            ->whereNotNull('birth_date')
+            ->whereRaw('DATE_FORMAT(birth_date, "%m-%d") BETWEEN ? AND ?', [
+                Carbon::now()->startOfWeek()->format('m-d'),
+                Carbon::now()->endOfWeek()->format('m-d')
+            ])
+            ->where('status', 'active')
+            ->count();
+        
+        $thisMonthBirthdays = Member::where('hotel_id', $hotelId)
+            ->whereNotNull('birth_date')
+            ->whereMonth('birth_date', Carbon::now()->month)
+            ->where('status', 'active')
+            ->count();
+        
+        // Visit frequency analysis
+        $visitFrequency = $this->getVisitFrequencyStats($hotelId);
+        
+        // Monthly statistics for the chart
+        $monthlyStats = $this->getMonthlyStats($hotelId);
+        
+        return view('dashboard', compact(
+            'totalMembers',
+            'newMembersThisMonth',
+            'memberGrowthPercentage',
+            'todaysVisits',
+            'visitGrowthPercentage',
+            'discountsThisMonth',
+            'avgVisitsPerMember',
+            'recentActivity',
+            'todayBirthdays',
+            'thisWeekBirthdays',
+            'thisMonthBirthdays',
+            'visitFrequency',
+            'monthlyStats'
+        ));
+    }
+    
+    /**
+     * Get visit frequency statistics
+     */
+    private function getVisitFrequencyStats($hotelId)
+    {
+        $currentMonth = Carbon::now()->startOfMonth();
+        
+        // Get all members with their visit counts this month
+        $memberVisits = DiningVisit::where('hotel_id', $hotelId)
+            ->where('is_checked_out', true)
+            ->whereMonth('created_at', $currentMonth->month)
+            ->whereYear('created_at', $currentMonth->year)
+            ->select('member_id', DB::raw('count(*) as visit_count'))
+            ->groupBy('member_id')
+            ->get();
+        
+        $visitFrequency = [
+            'once' => 0,
+            'twice' => 0,
+            'three_times' => 0,
+            'four_plus' => 0
         ];
-
-        // Try to return the normal view first
-        try {
-            return view('dashboard.manager', compact('user', 'hotel', 'stats'));
-        } catch (\Exception $e) {
-            // If that fails, return a very simple HTML response
-            return response()->make('
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Dashboard - Fallback</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        .card { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 5px; }
-                        .error { color: red; }
-                    </style>
-                </head>
-                <body>
-                    <h1>Dashboard (Fallback Mode)</h1>
-                    <div class="card">
-                        <h2>Welcome, ' . ($user->name ?? 'User') . '!</h2>
-                        <p>Hotel: ' . ($hotel->name ?? 'No Hotel') . '</p>
-                        <p>Role: ' . ($user->role ?? 'Unknown') . '</p>
-                        <p class="error">This is a fallback dashboard due to an error.</p>
-                        <p>Error: ' . $e->getMessage() . '</p>
-                    </div>
-                    <div class="card">
-                        <h3>Quick Actions</h3>
-                        <a href="/members">View Members</a> | 
-                        <a href="/dining">Record Visit</a> | 
-                        <a href="/cashier">Cashier</a>
-                    </div>
-                </body>
-                </html>
-            ');
+        
+        foreach ($memberVisits as $visit) {
+            if ($visit->visit_count == 1) {
+                $visitFrequency['once']++;
+            } elseif ($visit->visit_count == 2) {
+                $visitFrequency['twice']++;
+            } elseif ($visit->visit_count == 3) {
+                $visitFrequency['three_times']++;
+            } else {
+                $visitFrequency['four_plus']++;
+            }
         }
+        
+        return $visitFrequency;
     }
-
+    
     /**
-     * Manager/Admin Dashboard - Full access
-     */
-    private function managerDashboard($user, $hotel, $stats)
-    {
-        try {
-            // Additional manager-specific stats
-            $recentVisits = DiningVisit::where('hotel_id', $user->hotel_id)
-                ->with('member')
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get();
-
-            $membershipTypes = MembershipType::where('hotel_id', $user->hotel_id)
-                ->where('is_active', true)
-                ->get();
-
-            $monthlyStats = $this->getMonthlyStats($user->hotel_id);
-
-            return view('dashboard.manager', compact('user', 'hotel', 'stats', 'recentVisits', 'membershipTypes', 'monthlyStats'));
-        } catch (\Exception $e) {
-            // Fallback with empty data
-            return view('dashboard.manager', compact('user', 'hotel', 'stats', 'recentVisits', 'membershipTypes', 'monthlyStats'));
-        }
-    }
-
-    /**
-     * Cashier Dashboard - Payment focused
-     */
-    private function cashierDashboard($user, $hotel, $stats)
-    {
-        try {
-            // Cashier-specific data
-            $activeVisits = DiningVisit::where('hotel_id', $user->hotel_id)
-                ->where('is_checked_out', false)
-                ->with('member')
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            $todayVisits = DiningVisit::where('hotel_id', $user->hotel_id)
-                ->whereDate('created_at', Carbon::today())
-                ->where('is_checked_out', true)
-                ->count();
-
-            $todayRevenue = DiningVisit::where('hotel_id', $user->hotel_id)
-                ->whereDate('checked_out_at', Carbon::today())
-                ->where('is_checked_out', true)
-                ->sum('final_amount');
-
-            return view('dashboard.cashier', compact('user', 'hotel', 'stats', 'activeVisits', 'todayVisits', 'todayRevenue'));
-        } catch (\Exception $e) {
-            // Fallback with empty data
-            $activeVisits = collect();
-            $todayVisits = 0;
-            $todayRevenue = 0;
-            return view('dashboard.cashier', compact('user', 'hotel', 'stats', 'activeVisits', 'todayVisits', 'todayRevenue'));
-        }
-    }
-
-    /**
-     * Front Desk Dashboard - Check-in focused
-     */
-    private function frontdeskDashboard($user, $hotel, $stats)
-    {
-        try {
-            // Front desk specific data
-            $todayCheckins = DiningVisit::where('hotel_id', $user->hotel_id)
-                ->whereDate('created_at', Carbon::today())
-                ->count();
-
-            $recentMembers = Member::where('hotel_id', $user->hotel_id)
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get();
-
-            $birthdayMembers = Member::where('hotel_id', $user->hotel_id)
-                ->whereRaw('DATE_FORMAT(birth_date, "%m-%d") = ?', [Carbon::today()->format('m-d')])
-                ->get();
-
-            return view('dashboard.frontdesk', compact('user', 'hotel', 'stats', 'todayCheckins', 'recentMembers', 'birthdayMembers'));
-        } catch (\Exception $e) {
-            // Fallback with empty data
-            $todayCheckins = 0;
-            $recentMembers = collect();
-            $birthdayMembers = collect();
-            return view('dashboard.frontdesk', compact('user', 'hotel', 'stats', 'todayCheckins', 'recentMembers', 'birthdayMembers'));
-        }
-    }
-
-    /**
-     * Get basic statistics for the hotel
-     */
-    private function getBasicStats($hotelId)
-    {
-        try {
-            return [
-                'total_members' => Member::where('hotel_id', $hotelId)->count(),
-                'active_members' => Member::where('hotel_id', $hotelId)->where('status', 'active')->count(),
-                'total_visits' => DiningVisit::where('hotel_id', $hotelId)->count(),
-                'today_visits' => DiningVisit::where('hotel_id', $hotelId)->whereDate('created_at', Carbon::today())->count(),
-                'active_visits' => DiningVisit::where('hotel_id', $hotelId)->where('is_checked_out', false)->count(),
-            ];
-        } catch (\Exception $e) {
-            // Fallback if there are database issues
-            return [
-                'total_members' => 0,
-                'active_members' => 0,
-                'total_visits' => 0,
-                'today_visits' => 0,
-                'active_visits' => 0,
-            ];
-        }
-    }
-
-    /**
-     * Get monthly statistics for managers
+     * Get monthly statistics for the last 6 months
      */
     private function getMonthlyStats($hotelId)
     {
-        try {
-            $currentMonth = Carbon::now()->startOfMonth();
+        $stats = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
             
-            return [
-                'monthly_visits' => DiningVisit::where('hotel_id', $hotelId)
-                    ->whereMonth('created_at', $currentMonth->month)
-                    ->whereYear('created_at', $currentMonth->year)
-                    ->count(),
-                'monthly_revenue' => DiningVisit::where('hotel_id', $hotelId)
-                    ->whereMonth('checked_out_at', $currentMonth->month)
-                    ->whereYear('checked_out_at', $currentMonth->year)
-                    ->where('is_checked_out', true)
-                    ->sum('final_amount'),
-                'monthly_members' => Member::where('hotel_id', $hotelId)
-                    ->whereMonth('created_at', $currentMonth->month)
-                    ->whereYear('created_at', $currentMonth->year)
-                    ->count(),
-            ];
-        } catch (\Exception $e) {
-            // Fallback if there are database issues
-            return [
-                'monthly_visits' => 0,
-                'monthly_revenue' => 0,
-                'monthly_members' => 0,
+            $newMembers = Member::where('hotel_id', $hotelId)
+                ->where('status', 'active')
+                ->whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
+                ->count();
+            
+            $visits = DiningVisit::where('hotel_id', $hotelId)
+                ->where('is_checked_out', true)
+                ->whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
+                ->count();
+            
+            $revenue = DiningVisit::where('hotel_id', $hotelId)
+                ->where('is_checked_out', true)
+                ->whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
+                ->sum('final_amount');
+            
+            $stats[] = [
+                'month' => $date->format('M Y'),
+                'new_members' => $newMembers,
+                'visits' => $visits,
+                'revenue' => $revenue
             ];
         }
+        
+        return $stats;
     }
 } 
