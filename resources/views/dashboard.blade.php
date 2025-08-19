@@ -18,6 +18,10 @@
         <i class="ri ri-history-line me-1"></i>
         Dining History
       </a>
+      <a href="{{ route('birthdays.today') }}" class="btn btn-sm btn-outline-warning">
+        <i class="ri ri-cake-line me-1"></i>
+        Today's Birthdays
+      </a>
       <a href="{{ route('onboarding.index') }}" class="btn btn-sm btn-outline-primary">
         <i class="ri ri-rocket-line me-1"></i>
         System Guide

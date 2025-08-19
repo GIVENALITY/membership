@@ -81,8 +81,28 @@
     </ul>
   </li>
 
-  <!-- Reports (Admin, Manager only) -->
-  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <!-- Birthday Notifications (All roles) -->
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="icon-base ri ri-cake-line menu-icon"></i>
+      <div>Birthday Notifications</div>
+    </a>
+    <ul class="menu-sub">
+      <li class="menu-item {{ request()->routeIs('birthdays.today') ? 'active' : '' }}">
+        <a href="{{ route('birthdays.today') }}" class="menu-link">
+          <div>Today's Birthdays</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('birthdays.this-week') ? 'active' : '' }}">
+        <a href="{{ route('birthdays.this-week') }}" class="menu-link">
+          <div>This Week's Birthdays</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <!-- Reports (Admin, Manager only) - Temporarily Hidden -->
+  {{-- @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
       <i class="icon-base ri ri-file-chart-line menu-icon"></i>
@@ -106,7 +126,7 @@
       </li>
     </ul>
   </li>
-  @endif
+  @endif --}}
 
   <!-- Application Settings (Admin, Manager only) -->
   @if(in_array(auth()->user()->role, ['admin', 'manager']))

@@ -17,6 +17,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\MemberImportController;
 use App\Http\Controllers\RestaurantSettingsController;
+use App\Http\Controllers\BirthdayController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -268,8 +269,13 @@ Route::post('/members/{member}/physical-cards/issue', [PhysicalCardController::c
 Route::post('/members/{member}/physical-cards/update-status', [PhysicalCardController::class, 'updateStatus'])->name('members.physical-cards.update-status');
 Route::post('/members/physical-cards/mass-issue', [PhysicalCardController::class, 'massIssue'])->name('members.physical-cards.mass-issue');
 Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'getStats'])->name('members.physical-cards.stats');
-    
-    Route::get('/members/{member}/points-history', function ($member) {
+
+       // Birthday Routes
+       Route::get('/birthdays/today', [BirthdayController::class, 'today'])->name('birthdays.today');
+       Route::get('/birthdays/this-week', [BirthdayController::class, 'thisWeek'])->name('birthdays.this-week');
+       Route::get('/birthdays/notifications', [BirthdayController::class, 'getNotifications'])->name('birthdays.notifications');
+           
+       Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));
     })->name('members.points-history');
     

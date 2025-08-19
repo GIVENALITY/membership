@@ -56,51 +56,201 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="row mb-3">
-          <div class="col-md-6"><strong>Full Name</strong><div>{{ $member->full_name }}</div></div>
-          <div class="col-md-6"><strong>Email</strong><div>{{ $member->email }}</div></div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6"><strong>Phone</strong><div>{{ $member->phone }}</div></div>
-          <div class="col-md-6"><strong>Status</strong>
-            <div>
-              @if($member->status==='active')
-                <span class="badge bg-label-success">Active</span>
-              @elseif($member->status==='inactive')
-                <span class="badge bg-label-secondary">Inactive</span>
-              @else
-                <span class="badge bg-label-danger">Suspended</span>
-              @endif
+        <!-- Personal Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted mb-3 border-bottom pb-2">
+              <i class="icon-base ri ri-user-line me-2"></i>Personal Information
+            </h6>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-primary rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-user-line text-primary"></i>
+              </div>
+              <div>
+                <small class="text-muted">Full Name</small>
+                <div class="fw-semibold">{{ $member->full_name }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-info rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-mail-line text-info"></i>
+              </div>
+              <div>
+                <small class="text-muted">Email</small>
+                <div class="fw-semibold">{{ $member->email }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-success rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-phone-line text-success"></i>
+              </div>
+              <div>
+                <small class="text-muted">Phone</small>
+                <div class="fw-semibold">{{ $member->phone }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-warning rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-calendar-line text-warning"></i>
+              </div>
+              <div>
+                <small class="text-muted">Birth Date</small>
+                <div class="fw-semibold">{{ $member->birth_date ? $member->birth_date->format('M d, Y') : 'Not provided' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-secondary rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-map-pin-line text-secondary"></i>
+              </div>
+              <div>
+                <small class="text-muted">Address</small>
+                <div class="fw-semibold">{{ $member->address ?: 'Not provided' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-success rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-check-line text-success"></i>
+              </div>
+              <div>
+                <small class="text-muted">Status</small>
+                <div>
+                  @if($member->status==='active')
+                    <span class="badge bg-label-success">Active</span>
+                  @elseif($member->status==='inactive')
+                    <span class="badge bg-label-secondary">Inactive</span>
+                  @else
+                    <span class="badge bg-label-danger">Suspended</span>
+                  @endif
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="col-md-6"><strong>Birth Date</strong><div>{{ $member->birth_date ? $member->birth_date->format('M d, Y') : 'Not provided' }}</div></div>
-          <div class="col-md-6"><strong>Address</strong><div>{{ $member->address ?: 'Not provided' }}</div></div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-4"><strong>Total Visits</strong><div>{{ $member->total_visits }}</div></div>
-          <div class="col-md-4"><strong>Total Spent</strong><div>TZS {{ number_format($member->total_spent,0) }}</div></div>
-          <div class="col-md-4"><strong>Current Discount</strong><div>{{ rtrim(rtrim(number_format($member->current_discount_rate,2,'.',''), '0'),'.') }}%</div></div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3"><strong>Points Earned</strong><div>{{ $member->total_points_earned }}</div></div>
-          <div class="col-md-3"><strong>Points Used</strong><div>{{ $member->total_points_used }}</div></div>
-          <div class="col-md-3"><strong>Current Balance</strong><div>{{ $member->current_points_balance }}</div></div>
-          <div class="col-md-3"><strong>Qualifies for Discount</strong>
-            <div>
-              @if($member->qualifies_for_discount)
-                <span class="badge bg-label-success">Yes (5+ points)</span>
-              @else
-                <span class="badge bg-label-warning">No ({{ 5 - $member->current_points_balance }} more needed)</span>
-              @endif
+
+        <!-- Activity & Statistics -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted mb-3 border-bottom pb-2">
+              <i class="icon-base ri ri-bar-chart-line me-2"></i>Activity & Statistics
+            </h6>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-primary">{{ $member->total_visits }}</div>
+              <small class="text-muted">Total Visits</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-success">TZS {{ number_format($member->total_spent,0) }}</div>
+              <small class="text-muted">Total Spent</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-warning">{{ rtrim(rtrim(number_format($member->current_discount_rate,2,'.',''), '0'),'.') }}%</div>
+              <small class="text-muted">Current Discount</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-info">{{ $member->consecutive_visits }}</div>
+              <small class="text-muted">Consecutive Visits</small>
             </div>
           </div>
         </div>
+
+        <!-- Points Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-muted mb-3 border-bottom pb-2">
+              <i class="icon-base ri ri-star-line me-2"></i>Points & Rewards
+            </h6>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-success">{{ $member->total_points_earned }}</div>
+              <small class="text-muted">Points Earned</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-warning">{{ $member->total_points_used }}</div>
+              <small class="text-muted">Points Used</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1 text-primary">{{ $member->current_points_balance }}</div>
+              <small class="text-muted">Current Balance</small>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="text-center p-3 bg-light rounded">
+              <div class="h4 mb-1">
+                @if($member->qualifies_for_discount)
+                  <span class="badge bg-label-success">Yes</span>
+                @else
+                  <span class="badge bg-label-warning">No</span>
+                @endif
+              </div>
+              <small class="text-muted">Qualifies for Discount</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
         <div class="row mb-3">
-          <div class="col-md-4"><strong>Consecutive Visits</strong><div>{{ $member->consecutive_visits }}</div></div>
-          <div class="col-md-4"><strong>Average Spending</strong><div>TZS {{ number_format($member->average_spending_per_visit,0) }}</div></div>
-          <div class="col-md-4"><strong>Last Visit</strong><div>{{ $member->last_visit_date ? \Carbon\Carbon::parse($member->last_visit_date)->format('M d, Y') : 'Never' }}</div></div>
+          <div class="col-12">
+            <h6 class="text-muted mb-3 border-bottom pb-2">
+              <i class="icon-base ri ri-time-line me-2"></i>Recent Activity
+            </h6>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-info rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-calendar-event-line text-info"></i>
+              </div>
+              <div>
+                <small class="text-muted">Last Visit</small>
+                <div class="fw-semibold">{{ $member->last_visit_date ? \Carbon\Carbon::parse($member->last_visit_date)->format('M d, Y') : 'Never' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-success rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-money-dollar-circle-line text-success"></i>
+              </div>
+              <div>
+                <small class="text-muted">Average Spending</small>
+                <div class="fw-semibold">TZS {{ number_format($member->average_spending_per_visit,0) }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-label-warning rounded-circle p-2 me-3">
+                <i class="icon-base ri ri-fire-line text-warning"></i>
+              </div>
+              <div>
+                <small class="text-muted">Consecutive Visits</small>
+                <div class="fw-semibold">{{ $member->consecutive_visits }}</div>
+              </div>
+            </div>
+          </div>
         </div>
         @if($member->isBirthdayVisit())
           <div class="alert alert-warning mb-0">
