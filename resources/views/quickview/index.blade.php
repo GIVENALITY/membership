@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Cashier Dashboard')
+@section('title', 'QuickView Dashboard')
 
 @section('content')
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h4 class="card-title">Cashier Dashboard</h4>
+        <h4 class="card-title">QuickView Dashboard</h4>
       </div>
       <div class="card-body">
         <div class="row">
@@ -42,7 +42,9 @@
       <div class="card-body">
         <div class="d-flex align-items-center mb-3">
           <div class="avatar avatar-lg me-3">
-            <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Member Avatar" class="rounded-circle" />
+            <div class="bg-label-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+              <i class="icon-base ri ri-user-line text-primary" style="font-size: 1.5rem;"></i>
+            </div>
           </div>
           <div>
             <h6 class="mb-0" id="memberName">John Doe</h6>
@@ -106,12 +108,12 @@
           </div>
                            <div class="mb-3">
                                                    @if(auth()->user()->hotel->getSetting('receipt_required', false))
-                                <label for="cashierReceipt" class="form-label">Upload Receipt <span class="text-danger">*</span></label>
-                                <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf" required>
+                                <label for="quickviewReceipt" class="form-label">Upload Receipt <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="quickviewReceipt" name="receipt" accept="image/*,.pdf" required>
                                 <small class="text-muted">Upload receipt image or PDF (required)</small>
                                 @else
-                                <label for="cashierReceipt" class="form-label">Upload Receipt (Optional)</label>
-                                <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf">
+                                <label for="quickviewReceipt" class="form-label">Upload Receipt (Optional)</label>
+                                <input type="file" class="form-control" id="quickviewReceipt" name="receipt" accept="image/*,.pdf">
                                 <small class="text-muted">Upload receipt image or PDF (optional)</small>
                                 @endif
                  </div>
@@ -249,7 +251,7 @@ async function lookupMember() {
   }
   
   try {
-    const response = await fetch('{{ route("cashier.lookup") }}', {
+    const response = await fetch('{{ route("quickview.lookup") }}', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -327,13 +329,13 @@ function clearBill() {
          formData.append('member_id', memberId);
          formData.append('amount_spent', document.getElementById('billAmount').value || 0);
          formData.append('final_amount', finalAmount);
-         formData.append('checkout_notes', 'Processed via cashier');
+         formData.append('checkout_notes', 'Processed via quick view');
          
-         const receipt = document.getElementById('cashierReceipt').files[0];
+         const receipt = document.getElementById('quickviewReceipt').files[0];
          if (receipt) formData.append('receipt', receipt);
 
          try {
-           const response = await fetch(`{{ route('cashier.process-payment') }}`, {
+           const response = await fetch(`{{ route('quickview.process-payment') }}`, {
              method: 'POST',
              headers: { 'X-CSRF-TOKEN': `{{ csrf_token() }}` },
              body: formData,
@@ -359,4 +361,4 @@ function selectMember(memberId) {
   lookupMember();
 }
 </script>
-@endsection 
+@endsection

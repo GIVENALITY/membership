@@ -310,9 +310,9 @@
                    <i class="icon-base ri ri-search-line me-2"></i>
                    Search Members
                  </a>
-                 <a href="{{ route('cashier.index') }}" class="btn btn-outline-primary">
-                   <i class="icon-base ri ri-bank-card-line me-2"></i>
-                   Cashier Dashboard
+                 <a href="{{ route('quickview.index') }}" class="btn btn-outline-primary">
+                   <i class="icon-base ri ri-eye-line me-2"></i>
+                   QuickView Dashboard
                  </a>
                  <a href="{{ route('members.create') }}" class="btn btn-outline-primary">
                    <i class="icon-base ri ri-user-add-line me-2"></i>

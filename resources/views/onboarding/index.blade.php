@@ -277,7 +277,7 @@
                     <div class="feature-icon">
                         <i class="ri ri-bank-card-line"></i>
                     </div>
-                    <h4>Cashier System</h4>
+                    <h4>QuickView System</h4>
                     <p>Process payments with automatic discount calculation based on membership type and points.</p>
                 </div>
             </div>
@@ -343,9 +343,9 @@
                 </div>
                 
                 <div class="col-md-6 col-lg-3 mb-3">
-                    <div class="quick-action" onclick="window.location.href='{{ route('cashier.index') }}'">
-                        <i class="ri ri-bank-card-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
-                        <h5 class="mt-2">Cashier System</h5>
+                    <div class="quick-action" onclick="window.location.href='{{ route('quickview.index') }}'">
+                        <i class="ri ri-eye-line" style="font-size: 2rem; color: var(--hotel-primary-color);"></i>
+                        <h5 class="mt-2">QuickView System</h5>
                         <p class="text-muted small">Process payments</p>
                     </div>
                 </div>
@@ -424,7 +424,7 @@
                                 <h6 class="text-warning">Step 2: Payment Process</h6>
                                 <ol class="small mb-0">
                                     <li>Member finishes dining</li>
-                                    <li>Cashier finds member in "Current Visits"</li>
+                                    <li>QuickView finds member in "Current Visits"</li>
                                     <li>Enter total bill amount</li>
                                     <li>System calculates automatic discount</li>
                                     <li>Upload receipt</li>

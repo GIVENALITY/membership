@@ -18,7 +18,8 @@ use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\MemberImportController;
 use App\Http\Controllers\RestaurantSettingsController;
 use App\Http\Controllers\BirthdayController;
-use App\Http\Controllers\CashierController;
+use App\Http\Controllers\QuickViewController;
+use App\Http\Controllers\MemberAlertController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -292,10 +293,18 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::resource('membership-types', MembershipTypeController::class);
     Route::delete('/membership-types/delete-all', [MembershipTypeController::class, 'deleteAll'])->name('membership-types.delete-all');
 
-    // Cashier Routes
-    Route::get('/cashier', [CashierController::class, 'index'])->name('cashier.index');
-    Route::post('/cashier/lookup', [CashierController::class, 'lookupMember'])->name('cashier.lookup');
-    Route::post('/cashier/process-payment', [CashierController::class, 'processPayment'])->name('cashier.process-payment');
+    // QuickView Routes
+    Route::get('/quickview', [QuickViewController::class, 'index'])->name('quickview.index');
+    Route::post('/quickview/lookup', [QuickViewController::class, 'lookupMember'])->name('quickview.lookup');
+    Route::post('/quickview/process-payment', [QuickViewController::class, 'processPayment'])->name('quickview.process-payment');
+
+    // Member Alerts Routes
+    Route::resource('alerts', MemberAlertController::class);
+    Route::get('/alerts/{alert}/triggers', [MemberAlertController::class, 'triggers'])->name('alerts.triggers');
+    Route::post('/alerts/{alert}/test', [MemberAlertController::class, 'test'])->name('alerts.test');
+    Route::post('/alerts/triggers/{trigger}/acknowledge', [MemberAlertController::class, 'acknowledge'])->name('alerts.acknowledge');
+    Route::post('/alerts/triggers/{trigger}/resolve', [MemberAlertController::class, 'resolve'])->name('alerts.resolve');
+    Route::get('/alerts/api/active', [MemberAlertController::class, 'getActiveAlerts'])->name('alerts.api.active');
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');

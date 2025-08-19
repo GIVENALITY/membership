@@ -47,11 +47,16 @@
       <div>{{ __('app.transactions') }}</div>
     </a>
     <ul class="menu-sub">
-      <li class="menu-item {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
-        <a href="{{ route('cashier.index') }}" class="menu-link">
-          <div>{{ __('app.cashier') }}</div>
-        </a>
-      </li>
+               <li class="menu-item {{ request()->routeIs('quickview.index') ? 'active' : '' }}">
+           <a href="{{ route('quickview.index') }}" class="menu-link">
+             <div>QuickView</div>
+           </a>
+         </li>
+         <li class="menu-item {{ request()->routeIs('alerts.*') ? 'active' : '' }}">
+           <a href="{{ route('alerts.index') }}" class="menu-link">
+             <div>Alerts</div>
+           </a>
+         </li>
       <li class="menu-item {{ request()->routeIs('discounts.index') ? 'active' : '' }}">
         <a href="{{ route('discounts.index') }}" class="menu-link">
           <div>{{ __('app.discounts') }}</div>

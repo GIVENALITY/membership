@@ -8,10 +8,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CashierController extends Controller
+class QuickViewController extends Controller
 {
     /**
-     * Show the cashier dashboard
+     * Show the quick view dashboard
      */
     public function index()
     {
@@ -41,7 +41,7 @@ class CashierController extends Controller
             ->where('status', 'active')
             ->get();
 
-        return view('cashier.index', compact('presentMembers', 'todayBirthdays', 'upcomingBirthdays'));
+        return view('quickview.index', compact('presentMembers', 'todayBirthdays', 'upcomingBirthdays'));
     }
 
     /**
@@ -147,7 +147,7 @@ class CashierController extends Controller
             'final_amount' => $request->final_amount,
             'discount_amount' => $request->amount_spent - $request->final_amount,
             'is_checked_out' => true,
-            'checkout_notes' => $request->checkout_notes ?? 'Processed via cashier',
+            'checkout_notes' => $request->checkout_notes ?? 'Processed via quick view',
             'receipt_path' => $receiptPath,
             'checked_out_at' => Carbon::now(),
         ]);
