@@ -186,7 +186,7 @@
     <li class="menu-item">
       <a href="{{ route('impersonate.stop') }}" class="menu-link">
         <i class="icon-base ri ri-logout-box-r-line menu-icon"></i>
-        <div>Stop Impersonating</div>
+        <div>Logout I.M</div>
       </a>
     </li>
   @endif
