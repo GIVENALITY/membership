@@ -43,9 +43,12 @@
             <i class="icon-base ri ri-star-line me-1"></i> Points History
           </a>
           @if(!$member->hasCard())
-            <a href="{{ route('members.cards.generate', $member) }}" class="btn btn-sm btn-outline-success" onclick="return confirm('Generate virtual card for this member?')">
-              <i class="icon-base ri ri-image-add-line me-1"></i> Generate Card
-            </a>
+            <form method="POST" action="{{ route('members.cards.generate', $member) }}" style="display: inline;">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Generate virtual card for this member?')">
+                <i class="icon-base ri ri-image-add-line me-1"></i> Generate Card
+              </button>
+            </form>
           @endif
           <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-outline-secondary">
             <i class="icon-base ri ri-edit-line me-1"></i> Edit
