@@ -199,6 +199,11 @@ Route::middleware('auth')->group(function () {
         return view('members.search');
     })->name('members.search-page');
     
+    // Test route to verify routing is working
+    Route::get('/test-members-create', function () {
+        return 'Members create route is working!';
+    })->name('test.members.create');
+    
     // Member Import Routes (MUST come before resource route)
 Route::get('/members/import', [MemberImportController::class, 'index'])->name('members.import');
 Route::post('/members/import', [MemberImportController::class, 'import'])->name('members.import.process');
@@ -227,11 +232,12 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));
     })->name('members.points-history');
-    Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
-    Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
     
-    // Resource route comes LAST to avoid catching specific routes
+    // Resource route comes BEFORE specific member routes to avoid conflicts
     Route::resource('members', MemberController::class);
+    
+    // These routes come AFTER the resource route to avoid conflicts
+    Route::get('/members/{member}/json', [MemberController::class, 'showJson'])->name('members.show.json');
 
     // Membership Types Routes
     Route::resource('membership-types', MembershipTypeController::class);

@@ -10,7 +10,7 @@
   <!-- Members Management (All roles except cashier) -->
   @if(auth()->user()->role !== 'cashier')
   <li class="menu-item">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <a href="javascript:void(0);" class="menu-link menu-toggle" onclick="console.log('Members menu toggle clicked');">
       <i class="icon-base ri ri-team-line menu-icon"></i>
       <div>{{ __('app.members') }}</div>
     </a>
@@ -26,7 +26,7 @@
         </a>
       </li>
       <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
-        <a href="{{ route('members.create') }}" class="menu-link">
+        <a href="{{ route('members.create') }}" class="menu-link" onclick="console.log('Add Member clicked');">
           <div>{{ __('app.add_member') }}</div>
         </a>
       </li>
