@@ -108,53 +108,81 @@
   </li>
   @endif
 
-  <!-- Management (Admin, Manager only) -->
+  <!-- Application Settings (Admin, Manager only) -->
   @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
       <i class="icon-base ri ri-settings-3-line menu-icon"></i>
-      <div>Management</div>
+      <div>{{ __('app.application_settings') }}</div>
     </a>
     <ul class="menu-sub">
-      <!-- Restaurant Settings -->
-      <li class="menu-item {{ request()->routeIs('hotel.profile') ? 'active' : '' }}">
-        <a href="{{ route('hotel.profile') }}" class="menu-link">
-          <i class="icon-base ri ri-restaurant-line me-2"></i>
-          <div>{{ __('app.restaurant_profile') }}</div>
-        </a>
-      </li>
-      <li class="menu-item {{ request()->routeIs('restaurant.settings') ? 'active' : '' }}">
-        <a href="{{ route('restaurant.settings') }}" class="menu-link">
-          <i class="icon-base ri ri-settings-4-line me-2"></i>
-          <div>{{ __('app.restaurant_settings') }}</div>
-        </a>
-      </li>
-      
-      <!-- User Management -->
-      <li class="menu-item {{ request()->routeIs('user-management.index') ? 'active' : '' }}">
-        <a href="{{ route('user-management.index') }}" class="menu-link">
-          <i class="icon-base ri ri-user-settings-line me-2"></i>
-          <div>{{ __('app.users') }}</div>
-        </a>
-      </li>
-      <li class="menu-item {{ request()->routeIs('user-management.create') ? 'active' : '' }}">
-        <a href="{{ route('user-management.create') }}" class="menu-link">
-          <i class="icon-base ri ri-user-add-line me-2"></i>
-          <div>{{ __('app.add_user') }}</div>
-        </a>
-      </li>
-      
-      <!-- System Settings -->
       <li class="menu-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
         <a href="{{ route('settings.index') }}" class="menu-link">
-          <i class="icon-base ri ri-settings-line me-2"></i>
           <div>{{ __('app.general_settings') }}</div>
         </a>
       </li>
       <li class="menu-item {{ request()->routeIs('settings.points') ? 'active' : '' }}">
         <a href="{{ route('settings.points') }}" class="menu-link">
-          <i class="icon-base ri ri-star-line me-2"></i>
           <div>{{ __('app.points_system') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('settings.email') ? 'active' : '' }}">
+        <a href="{{ route('settings.email') }}" class="menu-link">
+          <div>{{ __('app.email_templates') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('settings.discounts') ? 'active' : '' }}">
+        <a href="{{ route('settings.discounts') }}" class="menu-link">
+          <div>{{ __('app.discount_rules') }}</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+  @endif
+
+  <!-- Hotel Management (Admin, Manager only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="icon-base ri ri-restaurant-line menu-icon"></i>
+      <div>{{ __('app.restaurant') }}</div>
+    </a>
+    <ul class="menu-sub">
+      <li class="menu-item {{ request()->routeIs('hotel.profile') ? 'active' : '' }}">
+        <a href="{{ route('hotel.profile') }}" class="menu-link">
+          <div>{{ __('app.restaurant_profile') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('hotel.account') ? 'active' : '' }}">
+        <a href="{{ route('hotel.account') }}" class="menu-link">
+          <div>{{ __('app.settings') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('restaurant.settings') ? 'active' : '' }}">
+        <a href="{{ route('restaurant.settings') }}" class="menu-link">
+          <div>{{ __('app.restaurant_settings') }}</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+  @endif
+
+  <!-- User Management (Admin, Manager only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="icon-base ri ri-user-settings-line menu-icon"></i>
+      <div>{{ __('app.user_management') }}</div>
+    </a>
+    <ul class="menu-sub">
+      <li class="menu-item {{ request()->routeIs('user-management.index') ? 'active' : '' }}">
+        <a href="{{ route('user-management.index') }}" class="menu-link">
+          <div>{{ __('app.users') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('user-management.create') ? 'active' : '' }}">
+        <a href="{{ route('user-management.create') }}" class="menu-link">
+          <div>{{ __('app.add_user') }}</div>
         </a>
       </li>
     </ul>
