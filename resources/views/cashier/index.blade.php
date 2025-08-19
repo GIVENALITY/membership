@@ -105,8 +105,15 @@
             <small><strong>Note:</strong> Discount will be automatically calculated based on member's membership type, points, and visit history. The preview above shows an estimated rate.</small>
           </div>
                            <div class="mb-3">
-                   <label for="cashierReceipt" class="form-label">Upload Receipt (optional)</label>
-                   <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf">
+                                                   @if(auth()->user()->hotel->getSetting('receipt_required', false))
+                                <label for="cashierReceipt" class="form-label">Upload Receipt <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf" required>
+                                <small class="text-muted">Upload receipt image or PDF (required)</small>
+                                @else
+                                <label for="cashierReceipt" class="form-label">Upload Receipt (Optional)</label>
+                                <input type="file" class="form-control" id="cashierReceipt" name="receipt" accept="image/*,.pdf">
+                                <small class="text-muted">Upload receipt image or PDF (optional)</small>
+                                @endif
                  </div>
                  <div class="d-flex justify-content-between">
                    <button type="button" class="btn btn-outline-secondary" onclick="clearBill()">

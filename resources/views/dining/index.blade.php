@@ -196,12 +196,21 @@
                                                 <small class="text-muted">Enter the total bill amount before discount</small>
                                             </div>
 
+                                            @if(auth()->user()->hotel->getSetting('receipt_required', false))
                                             <div class="mb-3">
-                                                <label for="receipt" class="form-label">Upload Receipt</label>
+                                                <label for="receipt" class="form-label">Upload Receipt <span class="text-danger">*</span></label>
                                                 <input type="file" class="form-control" id="receipt" name="receipt" 
                                                        accept="image/*,.pdf" required>
-                                                <small class="text-muted">Upload receipt image or PDF</small>
+                                                <small class="text-muted">Upload receipt image or PDF (required)</small>
                                             </div>
+                                            @else
+                                            <div class="mb-3">
+                                                <label for="receipt" class="form-label">Upload Receipt (Optional)</label>
+                                                <input type="file" class="form-control" id="receipt" name="receipt" 
+                                                       accept="image/*,.pdf">
+                                                <small class="text-muted">Upload receipt image or PDF (optional)</small>
+                                            </div>
+                                            @endif
 
                                             <div class="mb-3">
                                                 <label for="checkoutNotes" class="form-label">Checkout Notes</label>

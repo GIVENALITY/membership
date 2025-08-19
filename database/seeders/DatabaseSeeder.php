@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                        $this->call([
                    SystemSettingsSeeder::class,
                    MembershipTypeSeeder::class,
+                   RestaurantSettingsSeeder::class,
                ]);
     }
 }
