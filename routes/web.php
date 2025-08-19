@@ -20,8 +20,42 @@ use App\Http\Controllers\RestaurantSettingsController;
 
 // Landing page route
 Route::get('/', function () {
-    return view('landing');
+    try {
+        return view('landing');
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'View error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]);
+    }
 })->name('landing');
+
+// Alternative landing page route
+Route::get('/home', function () {
+    return view('landing');
+})->name('home');
+
+// Fallback route for root
+Route::get('/public', function () {
+    return redirect('/');
+});
+
+// Test route to verify routing is working
+Route::get('/test-landing', function () {
+    return 'Landing page route is working!';
+});
+
+// Simple test route for debugging
+Route::get('/test-root', function () {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Root route is working',
+        'url' => request()->url(),
+        'path' => request()->path()
+    ]);
+});
 
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {

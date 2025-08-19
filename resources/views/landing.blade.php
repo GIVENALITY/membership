@@ -361,7 +361,7 @@
                     <div class="pricing-card featured">
                         <div class="badge bg-primary mb-3">Most Popular</div>
                         <h4>Professional</h4>
-                        <div class="display-4 fw-bold text-primary mb-3">$99</div>
+                        <div class="display-4 fw-bold text-primary mb-3">$77</div>
                         <div class="text-muted mb-4">per month</div>
                         <ul class="list-unstyled">
                             <li class="mb-2"><i class="ri ri-check-line text-success me-2"></i>Up to 500 members</li>
