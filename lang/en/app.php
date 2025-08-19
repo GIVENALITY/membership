@@ -353,6 +353,7 @@ return [
     'hotel_country' => 'Restaurant Country',
     'primary_color' => 'Primary Color',
     'secondary_color' => 'Secondary Color',
+    'tertiary_color' => 'Tertiary Color',
     'logo' => 'Logo',
 
     // Messages

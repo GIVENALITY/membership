@@ -146,6 +146,22 @@
                                     </div>
                                 </div>
                                 
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tertiary_color" class="form-label">Tertiary Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="tertiary_color" name="tertiary_color" 
+                                                   value="{{ old('tertiary_color', $hotel->tertiary_color ?? '#28a745') }}" 
+                                                   title="Choose tertiary color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('tertiary_color', $hotel->tertiary_color ?? '#28a745') }}" 
+                                                   id="tertiary_color_text" placeholder="#28a745">
+                                        </div>
+                                        <small class="form-text text-muted">Used for success states and special elements</small>
+                                    </div>
+                                </div>
+                                
                                 <!-- Color Preview -->
                                 <div class="mt-3">
                                     <label class="form-label">Color Preview</label>
@@ -155,6 +171,9 @@
                                         </div>
                                         <div class="color-preview" style="background-color: {{ $hotel->secondary_color ?? '#6c757d' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
                                             Secondary
+                                        </div>
+                                        <div class="color-preview" style="background-color: {{ $hotel->tertiary_color ?? '#28a745' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                            Tertiary
                                         </div>
                                     </div>
                                 </div>
@@ -195,14 +214,26 @@ document.getElementById('secondary_color_text').addEventListener('input', functi
     updateColorPreview();
 });
 
+document.getElementById('tertiary_color').addEventListener('input', function() {
+    document.getElementById('tertiary_color_text').value = this.value;
+    updateColorPreview();
+});
+
+document.getElementById('tertiary_color_text').addEventListener('input', function() {
+    document.getElementById('tertiary_color').value = this.value;
+    updateColorPreview();
+});
+
 function updateColorPreview() {
     const primaryColor = document.getElementById('primary_color').value;
     const secondaryColor = document.getElementById('secondary_color').value;
+    const tertiaryColor = document.getElementById('tertiary_color').value;
     
     const previews = document.querySelectorAll('.color-preview');
-    if (previews.length >= 2) {
+    if (previews.length >= 3) {
         previews[0].style.backgroundColor = primaryColor;
         previews[1].style.backgroundColor = secondaryColor;
+        previews[2].style.backgroundColor = tertiaryColor;
     }
 }
 </script>

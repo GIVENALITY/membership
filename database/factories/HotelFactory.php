@@ -26,6 +26,7 @@ class HotelFactory extends Factory
             'is_active' => true,
             'primary_color' => '#007bff',
             'secondary_color' => '#6c757d',
+            'tertiary_color' => '#28a745',
         ];
     }
 

@@ -44,11 +44,11 @@
         :root {
             --restaurant-primary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }};
             --restaurant-secondary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->secondary_color ?? '#6c757d') : '#6c757d' }};
+            --restaurant-tertiary-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->tertiary_color ?? '#28a745') : '#28a745' }};
         }
         
         /* Apply restaurant branding colors to all buttons */
         .btn-primary,
-        .btn-success,
         .btn-info,
         .btn-warning {
             background-color: var(--restaurant-primary-color) !important;
@@ -57,15 +57,25 @@
         }
         
         .btn-primary:hover,
-        .btn-success:hover,
         .btn-info:hover,
         .btn-warning:hover {
             background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}dd !important;
             border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->primary_color ?? '#007bff') : '#007bff' }}dd !important;
         }
         
+        /* Success buttons use tertiary color */
+        .btn-success {
+            background-color: var(--restaurant-tertiary-color) !important;
+            border-color: var(--restaurant-tertiary-color) !important;
+            color: white !important;
+        }
+        
+        .btn-success:hover {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->tertiary_color ?? '#28a745') : '#28a745' }}dd !important;
+            border-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->tertiary_color ?? '#28a745') : '#28a745' }}dd !important;
+        }
+        
         .btn-outline-primary,
-        .btn-outline-success,
         .btn-outline-info,
         .btn-outline-warning {
             color: var(--restaurant-primary-color) !important;
@@ -74,11 +84,22 @@
         }
         
         .btn-outline-primary:hover,
-        .btn-outline-success:hover,
         .btn-outline-info:hover,
         .btn-outline-warning:hover {
             background-color: var(--restaurant-primary-color) !important;
             border-color: var(--restaurant-primary-color) !important;
+            color: white !important;
+        }
+        
+        .btn-outline-success {
+            color: var(--restaurant-tertiary-color) !important;
+            border-color: var(--restaurant-tertiary-color) !important;
+            background-color: transparent !important;
+        }
+        
+        .btn-outline-success:hover {
+            background-color: var(--restaurant-tertiary-color) !important;
+            border-color: var(--restaurant-tertiary-color) !important;
             color: white !important;
         }
         
@@ -246,6 +267,38 @@
         
         .spinner-grow.text-primary {
             color: var(--restaurant-primary-color) !important;
+        }
+        
+        /* Menu icons use secondary color for better balance */
+        .menu-icon {
+            color: var(--restaurant-secondary-color) !important;
+        }
+        
+        /* Active menu items keep primary color */
+        .menu-item.active .menu-icon {
+            color: white !important;
+        }
+        
+        /* Tertiary color for success states and special elements */
+        .text-success {
+            color: var(--restaurant-tertiary-color) !important;
+        }
+        
+        .bg-success {
+            background-color: var(--restaurant-tertiary-color) !important;
+        }
+        
+        .border-success {
+            border-color: var(--restaurant-tertiary-color) !important;
+        }
+        
+        .bg-label-success {
+            background-color: {{ Auth::check() && Auth::user()->hotel ? (Auth::user()->hotel->tertiary_color ?? '#28a745') : '#28a745' }}15 !important;
+            color: var(--restaurant-tertiary-color) !important;
+        }
+        
+        .badge.bg-success {
+            background-color: var(--restaurant-tertiary-color) !important;
         }
     </style>
 

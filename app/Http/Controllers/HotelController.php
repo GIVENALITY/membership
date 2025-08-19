@@ -42,6 +42,7 @@ class HotelController extends Controller
             'hotel_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'primary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'secondary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'tertiary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
         ]);
 
         try {
@@ -56,6 +57,7 @@ class HotelController extends Controller
                 'description' => $request->hotel_description,
                 'primary_color' => $request->primary_color,
                 'secondary_color' => $request->secondary_color,
+                'tertiary_color' => $request->tertiary_color,
             ]);
 
             // Handle logo upload

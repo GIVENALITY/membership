@@ -62,6 +62,7 @@ class RegisterController extends Controller
                 'website' => $request->hotel_website,
                 'description' => $request->hotel_description,
                 'is_active' => true,
+                'tertiary_color' => '#28a745',
             ]);
 
             // Handle logo upload
