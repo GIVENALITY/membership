@@ -7,70 +7,77 @@
     </a>
   </li>
 
-  <!-- Operations (All roles) -->
+  <!-- Members Management (All roles except cashier) -->
+  @if(auth()->user()->role !== 'cashier')
   <li class="menu-item">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="icon-base ri ri-settings-4-line menu-icon"></i>
-      <div>Operations</div>
+    <a href="javascript:void(0);" class="menu-link menu-toggle" onclick="console.log('Members menu toggle clicked');">
+      <i class="icon-base ri ri-team-line menu-icon"></i>
+      <div>{{ __('app.members') }}</div>
     </a>
     <ul class="menu-sub">
-      <!-- Members Management (All roles except cashier) -->
-      @if(auth()->user()->role !== 'cashier')
-        <li class="menu-item {{ request()->routeIs('members.index') ? 'active' : '' }}">
-          <a href="{{ route('members.index') }}" class="menu-link">
-            <i class="icon-base ri ri-team-line me-2"></i>
-            <div>{{ __('app.members_list') }}</div>
-          </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
-          <a href="{{ route('members.create') }}" class="menu-link">
-            <i class="icon-base ri ri-user-add-line me-2"></i>
-            <div>{{ __('app.add_member') }}</div>
-          </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('members.search-page') ? 'active' : '' }}">
-          <a href="{{ route('members.search-page') }}" class="menu-link">
-            <i class="icon-base ri ri-search-line me-2"></i>
-            <div>{{ __('app.search') }}</div>
-          </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
-          <a href="{{ route('membership-types.index') }}" class="menu-link">
-            <i class="icon-base ri ri-vip-crown-line me-2"></i>
-            <div>{{ __('app.membership_types') }}</div>
-          </a>
-        </li>
-      @endif
-      
-      <!-- Dining Management (All roles) -->
+      <li class="menu-item {{ request()->routeIs('members.index') ? 'active' : '' }}">
+        <a href="{{ route('members.index') }}" class="menu-link">
+          <div>{{ __('app.members_list') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('members.search-page') ? 'active' : '' }}">
+        <a href="{{ route('members.search-page') }}" class="menu-link">
+          <div>{{ __('app.search') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('members.create') ? 'active' : '' }}">
+        <a href="{{ route('members.create') }}" class="menu-link" onclick="console.log('Add Member clicked');">
+          <div>{{ __('app.add_member') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
+        <a href="{{ route('membership-types.index') }}" class="menu-link">
+          <div>{{ __('app.membership_types') }}</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+  @endif
+
+  <!-- Transactions (Admin, Manager, Cashier only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager', 'cashier']))
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="icon-base ri ri-exchange-line menu-icon"></i>
+      <div>{{ __('app.transactions') }}</div>
+    </a>
+    <ul class="menu-sub">
+      <li class="menu-item {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
+        <a href="{{ route('cashier.index') }}" class="menu-link">
+          <div>{{ __('app.cashier') }}</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('discounts.index') ? 'active' : '' }}">
+        <a href="{{ route('discounts.index') }}" class="menu-link">
+          <div>{{ __('app.discounts') }}</div>
+        </a>
+      </li>
+    </ul>
+  </li>
+  @endif
+
+  <!-- Dining Management (All roles) -->
+  <li class="menu-item">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+      <i class="icon-base ri ri-restaurant-line menu-icon"></i>
+      <div>{{ __('app.dining_management') }}</div>
+    </a>
+    <ul class="menu-sub">
       <li class="menu-item {{ request()->routeIs('dining.index') ? 'active' : '' }}">
         <a href="{{ route('dining.index') }}" class="menu-link">
-          <i class="icon-base ri ri-restaurant-line me-2"></i>
           <div>{{ __('app.record_visit') }}</div>
         </a>
       </li>
       <li class="menu-item {{ request()->routeIs('dining.history') ? 'active' : '' }}">
         <a href="{{ route('dining.history') }}" class="menu-link">
-          <i class="icon-base ri ri-time-line me-2"></i>
           <div>{{ __('app.visit_history') }}</div>
         </a>
       </li>
-      
-      <!-- Transactions (Admin, Manager, Cashier only) -->
-      @if(in_array(auth()->user()->role, ['admin', 'manager', 'cashier']))
-        <li class="menu-item {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
-          <a href="{{ route('cashier.index') }}" class="menu-link">
-            <i class="icon-base ri ri-exchange-line me-2"></i>
-            <div>{{ __('app.cashier') }}</div>
-          </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('discounts.index') ? 'active' : '' }}">
-          <a href="{{ route('discounts.index') }}" class="menu-link">
-            <i class="icon-base ri ri-percent-line me-2"></i>
-            <div>{{ __('app.discounts') }}</div>
-          </a>
-        </li>
-      @endif
     </ul>
   </li>
 
