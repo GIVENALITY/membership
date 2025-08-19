@@ -23,7 +23,7 @@
           <div class="col-md-4">
             <div class="alert alert-info mb-0">
               <i class="icon-base ri ri-information-line me-2"></i>
-              <strong>Today's Present Members:</strong> <span id="presentCount">0</span>
+              <strong>Today's Present Members:</strong> <span id="presentCount">{{ $presentMembers->count() }}</span>
             </div>
           </div>
         </div>
@@ -152,52 +152,40 @@
               </tr>
             </thead>
             <tbody id="presentMembersList">
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-3">
-                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle" />
+              @forelse($presentMembers as $visit)
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm me-3">
+                        <div class="bg-label-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          <i class="icon-base ri ri-user-line text-primary"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ $visit->member->full_name }}</h6>
+                        <small class="text-muted">{{ $visit->member->email }}</small>
+                      </div>
                     </div>
-                    <div>
-                      <h6 class="mb-0">John Doe</h6>
-                      <small class="text-muted">john@example.com</small>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge bg-label-primary">MS001</span></td>
-                <td>2:30 PM</td>
-                <td><span class="badge bg-label-success">10%</span></td>
-                <td><span class="badge bg-label-success">Present</span></td>
-                <td>
-                  <button class="btn btn-sm btn-outline-primary" onclick="selectMember('MS001')">
-                    <i class="icon-base ri ri-check-line"></i>
-                    Select
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-3">
-                      <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <div>
-                      <h6 class="mb-0">Jane Smith</h6>
-                      <small class="text-muted">jane@example.com</small>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="badge bg-label-primary">MS002</span></td>
-                <td>1:15 PM</td>
-                <td><span class="badge bg-label-warning">15%</span></td>
-                <td><span class="badge bg-label-success">Present</span></td>
-                <td>
-                  <button class="btn btn-sm btn-outline-primary" onclick="selectMember('MS002')">
-                    <i class="icon-base ri ri-check-line"></i>
-                    Select
-                  </button>
-                </td>
-              </tr>
+                  </td>
+                  <td><span class="badge bg-label-primary">{{ $visit->member->membership_id }}</span></td>
+                  <td>{{ $visit->created_at->format('g:i A') }}</td>
+                  <td><span class="badge bg-label-success">{{ $visit->member->current_discount_rate }}%</span></td>
+                  <td><span class="badge bg-label-success">Present</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="selectMember('{{ $visit->member->membership_id }}')">
+                      <i class="icon-base ri ri-check-line"></i>
+                      Select
+                    </button>
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">
+                    <i class="icon-base ri ri-user-line me-2"></i>
+                    No members are currently present today
+                  </td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -217,30 +205,90 @@
         </h5>
       </div>
       <div class="card-body">
-        <div class="alert alert-warning">
-          <i class="icon-base ri ri-cake-line me-2"></i>
-          <strong>Birthday Alert:</strong> John Doe (MS001) has a birthday in 3 days! Consider offering a special birthday discount.
-        </div>
-        <div class="alert alert-info">
-          <i class="icon-base ri ri-cake-line me-2"></i>
-          <strong>Birthday Alert:</strong> Jane Smith (MS002) has a birthday in 7 days!
-        </div>
+        @if($todayBirthdays->count() > 0)
+          @foreach($todayBirthdays as $member)
+            <div class="alert alert-warning">
+              <i class="icon-base ri ri-cake-line me-2"></i>
+              <strong>Birthday Today!</strong> {{ $member->full_name }} ({{ $member->membership_id }}) is celebrating their birthday today! 🎉 Consider offering a special birthday discount.
+            </div>
+          @endforeach
+        @endif
+        
+        @if($upcomingBirthdays->count() > 0)
+          @foreach($upcomingBirthdays->take(3) as $member)
+            @php
+              $birthdayDate = Carbon\Carbon::parse($member->birth_date);
+              $daysUntilBirthday = Carbon\Carbon::today()->diffInDays($birthdayDate, false);
+            @endphp
+            @if($daysUntilBirthday > 0)
+              <div class="alert alert-info">
+                <i class="icon-base ri ri-cake-line me-2"></i>
+                <strong>Upcoming Birthday:</strong> {{ $member->full_name }} ({{ $member->membership_id }}) has a birthday in {{ $daysUntilBirthday }} day{{ $daysUntilBirthday > 1 ? 's' : '' }}!
+              </div>
+            @endif
+          @endforeach
+        @endif
+        
+        @if($todayBirthdays->count() == 0 && $upcomingBirthdays->count() == 0)
+          <div class="text-center text-muted py-3">
+            <i class="icon-base ri ri-cake-line me-2"></i>
+            No upcoming birthdays this week
+          </div>
+        @endif
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function lookupMember() {
-  const memberId = document.getElementById('memberLookup').value;
-  if (memberId.trim() === '') {
-    alert('Please enter a membership ID or phone number');
+async function lookupMember() {
+  const searchTerm = document.getElementById('memberLookup').value;
+  if (searchTerm.trim() === '') {
+    alert('Please enter a membership ID, phone number, or name');
     return;
   }
   
-  // Simulate member lookup
-  document.getElementById('memberEligibility').style.display = 'block';
-  document.getElementById('presentCount').textContent = '2';
+  try {
+    const response = await fetch('{{ route("cashier.lookup") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ search: searchTerm })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Populate member information
+      document.getElementById('memberName').textContent = result.member.name;
+      document.getElementById('memberId').textContent = result.member.membership_id;
+      document.getElementById('totalVisits').textContent = result.member.total_visits;
+      document.getElementById('discountRate').textContent = result.member.current_discount_rate + '%';
+      
+      // Show member eligibility section
+      document.getElementById('memberEligibility').style.display = 'block';
+      
+      // Store member ID for payment processing
+      document.getElementById('memberEligibility').setAttribute('data-member-id', result.member.id);
+      
+      // Update eligibility message
+      const eligibilityAlert = document.querySelector('#memberEligibility .alert');
+      if (result.member.qualifies_for_discount) {
+        eligibilityAlert.className = 'alert alert-success mt-3';
+        eligibilityAlert.innerHTML = '<i class="icon-base ri ri-check-line me-2"></i><strong>Member is eligible for discount!</strong>';
+      } else {
+        eligibilityAlert.className = 'alert alert-warning mt-3';
+        eligibilityAlert.innerHTML = '<i class="icon-base ri ri-information-line me-2"></i><strong>Member needs ' + (5 - result.member.current_points_balance) + ' more points to qualify for discount.</strong>';
+      }
+    } else {
+      alert(result.message || 'Member not found');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error looking up member. Please try again.');
+  }
 }
 
 function calculateBill() {
@@ -269,20 +317,23 @@ function clearBill() {
            return;
          }
 
+         const memberId = document.getElementById('memberEligibility').getAttribute('data-member-id');
+         if (!memberId) {
+           alert('Please lookup a member first');
+           return;
+         }
+
          const formData = new FormData();
-         // Ideally use selected member id; here we fall back to typed lookup value
-         formData.append('member_id', document.getElementById('memberLookup').value);
-         formData.append('number_of_people', 1); // Default to 1 person
+         formData.append('member_id', memberId);
          formData.append('amount_spent', document.getElementById('billAmount').value || 0);
-         formData.append('discount_amount', document.getElementById('discountAmount').value || 0);
          formData.append('final_amount', finalAmount);
-         formData.append('is_checked_out', true);
          formData.append('checkout_notes', 'Processed via cashier');
+         
          const receipt = document.getElementById('cashierReceipt').files[0];
          if (receipt) formData.append('receipt', receipt);
 
          try {
-           const response = await fetch(`{{ route('dining.process-payment') }}`, {
+           const response = await fetch(`{{ route('cashier.process-payment') }}`, {
              method: 'POST',
              headers: { 'X-CSRF-TOKEN': `{{ csrf_token() }}` },
              body: formData,
@@ -293,6 +344,8 @@ function clearBill() {
            if (result.success) {
              alert(result.message);
              clearBill();
+             // Refresh the page to update present members list
+             location.reload();
            } else {
              throw new Error(result.message || 'Failed to process payment');
            }

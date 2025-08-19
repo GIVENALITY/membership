@@ -18,6 +18,7 @@ use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\MemberImportController;
 use App\Http\Controllers\RestaurantSettingsController;
 use App\Http\Controllers\BirthdayController;
+use App\Http\Controllers\CashierController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -274,6 +275,11 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
        Route::get('/birthdays/today', [BirthdayController::class, 'today'])->name('birthdays.today');
        Route::get('/birthdays/this-week', [BirthdayController::class, 'thisWeek'])->name('birthdays.this-week');
        Route::get('/birthdays/notifications', [BirthdayController::class, 'getNotifications'])->name('birthdays.notifications');
+
+       // Cashier Routes
+       Route::get('/cashier', [CashierController::class, 'index'])->name('cashier.index');
+       Route::post('/cashier/lookup', [CashierController::class, 'lookupMember'])->name('cashier.lookup');
+       Route::post('/cashier/process-payment', [CashierController::class, 'processPayment'])->name('cashier.process-payment');
            
        Route::get('/members/{member}/points-history', function ($member) {
         return view('members.points-history', compact('member'));
