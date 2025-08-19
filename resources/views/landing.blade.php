@@ -26,31 +26,18 @@
             color: white;
             padding: 100px 0;
             position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
         }
 
         .feature-card {
             border: none;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
             height: 100%;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
         .feature-icon {
@@ -64,25 +51,34 @@
             margin: 0 auto 1.5rem;
         }
 
-        .stats-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 80px 0;
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .stat-card {
-            text-align: center;
-            padding: 2rem;
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            color: white;
         }
 
-        .stat-number {
-            font-size: 3rem;
+        .btn-primary-custom:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
             font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
-        .benefit-section {
-            padding: 80px 0;
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 3rem;
         }
 
         .benefit-item {
@@ -104,29 +100,6 @@
             flex-shrink: 0;
         }
 
-        .cta-section {
-            background: linear-gradient(135deg, var(--dark-color) 0%, #495057 100%);
-            color: white;
-            padding: 80px 0;
-        }
-
-        .demo-section {
-            background: #f8f9fa;
-            padding: 80px 0;
-        }
-
-        .demo-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .pricing-section {
-            padding: 80px 0;
-        }
-
         .pricing-card {
             border: 2px solid #e9ecef;
             border-radius: 15px;
@@ -140,71 +113,23 @@
             border-color: var(--primary-color);
             transform: scale(1.05);
         }
-
-        .btn-custom {
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary-custom {
-            background: var(--primary-color);
-            border: none;
-            color: white;
-        }
-
-        .btn-primary-custom:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,123,255,0.3);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .section-subtitle {
-            font-size: 1.2rem;
-            color: #6c757d;
-            margin-bottom: 3rem;
-        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="ri ri-restaurant-line me-2"></i>
-                Restaurant MS
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="ri ri-restaurant-line me-2"></i>Restaurant MS
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#benefits">Benefits</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#demo">Demo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing">Pricing</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#benefits">Benefits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                     <li class="nav-item">
                         <a class="btn btn-primary-custom btn-custom ms-2" href="/login">Get Started</a>
                     </li>
@@ -222,59 +147,22 @@
                         Transform Your Restaurant with Smart Membership Management
                     </h1>
                     <p class="lead mb-4">
-                        Streamline operations, boost customer loyalty, and increase revenue with our comprehensive restaurant membership system. 
-                        Everything you need to manage members, track visits, and reward loyal customers.
+                        Streamline operations, boost customer loyalty, and increase revenue with our comprehensive restaurant membership system.
                     </p>
                     <div class="d-flex gap-3">
                         <a href="/register" class="btn btn-light btn-custom">
-                            <i class="ri ri-rocket-line me-2"></i>
-                            Start Free Trial
+                            <i class="ri ri-rocket-line me-2"></i>Start Free Trial
                         </a>
-                        <a href="#demo" class="btn btn-outline-light btn-custom">
-                            <i class="ri ri-play-circle-line me-2"></i>
-                            Watch Demo
+                        <a href="#features" class="btn btn-outline-light btn-custom">
+                            <i class="ri ri-play-circle-line me-2"></i>Learn More
                         </a>
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <div class="position-relative">
-                        <div class="bg-white rounded-3 p-4 shadow-lg">
-                            <i class="ri ri-restaurant-line" style="font-size: 4rem; color: var(--primary-color);"></i>
-                            <h4 class="mt-3">Restaurant Management System</h4>
-                            <p class="text-muted">Complete solution for modern restaurants</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number">500+</div>
-                        <div class="text-muted">Members Managed</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number">50%</div>
-                        <div class="text-muted">Increase in Customer Retention</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number">24/7</div>
-                        <div class="text-muted">System Availability</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number">100%</div>
-                        <div class="text-muted">Cloud-Based Solution</div>
+                    <div class="bg-white rounded-3 p-4 shadow-lg">
+                        <i class="ri ri-restaurant-line" style="font-size: 4rem; color: var(--primary-color);"></i>
+                        <h4 class="mt-3">Restaurant Management System</h4>
+                        <p class="text-muted">Complete solution for modern restaurants</p>
                     </div>
                 </div>
             </div>
@@ -378,7 +266,7 @@
     </section>
 
     <!-- Benefits Section -->
-    <section id="benefits" class="benefit-section bg-light">
+    <section id="benefits" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title">Why Choose Restaurant MS?</h2>
@@ -447,53 +335,8 @@
         </div>
     </section>
 
-    <!-- Demo Section -->
-    <section id="demo" class="demo-section">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title">See It In Action</h2>
-                <p class="section-subtitle">Explore the key features of our restaurant management system</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="demo-card">
-                        <h5><i class="ri ri-team-line me-2 text-primary"></i>Member Management</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="ri ri-check-line text-success me-2"></i>Complete member profiles</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Bulk member import</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Dietary preferences</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Emergency contacts</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="demo-card">
-                        <h5><i class="ri ri-restaurant-line me-2 text-success"></i>Dining Operations</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="ri ri-check-line text-success me-2"></i>Visit recording</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Automatic discounts</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Receipt management</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Payment processing</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="demo-card">
-                        <h5><i class="ri ri-star-line me-2 text-warning"></i>Rewards System</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="ri ri-check-line text-success me-2"></i>Points accumulation</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Birthday bonuses</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Visit progression</li>
-                            <li><i class="ri ri-check-line text-success me-2"></i>Custom rewards</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Pricing Section -->
-    <section id="pricing" class="pricing-section">
+    <section id="pricing" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title">Simple, Transparent Pricing</h2>
@@ -550,7 +393,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section">
+    <section class="py-5" style="background: linear-gradient(135deg, var(--dark-color) 0%, #495057 100%); color: white;">
         <div class="container text-center">
             <h2 class="mb-4">Ready to Transform Your Restaurant?</h2>
             <p class="lead mb-4">
@@ -558,12 +401,10 @@
             </p>
             <div class="d-flex justify-content-center gap-3">
                 <a href="/register" class="btn btn-light btn-custom">
-                    <i class="ri ri-rocket-line me-2"></i>
-                    Start Free Trial
+                    <i class="ri ri-rocket-line me-2"></i>Start Free Trial
                 </a>
                 <a href="/login" class="btn btn-outline-light btn-custom">
-                    <i class="ri ri-login-box-line me-2"></i>
-                    Login
+                    <i class="ri ri-login-box-line me-2"></i>Login
                 </a>
             </div>
         </div>

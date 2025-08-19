@@ -18,6 +18,11 @@ use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\MemberImportController;
 use App\Http\Controllers\RestaurantSettingsController;
 
+// Landing page route
+Route::get('/', function () {
+    return view('landing');
+})->name('landing');
+
 // Test route for debugging 500 error
 Route::get('/test-simple', function () {
     return response()->json([
