@@ -22,16 +22,48 @@ class MemberCardGenerator
         // Fallback to default template
         return $this->generateWithDefaultTemplate($member);
     }
+    
+    /**
+     * Debug card template configuration for a member
+     */
+    public function debugCardTemplate(Member $member): array
+    {
+        $membershipType = $member->membershipType;
+        
+        return [
+            'member_id' => $member->id,
+            'member_name' => $member->first_name . ' ' . $member->last_name,
+            'membership_type_id' => $membershipType ? $membershipType->id : null,
+            'membership_type_name' => $membershipType ? $membershipType->name : null,
+            'has_card_template' => $membershipType ? $membershipType->hasCardTemplate() : false,
+            'card_template_image' => $membershipType ? $membershipType->card_template_image : null,
+            'card_template_url' => $membershipType ? $membershipType->card_template_url : null,
+            'card_field_mappings' => $membershipType ? $membershipType->card_field_mappings : null,
+            'template_path' => $membershipType && $membershipType->card_template_image 
+                ? storage_path('app/public/' . $membershipType->card_template_image) 
+                : null,
+            'template_exists' => $membershipType && $membershipType->card_template_image 
+                ? file_exists(storage_path('app/public/' . $membershipType->card_template_image))
+                : false,
+        ];
+    }
 
     /**
      * Generate card using custom template and field mappings
      */
     private function generateWithCustomTemplate(Member $member, $membershipType): string
     {
-        // Load custom template
+        // Load custom template - card_template_image contains relative path like 'card-templates/filename.jpg'
         $templatePath = storage_path('app/public/' . $membershipType->card_template_image);
         if (!file_exists($templatePath)) {
-            throw new \RuntimeException('Card template not found at ' . $templatePath);
+            // Provide more detailed error information
+            $errorMsg = "Card template not found at: {$templatePath}\n";
+            $errorMsg .= "Membership Type: {$membershipType->name}\n";
+            $errorMsg .= "Template Image Field: {$membershipType->card_template_image}\n";
+            $errorMsg .= "Storage Path: " . storage_path('app/public/') . "\n";
+            $errorMsg .= "Please check if the template file exists and the path is correct.";
+            
+            throw new \RuntimeException($errorMsg);
         }
 
         $image = $this->loadImage($templatePath);
@@ -65,7 +97,25 @@ class MemberCardGenerator
         // --- Template (PNG recommended for this artwork) ---
         $templatePath = public_path('assets/img/platinumcard.png');
         if (!file_exists($templatePath)) {
-            throw new \RuntimeException('Card template not found at ' . $templatePath);
+            // Try alternative locations
+            $alternativePaths = [
+                storage_path('app/public/card-templates/default-card.png'),
+                storage_path('app/public/card-templates/default-card.jpg'),
+                public_path('assets/img/card-template.png'),
+                public_path('assets/img/card-template.jpg'),
+            ];
+            
+            $templatePath = null;
+            foreach ($alternativePaths as $path) {
+                if (file_exists($path)) {
+                    $templatePath = $path;
+                    break;
+                }
+            }
+            
+            if (!$templatePath) {
+                throw new \RuntimeException('No card template found. Please upload a template in Restaurant Settings > Membership Types.');
+            }
         }
 
         $image = $this->loadImage($templatePath);

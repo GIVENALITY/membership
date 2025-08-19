@@ -292,4 +292,20 @@ class MemberCardController extends Controller
             'percentage' => $totalMembers > 0 ? round(($membersWithCards / $totalMembers) * 100, 1) : 0
         ]);
     }
+    
+    /**
+     * Debug card template configuration for a member
+     */
+    public function debugCard(Member $member)
+    {
+        // Check if user has permission to view this member
+        if (auth()->user()->hotel_id !== $member->hotel_id) {
+            abort(403);
+        }
+        
+        $generator = new \App\Services\MemberCardGenerator();
+        $debugInfo = $generator->debugCardTemplate($member);
+        
+        return response()->json($debugInfo);
+    }
 }

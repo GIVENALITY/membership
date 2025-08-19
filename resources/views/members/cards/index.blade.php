@@ -248,6 +248,12 @@
                                                                 </button>
                                                             </form>
                                                         </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" onclick="debugCard({{ $member->id }})">
+                                                                <i class="icon-base ri ri-bug-line me-2"></i>
+                                                                Debug Template
+                                                            </a>
+                                                        </li>
                                                     @endif
                                                     <li>
                                                         <a class="dropdown-item" href="{{ route('members.show', $member) }}">
@@ -371,6 +377,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelector('.bg-info h4').textContent = data.percentage + '%';
             })
             .catch(error => console.error('Error updating stats:', error));
+    }
+    
+    function debugCard(memberId) {
+        fetch(`/members/${memberId}/cards/debug`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Card Template Debug Info:', data);
+                alert('Debug info logged to console. Check browser developer tools for details.\n\n' + 
+                      'Template Path: ' + (data.template_path || 'N/A') + '\n' +
+                      'Template Exists: ' + (data.template_exists ? 'Yes' : 'No') + '\n' +
+                      'Has Card Template: ' + (data.has_card_template ? 'Yes' : 'No'));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while debugging the card template.');
+            });
     }
 });
 </script>

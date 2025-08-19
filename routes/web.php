@@ -214,6 +214,7 @@ Route::get('/members/{member}/cards/view', [MemberCardController::class, 'viewCa
 Route::get('/members/{member}/cards/download', [MemberCardController::class, 'downloadCard'])->name('members.cards.download');
 Route::delete('/members/{member}/cards/delete', [MemberCardController::class, 'deleteCard'])->name('members.cards.delete');
 Route::get('/members/cards/stats', [MemberCardController::class, 'getStats'])->name('members.cards.stats');
+Route::get('/members/{member}/cards/debug', [MemberCardController::class, 'debugCard'])->name('members.cards.debug');
 
 // Physical Card Management Routes
 Route::get('/members/physical-cards', [PhysicalCardController::class, 'index'])->name('members.physical-cards.index');
