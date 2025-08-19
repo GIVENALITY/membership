@@ -35,6 +35,16 @@
           <div>{{ __('app.membership_types') }}</div>
         </a>
       </li>
+      <li class="menu-item {{ request()->routeIs('members.cards.*') ? 'active' : '' }}">
+        <a href="{{ route('members.cards.index') }}" class="menu-link">
+          <div><i class="icon-base ri ri-bank-card-line me-2"></i>Virtual Cards</div>
+        </a>
+      </li>
+      <li class="menu-item {{ request()->routeIs('members.physical-cards.*') ? 'active' : '' }}">
+        <a href="{{ route('members.physical-cards.index') }}" class="menu-link">
+          <div><i class="icon-base ri ri-card-text-line me-2"></i>Physical Cards</div>
+        </a>
+      </li>
     </ul>
   </li>
   @endif
