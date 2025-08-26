@@ -213,10 +213,14 @@
             const guestsSelect = document.getElementById('number_of_guests');
             const summaryDiv = document.getElementById('registration-summary');
             const eventPrice = {{ $event->price }};
+            const currencySymbol = '{{ $event->hotel->currency_symbol ?? "$" }}';
 
             function updateSummary() {
                 const guests = parseInt(guestsSelect.value);
                 const total = eventPrice * guests;
+                
+                const priceDisplay = eventPrice > 0 ? `${currencySymbol}${eventPrice.toFixed(2)}` : 'Free';
+                const totalDisplay = total > 0 ? `${currencySymbol}${total.toFixed(2)}` : 'Free';
                 
                 summaryDiv.innerHTML = `
                     <div class="mb-2">
@@ -224,10 +228,10 @@
                     </div>
                     <div class="mb-2">
                         <span class="text-muted">Price per person:</span>
-                        <span class="fw-semibold">$${eventPrice.toFixed(2)}</span>
+                        <span class="fw-semibold">${priceDisplay}</span>
                     </div>
                     <div class="border-top pt-2">
-                        <span class="fw-bold">Total: $${total.toFixed(2)}</span>
+                        <span class="fw-bold">Total: ${totalDisplay}</span>
                     </div>
                 `;
             }
