@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,9 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('hotels', function (Blueprint $table) {
-            $table->string('slug')->nullable()->after('name');
-        });
+        // First, add the slug column as nullable
+        if (!Schema::hasColumn('hotels', 'slug')) {
+            Schema::table('hotels', function (Blueprint $table) {
+                $table->string('slug')->nullable()->after('name');
+            });
+        }
 
         // Update existing hotels with slugs
         $hotels = DB::table('hotels')->get();
