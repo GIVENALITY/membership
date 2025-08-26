@@ -89,6 +89,15 @@
                                                     <li><a class="dropdown-item" href="{{ route('events.registrations', $event) }}">
                                                         <i class="bx bx-list-ul me-1"></i> Registrations
                                                     </a></li>
+                                                    @if($event->is_public && $event->status === 'published')
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="{{ route('public.events.show', [$event->hotel->slug, $event]) }}" target="_blank">
+                                                        <i class="bx bx-external-link me-1"></i> View Public Page
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" target="_blank">
+                                                        <i class="bx bx-user-plus me-1"></i> Test Registration
+                                                    </a></li>
+                                                    @endif
                                                     @if($event->status === 'draft')
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>

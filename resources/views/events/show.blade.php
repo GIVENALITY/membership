@@ -152,6 +152,49 @@
                                     </a>
                                 </div>
                             </div>
+
+                            <!-- Public Links -->
+                            @if($event->is_public && $event->status === 'published')
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Public Links</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label small">Public Event URL:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" 
+                                                   value="{{ route('public.events.show', [$event->hotel->slug, $event]) }}" 
+                                                   readonly id="publicEventUrl">
+                                            <button class="btn btn-outline-primary btn-sm" type="button" 
+                                                    onclick="copyToClipboard('publicEventUrl')">
+                                                <i class="bx bx-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label small">Registration URL:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" 
+                                                   value="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" 
+                                                   readonly id="registrationUrl">
+                                            <button class="btn btn-outline-primary btn-sm" type="button" 
+                                                    onclick="copyToClipboard('registrationUrl')">
+                                                <i class="bx bx-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-1">
+                                        <a href="{{ route('public.events.show', [$event->hotel->slug, $event]) }}" 
+                                           target="_blank" class="btn btn-primary btn-sm">
+                                            <i class="bx bx-external-link"></i> View Public Page
+                                        </a>
+                                        <a href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" 
+                                           target="_blank" class="btn btn-success btn-sm">
+                                            <i class="bx bx-user-plus"></i> Test Registration
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -270,4 +313,32 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        // Show success message
+        const button = element.nextElementSibling;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bx bx-check"></i>';
+        button.classList.remove('btn-outline-primary');
+        button.classList.add('btn-success');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-primary');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+    }
+}
+</script>
+@endpush
 @endsection
