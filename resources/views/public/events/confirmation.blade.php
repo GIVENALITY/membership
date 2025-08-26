@@ -76,7 +76,7 @@
                                         <tr>
                                             <td><strong>Total Amount:</strong></td>
                                             <td class="fw-bold">
-                                                {{ $registration->total_amount > 0 ? '$' . number_format($registration->total_amount, 2) : 'Free' }}
+                                                {{ $registration->total_amount > 0 ? $event->hotel->currency_symbol . number_format($registration->total_amount, 2) : 'Free' }}
                                             </td>
                                         </tr>
                                         <tr>

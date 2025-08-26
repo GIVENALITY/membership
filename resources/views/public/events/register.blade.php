@@ -167,9 +167,9 @@
                                 @endif
                                 <div class="d-flex align-items-center mb-2">
                                     <i class="bx bx-dollar text-primary me-2"></i>
-                                    <span class="fw-semibold">
-                                        {{ $event->price > 0 ? '$' . number_format($event->price, 2) : 'Free' }} per person
-                                    </span>
+                                                                            <span class="fw-semibold">
+                                            {{ $event->price > 0 ? $event->hotel->currency_symbol . number_format($event->price, 2) : 'Free' }} per person
+                                        </span>
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <i class="bx bx-group text-primary me-2"></i>

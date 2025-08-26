@@ -107,17 +107,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card feature-card h-100">
-                                <div class="card-body p-4 text-center">
-                                    <i class="bx bx-dollar bx-lg text-primary mb-3"></i>
-                                    <h5 class="card-title">Price</h5>
-                                    <p class="card-text fw-bold">
-                                        {{ $event->price > 0 ? '$' . number_format($event->price, 2) : 'Free' }} per person
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                                                            <div class="col-md-6">
+                                        <div class="card feature-card h-100">
+                                            <div class="card-body p-4 text-center">
+                                                <i class="bx bx-dollar bx-lg text-primary mb-3"></i>
+                                                <h5 class="card-title">Price</h5>
+                                                <p class="card-text fw-bold">
+                                                    {{ $event->price > 0 ? $event->hotel->currency_symbol . number_format($event->price, 2) : 'Free' }} per person
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                         <div class="col-md-6">
                             <div class="card feature-card h-100">
                                 <div class="card-body p-4 text-center">
@@ -174,7 +174,7 @@
                                 <div class="d-flex align-items-center">
                                     <i class="bx bx-dollar text-primary me-2"></i>
                                     <span class="fw-semibold">
-                                        {{ $event->price > 0 ? '$' . number_format($event->price, 2) : 'Free' }} per person
+                                        {{ $event->price > 0 ? $event->hotel->currency_symbol . number_format($event->price, 2) : 'Free' }} per person
                                     </span>
                                 </div>
                             </div>

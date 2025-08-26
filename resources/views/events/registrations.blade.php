@@ -104,7 +104,7 @@
                                         </td>
                                         <td>
                                             <span class="fw-semibold">
-                                                {{ $registration->total_amount > 0 ? '$' . number_format($registration->total_amount, 2) : 'Free' }}
+                                                {{ $registration->total_amount > 0 ? (Auth::user()->hotel->currency_symbol ?? '$') . number_format($registration->total_amount, 2) : 'Free' }}
                                             </span>
                                         </td>
                                         <td>
@@ -221,7 +221,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Total Amount:</strong></td>
-                                <td>{{ $registration->total_amount > 0 ? '$' . number_format($registration->total_amount, 2) : 'Free' }}</td>
+                                                                            <td>{{ $registration->total_amount > 0 ? (Auth::user()->hotel->currency_symbol ?? '$') . number_format($registration->total_amount, 2) : 'Free' }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Status:</strong></td>
