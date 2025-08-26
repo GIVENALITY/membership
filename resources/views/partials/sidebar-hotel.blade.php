@@ -99,6 +99,16 @@
     </ul>
   </li>
 
+  <!-- Events Management (Admin, Manager only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <li class="menu-item {{ request()->routeIs('events.*') ? 'active' : '' }}">
+    <a href="{{ route('events.index') }}" class="menu-link">
+      <i class="icon-base ri ri-calendar-event-line menu-icon"></i>
+      <div>Events</div>
+    </a>
+  </li>
+  @endif
+
   <!-- Reports (Admin, Manager only) - Temporarily Hidden -->
   {{-- @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">

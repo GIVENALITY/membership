@@ -21,6 +21,8 @@ use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\QuickViewController;
 use App\Http\Controllers\MemberAlertController;
 use App\Http\Controllers\PointsConfigurationController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\PublicEventController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -196,6 +198,17 @@ Route::get('/test-language', function () {
     ]);
 })->name('test.language');
 
+// Public Event Routes
+Route::get('/events', [PublicEventController::class, 'index'])->name('public.events.index');
+Route::get('/events/{hotelSlug}', [PublicEventController::class, 'index'])->name('public.events.hotel');
+Route::get('/events/{hotelSlug}/{event}', [PublicEventController::class, 'show'])->name('public.events.show');
+Route::get('/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'register'])->name('public.events.register');
+Route::post('/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration');
+Route::get('/events/{hotelSlug}/{event}/registration/{registration}/confirmation', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
+Route::post('/events/{hotelSlug}/{event}/registration/{registration}/cancel', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration');
+Route::get('/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
+Route::post('/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
+
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -312,6 +325,18 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/points-configuration/test', [PointsConfigurationController::class, 'test'])->name('points-configuration.test');
     Route::get('/points-configuration/multipliers', [PointsConfigurationController::class, 'multipliers'])->name('points-configuration.multipliers');
     Route::get('/points-configuration/tiers', [PointsConfigurationController::class, 'tiers'])->name('points-configuration.tiers');
+
+    // Events Routes
+    Route::resource('events', EventController::class);
+    Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
+    Route::post('/events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
+    Route::get('/events/{event}/registrations', [EventController::class, 'registrations'])->name('events.registrations');
+    Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration');
+    Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration');
+    Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended');
+    Route::get('/events/{event}/search-members', [EventController::class, 'searchMembers'])->name('events.search-members');
+    Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
+    Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');
