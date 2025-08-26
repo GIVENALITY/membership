@@ -71,6 +71,56 @@
                             </div>
                         </div>
 
+                        <!-- Currency Settings -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="icon-base ri ri-money-dollar-circle-line me-2"></i>
+                                    Currency Settings
+                                </h6>
+                                <small class="text-muted">Set your restaurant's currency for pricing</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="currency" class="form-label">Currency</label>
+                                        <select class="form-select" id="currency" name="currency" required>
+                                            @foreach(\App\Models\Hotel::getAvailableCurrencies() as $code => $currency)
+                                                <option value="{{ $code }}" 
+                                                        {{ old('currency', $hotel->currency ?? 'USD') === $code ? 'selected' : '' }}>
+                                                    {{ $currency['name'] }} ({{ $code }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="form-text text-muted">This will be used for all pricing in your restaurant</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="currency_symbol" class="form-label">Currency Symbol</label>
+                                        <input type="text" class="form-control" id="currency_symbol" name="currency_symbol" 
+                                               value="{{ old('currency_symbol', $hotel->currency_symbol ?? '$') }}" 
+                                               maxlength="5" required />
+                                        <small class="form-text text-muted">Symbol used to display prices (e.g., $, €, TSh)</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Currency Preview -->
+                                <div class="mt-3">
+                                    <label class="form-label">Currency Preview</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="badge bg-primary fs-6">
+                                            {{ $hotel->formatAmount(1000) }}
+                                        </div>
+                                        <div class="badge bg-success fs-6">
+                                            {{ $hotel->formatAmount(0) }}
+                                        </div>
+                                        <div class="badge bg-info fs-6">
+                                            {{ $hotel->formatAmount(2500.50) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="hotel_address" class="form-label">Address</label>
                             <textarea class="form-control" id="hotel_address" name="hotel_address" 
@@ -193,6 +243,17 @@
 
 @push('page-js')
 <script>
+// Currency auto-update
+document.getElementById('currency').addEventListener('change', function() {
+    const currencies = @json(\App\Models\Hotel::getAvailableCurrencies());
+    const selectedCurrency = this.value;
+    const symbolInput = document.getElementById('currency_symbol');
+    
+    if (currencies[selectedCurrency]) {
+        symbolInput.value = currencies[selectedCurrency].symbol;
+    }
+});
+
 // Sync color picker and text input
 document.getElementById('primary_color').addEventListener('input', function() {
     document.getElementById('primary_color_text').value = this.value;

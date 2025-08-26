@@ -22,6 +22,7 @@
                                         <th>Title</th>
                                         <th>Date & Time</th>
                                         <th>Location</th>
+                                        <th>Price</th>
                                         <th>Capacity</th>
                                         <th>Status</th>
                                         <th>Registrations</th>
@@ -54,6 +55,11 @@
                                             </div>
                                         </td>
                                         <td>{{ $event->location ?? 'TBD' }}</td>
+                                        <td>
+                                            <span class="fw-semibold">
+                                                {{ $event->price > 0 ? (Auth::user()->hotel->currency_symbol ?? '$') . number_format($event->price, 2) : 'Free' }}
+                                            </span>
+                                        </td>
                                         <td>
                                             @if($event->max_capacity)
                                                 <span class="badge bg-info">{{ $event->getAvailableSpots() }}/{{ $event->max_capacity }}</span>

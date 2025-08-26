@@ -19,6 +19,8 @@ class Hotel extends Model
         'address',
         'city',
         'country',
+        'currency',
+        'currency_symbol',
         'website',
         'description',
         'logo_path',
@@ -119,5 +121,57 @@ class Hotel extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Format amount with hotel's currency
+     */
+    public function formatAmount($amount): string
+    {
+        if ($amount == 0) {
+            return 'Free';
+        }
+
+        return $this->currency_symbol . number_format($amount, 2);
+    }
+
+    /**
+     * Get currency display name
+     */
+    public function getCurrencyName(): string
+    {
+        $currencies = [
+            'USD' => 'US Dollar',
+            'EUR' => 'Euro',
+            'GBP' => 'British Pound',
+            'TZS' => 'Tanzanian Shilling',
+            'KES' => 'Kenyan Shilling',
+            'UGX' => 'Ugandan Shilling',
+            'NGN' => 'Nigerian Naira',
+            'GHS' => 'Ghanaian Cedi',
+            'ZAR' => 'South African Rand',
+            'INR' => 'Indian Rupee',
+        ];
+
+        return $currencies[$this->currency] ?? $this->currency;
+    }
+
+    /**
+     * Get available currencies
+     */
+    public static function getAvailableCurrencies(): array
+    {
+        return [
+            'USD' => ['name' => 'US Dollar', 'symbol' => '$'],
+            'EUR' => ['name' => 'Euro', 'symbol' => '€'],
+            'GBP' => ['name' => 'British Pound', 'symbol' => '£'],
+            'TZS' => ['name' => 'Tanzanian Shilling', 'symbol' => 'TSh'],
+            'KES' => ['name' => 'Kenyan Shilling', 'symbol' => 'KSh'],
+            'UGX' => ['name' => 'Ugandan Shilling', 'symbol' => 'USh'],
+            'NGN' => ['name' => 'Nigerian Naira', 'symbol' => '₦'],
+            'GHS' => ['name' => 'Ghanaian Cedi', 'symbol' => '₵'],
+            'ZAR' => ['name' => 'South African Rand', 'symbol' => 'R'],
+            'INR' => ['name' => 'Indian Rupee', 'symbol' => '₹'],
+        ];
     }
 } 

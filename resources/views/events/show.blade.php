@@ -83,7 +83,7 @@
                                         <h6>Price</h6>
                                         <p class="mb-0">
                                             <i class="bx bx-dollar text-primary me-2"></i>
-                                            {{ $event->price > 0 ? '$' . number_format($event->price, 2) : 'Free' }} per person
+                                            {{ $event->price > 0 ? (Auth::user()->hotel->currency_symbol ?? '$') . number_format($event->price, 2) : 'Free' }} per person
                                         </p>
                                     </div>
                                 </div>

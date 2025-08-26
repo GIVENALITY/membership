@@ -87,7 +87,7 @@
                                         <div class="mb-3">
                                             <label for="price" class="form-label">Price per Person</label>
                                             <div class="input-group">
-                                                <span class="input-group-text">$</span>
+                                                <span class="input-group-text">{{ Auth::user()->hotel->currency_symbol ?? '$' }}</span>
                                                 <input type="number" class="form-control @error('price') is-invalid @enderror" 
                                                        id="price" name="price" 
                                                        value="{{ old('price', $event->price) }}" 
@@ -198,7 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const description = descriptionInput.value || 'Event description will appear here...';
         const startDate = startDateInput.value ? new Date(startDateInput.value).toLocaleDateString() : 'TBD';
         const location = locationInput.value || 'Location TBD';
-        const price = priceInput.value ? `$${parseFloat(priceInput.value).toFixed(2)}` : 'Free';
+        const currencySymbol = '{{ Auth::user()->hotel->currency_symbol ?? "$" }}';
+        const price = priceInput.value ? `${currencySymbol}${parseFloat(priceInput.value).toFixed(2)}` : 'Free';
 
         previewDiv.innerHTML = `
             <h6 class="fw-bold">${title}</h6>
