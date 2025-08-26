@@ -184,13 +184,30 @@ class PublicEventController extends Controller
      */
     public function confirmation($hotelSlug, Event $event, EventRegistration $registration)
     {
+        // Debug logging
+        \Log::info('Confirmation method called', [
+            'hotelSlug' => $hotelSlug,
+            'eventId' => $event->id,
+            'registrationId' => $registration->id,
+            'registrationEventId' => $registration->event_id,
+            'eventHotelSlug' => $event->hotel->slug
+        ]);
+
         // Verify the registration belongs to the event
         if ($registration->event_id !== $event->id) {
+            \Log::error('Registration event mismatch', [
+                'registrationEventId' => $registration->event_id,
+                'eventId' => $event->id
+            ]);
             abort(404);
         }
 
         // Verify the event belongs to the hotel
         if ($event->hotel->slug !== $hotelSlug) {
+            \Log::error('Event hotel mismatch', [
+                'eventHotelSlug' => $event->hotel->slug,
+                'hotelSlug' => $hotelSlug
+            ]);
             abort(404);
         }
 
