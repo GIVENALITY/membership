@@ -198,16 +198,16 @@ Route::get('/test-language', function () {
     ]);
 })->name('test.language');
 
-// Public Event Routes
-Route::get('/events', [PublicEventController::class, 'index'])->name('public.events.index');
-Route::get('/events/{hotelSlug}', [PublicEventController::class, 'index'])->name('public.events.hotel');
-Route::get('/events/{hotelSlug}/{event}', [PublicEventController::class, 'show'])->name('public.events.show');
-Route::get('/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'register'])->name('public.events.register');
-Route::post('/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration');
-Route::get('/events/{hotelSlug}/{event}/registration/{registration}/confirmation', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
-Route::post('/events/{hotelSlug}/{event}/registration/{registration}/cancel', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration');
-Route::get('/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
-Route::post('/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
+// Public Event Routes (must come after admin routes to avoid conflicts)
+Route::get('/public/events', [PublicEventController::class, 'index'])->name('public.events.index');
+Route::get('/public/events/{hotelSlug}', [PublicEventController::class, 'index'])->name('public.events.hotel');
+Route::get('/public/events/{hotelSlug}/{event}', [PublicEventController::class, 'show'])->name('public.events.show');
+Route::get('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'register'])->name('public.events.register');
+Route::post('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration');
+Route::get('/public/events/{hotelSlug}/{event}/registration/{registration}/confirmation', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
+Route::post('/public/events/{hotelSlug}/{event}/registration/{registration}/cancel', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration');
+Route::get('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
+Route::post('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
 
 Route::get('/', function () {
     return redirect('/login');
