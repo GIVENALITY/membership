@@ -204,8 +204,8 @@ Route::get('/public/events/{hotelSlug}', [PublicEventController::class, 'index']
 Route::get('/public/events/{hotelSlug}/{event}', [PublicEventController::class, 'show'])->name('public.events.show');
 Route::get('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'register'])->name('public.events.register');
 Route::post('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration');
-Route::get('/public/events/{hotelSlug}/{event}/registration/{registration}/confirmation', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
-Route::post('/public/events/{hotelSlug}/{event}/registration/{registration}/cancel', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration');
+Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registration}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
+Route::post('/public/events/{hotelSlug}/{event}/cancel/{registration}', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration');
 Route::get('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
 Route::post('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
 
