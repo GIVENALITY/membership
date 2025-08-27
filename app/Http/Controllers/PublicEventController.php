@@ -234,7 +234,7 @@ class PublicEventController extends Controller
     public function confirmation($hotelSlug, $eventId, $registrationId)
     {
         // Debug output for confirmation method
-        if (request()->get('debug') === '1') {
+        if (request()->get('debug') === 'step1') {
             return response()->json([
                 'step' => 'Confirmation method called',
                 'hotelSlug' => $hotelSlug,
@@ -262,7 +262,7 @@ class PublicEventController extends Controller
         }
 
         // Debug output - Event found
-        if (request()->get('debug') === '1') {
+        if (request()->get('debug') === 'step2') {
             return response()->json([
                 'step' => 'Event found successfully',
                 'eventId' => $eventId,
@@ -280,7 +280,7 @@ class PublicEventController extends Controller
         }
 
         // Debug output - Registration found
-        if (request()->get('debug') === '1') {
+        if (request()->get('debug') === 'step3') {
             return response()->json([
                 'step' => 'Registration found successfully',
                 'registrationId' => $registrationId,
@@ -305,7 +305,7 @@ class PublicEventController extends Controller
 
         // Verify the registration belongs to the event
         if ($registration->event_id !== $event->id) {
-            if (request()->get('debug') === '1') {
+            if (request()->get('debug') === 'step4') {
                 return response()->json([
                     'step' => 'Registration event mismatch',
                     'registrationEventId' => $registration->event_id,
@@ -322,7 +322,7 @@ class PublicEventController extends Controller
 
         // Verify the event belongs to the hotel
         if ($event->hotel->slug !== $hotelSlug) {
-            if (request()->get('debug') === '1') {
+            if (request()->get('debug') === 'step5') {
                 return response()->json([
                     'step' => 'Event hotel mismatch',
                     'eventHotelSlug' => $event->hotel->slug,
