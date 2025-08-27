@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Member extends Model
 {
@@ -413,15 +414,14 @@ class Member extends Model
             $query->where('hotel_id', $hotelId);
         }
         
-        $lastMember = $query->orderBy('id', 'desc')->first();
+        // Get the highest membership ID for this hotel
+        $highestId = $query->max(DB::raw('CAST(membership_id AS UNSIGNED)'));
         
-        if (!$lastMember) {
+        if (!$highestId) {
             return '1';
         }
 
-        // Get the last numerical membership ID
-        $lastNumber = (int) $lastMember->membership_id;
-        $nextNumber = $lastNumber + 1;
+        $nextNumber = $highestId + 1;
         
         return (string) $nextNumber;
     }
