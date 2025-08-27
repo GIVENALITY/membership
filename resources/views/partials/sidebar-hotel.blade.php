@@ -127,6 +127,12 @@
       <div>Email Logs</div>
     </a>
   </li>
+  <li class="menu-item {{ request()->routeIs('rate-limited-emails.*') ? 'active' : '' }}">
+    <a href="{{ route('rate-limited-emails.index') }}" class="menu-link">
+      <i class="icon-base ri ri-mail-send-line menu-icon"></i>
+      <div>Rate-Limited Emails</div>
+    </a>
+  </li>
   @endif
 
   <!-- Reports (Admin, Manager only) - Temporarily Hidden -->

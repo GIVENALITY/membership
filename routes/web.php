@@ -25,6 +25,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\MemberEmailController;
 use App\Http\Controllers\EmailLogController;
+use App\Http\Controllers\RateLimitedEmailController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -642,4 +643,11 @@ Route::post('/events/{event}/registrations/bulk-delete', [EventController::class
         Route::get('/stop', [ImpersonationController::class, 'stop'])->name('stop');
         Route::get('/status', [ImpersonationController::class, 'status'])->name('status');
     });
+
+    // Rate-Limited Email Sending
+    Route::get('/rate-limited-emails', [RateLimitedEmailController::class, 'index'])->name('rate-limited-emails.index');
+    Route::post('/rate-limited-emails/start', [RateLimitedEmailController::class, 'startBatch'])->name('rate-limited-emails.start');
+    Route::get('/rate-limited-emails/progress', [RateLimitedEmailController::class, 'getProgress'])->name('rate-limited-emails.progress');
+    Route::post('/rate-limited-emails/stop', [RateLimitedEmailController::class, 'stopBatch'])->name('rate-limited-emails.stop');
+    Route::post('/rate-limited-emails/retry', [RateLimitedEmailController::class, 'retryFailed'])->name('rate-limited-emails.retry');
 });
