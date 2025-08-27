@@ -302,6 +302,22 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please select at least one member.');
             return false;
         }
+        
+        // Add selected member IDs to form if sending to selected members
+        if (document.getElementById('recipient_type').value === 'selected') {
+            // Remove any existing selected_members inputs
+            const existingInputs = document.querySelectorAll('input[name="selected_members[]"]');
+            existingInputs.forEach(input => input.remove());
+            
+            // Add new inputs for selected members
+            selectedMembers.forEach(member => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_members[]';
+                input.value = member.id;
+                this.appendChild(input);
+            });
+        }
     });
 });
 
