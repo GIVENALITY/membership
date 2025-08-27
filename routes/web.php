@@ -207,7 +207,7 @@ Route::get('/public/events/{hotelSlug}/{event}/register', [PublicEventController
 Route::post('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration')->where('event', '[0-9]+');
 Route::get('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
 Route::post('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
-Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registrationId}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation');
+Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registrationId}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation')->where(['event' => '[0-9]+', 'registrationId' => '[0-9]+']);
 
 // Temporary test route to see if the pattern is being matched
 Route::get('/public/events/{hotelSlug}/{event}/confirmation-test/{registrationId}', function($hotelSlug, $event, $registrationId) {
