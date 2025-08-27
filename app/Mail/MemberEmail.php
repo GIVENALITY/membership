@@ -56,11 +56,14 @@ class MemberEmail extends Mailable
      */
     public function content(): Content
     {
+        $hotel = $this->member->hotel ?? auth()->user()->hotel;
+        
         return new Content(
             view: 'emails.member-email',
             with: [
                 'member' => $this->member,
                 'emailData' => $this->emailData,
+                'hotel' => $hotel,
             ],
         );
     }

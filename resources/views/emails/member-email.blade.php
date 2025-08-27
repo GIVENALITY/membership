@@ -111,9 +111,6 @@
     </style>
 </head>
 <body>
-    @php
-        $hotel = $member->hotel ?? auth()->user()->hotel;
-    @endphp
     <div class="header">
         @if($hotel->email_logo_url)
             <img src="{{ $hotel->email_logo_url }}" alt="{{ $hotel->name }}" class="logo">
