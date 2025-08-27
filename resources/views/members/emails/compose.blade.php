@@ -151,7 +151,16 @@
                                                     <strong>Note:</strong> These members had emails that bounced or failed in the last 30 days. 
                                                     Consider using the <a href="{{ route('rate-limited-emails.index') }}" class="alert-link">rate-limited email system</a> for better delivery.
                                                 </div>
-                                                <div id="bounced-members-list" class="border rounded p-2" style="min-height: 100px;">
+                                                <div class="mb-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary" id="select-all-bounced">
+                                                        <i class="icon-base ri ri-check-double-line me-1"></i>Select All
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="clear-all-bounced">
+                                                        <i class="icon-base ri ri-close-line me-1"></i>Clear All
+                                                    </button>
+                                                    <span class="ms-2 text-muted" id="bounced-selection-count">0 selected</span>
+                                                </div>
+                                                <div id="bounced-members-list" class="border rounded p-2" style="min-height: 100px; max-height: 300px; overflow-y: auto;">
                                                     <div class="text-center text-muted">
                                                         <i class="icon-base ri ri-loader-4-line me-2"></i>
                                                         Loading bounced members...
@@ -586,32 +595,49 @@ function loadBouncedMembers() {
                 // Clear selected members array for bounced members
                 selectedMembers = [];
                 
-                // Display bounced members
+                // Store bounced members globally for select all functionality
+                window.bouncedMembers = data.members;
+                
+                // Display bounced members with checkboxes
                 bouncedList.innerHTML = data.members.map(member => `
                     <div class="selected-member">
-                        <div>
-                            <strong>${member.name}</strong><br>
-                            <small class="text-muted">${member.email} (ID: ${member.membership_id})</small>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-sm btn-outline-primary add-bounced-member" 
-                                    data-member='${JSON.stringify(member)}'>
-                                <i class="icon-base ri ri-add-line"></i> Add
-                            </button>
+                        <div class="form-check">
+                            <input class="form-check-input bounced-member-checkbox" type="checkbox" 
+                                   value="${member.id}" id="bounced_${member.id}">
+                            <label class="form-check-label" for="bounced_${member.id}">
+                                <strong>${member.name}</strong><br>
+                                <small class="text-muted">${member.email} (ID: ${member.membership_id})</small>
+                            </label>
                         </div>
                     </div>
                 `).join('');
                 
-                // Add event listeners to add buttons
-                document.querySelectorAll('.add-bounced-member').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const member = JSON.parse(this.dataset.member);
-                        addBouncedMember(member);
+                // Add event listeners to checkboxes
+                document.querySelectorAll('.bounced-member-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const memberId = parseInt(this.value);
+                        const member = window.bouncedMembers.find(m => m.id === memberId);
+                        
+                        if (this.checked) {
+                            addBouncedMember(member);
+                        } else {
+                            removeSelectedMember(memberId);
+                        }
                     });
+                });
+                
+                // Add event listeners for select all buttons
+                document.getElementById('select-all-bounced').addEventListener('click', function() {
+                    selectAllBouncedMembers();
+                });
+                
+                document.getElementById('clear-all-bounced').addEventListener('click', function() {
+                    clearAllBouncedMembers();
                 });
                 
                 // Update recipient count
                 document.getElementById('count-text').textContent = `${data.members.length} bounced members available`;
+                updateBouncedSelectionCount();
                 
             } else {
                 bouncedList.innerHTML = `
@@ -676,6 +702,55 @@ function removeSelectedMember(memberId) {
     selectedMembers = selectedMembers.filter(member => member.id !== memberId);
     updateSelectedMembersList();
     document.getElementById('count-text').textContent = `${selectedMembers.length} recipients selected`;
+    
+    // Uncheck the corresponding checkbox if it exists
+    const checkbox = document.getElementById(`bounced_${memberId}`);
+    if (checkbox) {
+        checkbox.checked = false;
+    }
+    
+    updateBouncedSelectionCount();
+}
+
+function selectAllBouncedMembers() {
+    if (!window.bouncedMembers) return;
+    
+    // Clear current selection
+    selectedMembers = [];
+    
+    // Add all bounced members
+    window.bouncedMembers.forEach(member => {
+        selectedMembers.push(member);
+    });
+    
+    // Check all checkboxes
+    document.querySelectorAll('.bounced-member-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    
+    updateSelectedMembersList();
+    document.getElementById('count-text').textContent = `${selectedMembers.length} recipients selected`;
+    updateBouncedSelectionCount();
+}
+
+function clearAllBouncedMembers() {
+    selectedMembers = [];
+    
+    // Uncheck all checkboxes
+    document.querySelectorAll('.bounced-member-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    updateSelectedMembersList();
+    document.getElementById('count-text').textContent = '0 recipients selected';
+    updateBouncedSelectionCount();
+}
+
+function updateBouncedSelectionCount() {
+    const countElement = document.getElementById('bounced-selection-count');
+    if (countElement) {
+        countElement.textContent = `${selectedMembers.length} selected`;
+    }
 }
 
 function showDebugInfo(data) {
