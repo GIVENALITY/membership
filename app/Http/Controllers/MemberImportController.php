@@ -42,7 +42,7 @@ class MemberImportController extends Controller
             'import_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // 10MB max
             'duplicate_handling' => 'nullable|in:skip,update,error',
             'update_fields' => 'nullable|array',
-            'update_fields.*' => 'nullable|string|in:first_name,last_name,email,phone,address,birth_date,join_date,membership_type_name,allergies,dietary_preferences,special_requests,additional_notes,emergency_contact_name,emergency_contact_phone,emergency_contact_relationship'
+            'update_fields.*' => 'nullable|string|in:first_name,last_name,email,phone,address,birth_date,join_date,membership_id,membership_type_name,allergies,dietary_preferences,special_requests,additional_notes,emergency_contact_name,emergency_contact_phone,emergency_contact_relationship'
         ]);
 
         try {
@@ -284,13 +284,9 @@ class MemberImportController extends Controller
                         }
                     }
                     
-                    // Always update membership_id if it's higher than existing
-                    if (!empty($mappedData['membership_id'])) {
-                        $existingId = (int) $existingMember->membership_id;
-                        $newId = (int) $mappedData['membership_id'];
-                        if ($newId > $existingId) {
-                            $updateData['membership_id'] = $mappedData['membership_id'];
-                        }
+                    // Always update membership_id if it's in the selected fields
+                    if (in_array('membership_id', $updateFields) && !empty($mappedData['membership_id'])) {
+                        $updateData['membership_id'] = $mappedData['membership_id'];
                     }
                     
                     $existingMember->update($updateData);
@@ -313,23 +309,12 @@ class MemberImportController extends Controller
         $mappedData['status'] = $mappedData['status'] ?? 'active';
         $mappedData['join_date'] = $mappedData['join_date'] ?? now()->toDateString();
         
-        // Always use the highest membership ID from the file or generate a new one
+        // Use the membership ID from the file if provided, otherwise generate a new one
         if (!empty($mappedData['membership_id'])) {
-            // Check if this ID is higher than any existing ID
-            $highestExistingId = Member::where('hotel_id', $hotel->id)
-                ->whereRaw('membership_id REGEXP "^[0-9]+$"')
-                ->max(DB::raw('CAST(membership_id AS UNSIGNED)'));
-            
-            $newId = (int) $mappedData['membership_id'];
-            if ($newId > ($highestExistingId ?? 0)) {
-                // Use the ID from the file
-                $mappedData['membership_id'] = (string) $newId;
-            } else {
-                // Generate a new ID higher than the highest existing
-                $mappedData['membership_id'] = $this->generateUniqueMembershipId($hotel);
-            }
+            // Use the exact ID from the file
+            $mappedData['membership_id'] = (string) $mappedData['membership_id'];
         } else {
-            // Generate a new ID if none provided
+            // Generate a new incremental ID only if none provided
             $mappedData['membership_id'] = $this->generateUniqueMembershipId($hotel);
         }
         

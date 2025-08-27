@@ -148,6 +148,10 @@
                                                         <input class="form-check-input" type="checkbox" name="update_fields[]" value="join_date" id="update_join_date">
                                                         <label class="form-check-label" for="update_join_date">Join Date</label>
                                                     </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="membership_id" id="update_membership_id">
+                                                        <label class="form-check-label" for="update_membership_id">Membership ID</label>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-check">
@@ -292,6 +296,10 @@
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" name="update_fields[]" value="join_date" id="storage_update_join_date">
                                                         <label class="form-check-label" for="storage_update_join_date">Join Date</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="membership_id" id="storage_update_membership_id">
+                                                        <label class="form-check-label" for="storage_update_membership_id">Membership ID</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
