@@ -173,6 +173,12 @@
         <p style="margin: 0; font-size: 12px;">
             Thank you for choosing {{ $member->hotel->name }}. We look forward to providing you with exceptional service.
         </p>
+        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">
+            <strong>Questions?</strong> Reply to this email or contact us at: 
+            <a href="mailto:{{ $member->hotel->reply_to_email ?? $member->hotel->email ?? config('mail.from.address') }}" style="color: {{ $member->hotel->email_primary_color ?? '#1976d2' }};">
+                {{ $member->hotel->reply_to_email ?? $member->hotel->email ?? config('mail.from.address') }}
+            </a>
+        </p>
         <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">
             &copy; {{ date('Y') }} {{ $member->hotel->name }}. All rights reserved.
         </p>

@@ -19,9 +19,13 @@ class WelcomeMemberMail extends Mailable
     {
         $hotel = $this->member->hotel;
         
+        // Determine reply-to email
+        $replyToEmail = $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address');
+        $replyToName = $hotel->name;
+        
         $mail = $this->subject($this->subjectLine)
             ->from(config('mail.from.address'), $hotel->name)
-            ->replyTo($hotel->reply_to_email ?? config('mail.from.address'), $hotel->name)
+            ->replyTo($replyToEmail, $replyToName)
             ->view('emails.welcome_member', [
                 'member' => $this->member,
                 'bodyText' => $this->bodyText,
