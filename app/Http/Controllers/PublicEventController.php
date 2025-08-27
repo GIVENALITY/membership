@@ -203,10 +203,18 @@ class PublicEventController extends Controller
     /**
      * Show registration confirmation
      */
-    public function confirmation($hotelSlug, Event $event, EventRegistration $registration)
+    public function confirmation($hotelSlug, Event $event, $registrationId)
     {
+        // Manually resolve the registration to ensure it exists
+        $registration = EventRegistration::find($registrationId);
+        
+        if (!$registration) {
+            \Log::error('Registration not found', ['registrationId' => $registrationId]);
+            abort(404, 'Registration not found');
+        }
+
         // Debug logging
-        \Log::info('Confirmation method called', [
+        \Log::info('Public confirmation method called', [
             'hotelSlug' => $hotelSlug,
             'eventId' => $event->id,
             'registrationId' => $registration->id,
@@ -214,7 +222,8 @@ class PublicEventController extends Controller
             'eventHotelSlug' => $event->hotel->slug,
             'registrationCode' => $registration->registration_code,
             'registrationStatus' => $registration->status,
-            'registrationExists' => $registration->exists
+            'registrationExists' => $registration->exists,
+            'url' => request()->url()
         ]);
 
         // Verify the registration belongs to the event

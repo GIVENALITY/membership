@@ -207,7 +207,7 @@ Route::get('/public/events/{hotelSlug}/{event}/register', [PublicEventController
 Route::post('/public/events/{hotelSlug}/{event}/register', [PublicEventController::class, 'processRegistration'])->name('public.events.process-registration')->where('event', '[0-9]+');
 Route::get('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
 Route::post('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
-Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registration}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
+Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registrationId}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation')->where(['event' => '[0-9]+', 'registrationId' => '[0-9]+']);
 Route::post('/public/events/{hotelSlug}/{event}/cancel/{registration}', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
 
 Route::get('/', function () {
@@ -310,6 +310,31 @@ Route::get('/debug/registration/{id}', function($id) {
         ]
     ]);
 })->name('debug.registration');
+
+// Debug route for testing admin confirmation
+Route::get('/debug/admin-confirm/{eventId}/{registrationId}', function($eventId, $registrationId) {
+    $event = \App\Models\Event::find($eventId);
+    $registration = \App\Models\EventRegistration::find($registrationId);
+    
+    if (!$event || !$registration) {
+        return response()->json(['error' => 'Event or registration not found']);
+    }
+    
+    return response()->json([
+        'event' => [
+            'id' => $event->id,
+            'title' => $event->title,
+            'hotel_id' => $event->hotel_id
+        ],
+        'registration' => [
+            'id' => $registration->id,
+            'event_id' => $registration->event_id,
+            'name' => $registration->name,
+            'status' => $registration->status
+        ],
+        'match' => $registration->event_id == $event->id
+    ]);
+})->name('debug.admin.confirm');
 
 // Member Card Management Routes
 Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
