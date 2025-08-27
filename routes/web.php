@@ -208,7 +208,7 @@ Route::post('/public/events/{hotelSlug}/{event}/register', [PublicEventControlle
 Route::get('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchForm'])->name('public.events.search');
 Route::post('/public/events/{hotelSlug}/search', [PublicEventController::class, 'searchRegistration'])->name('public.events.search-registration');
 Route::get('/public/events/{hotelSlug}/{event}/confirmation/{registrationId}', [PublicEventController::class, 'confirmation'])->name('public.events.confirmation')->where(['event' => '[0-9]+', 'registrationId' => '[0-9]+']);
-Route::post('/public/events/{hotelSlug}/{event}/cancel/{registration}', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
+Route::post('/public/events/{hotelSlug}/{event}/cancel/{registrationId}', [PublicEventController::class, 'cancelRegistration'])->name('public.events.cancel-registration')->where(['event' => '[0-9]+', 'registrationId' => '[0-9]+']);
 
 Route::get('/', function () {
     return redirect('/login');

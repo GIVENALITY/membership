@@ -196,7 +196,7 @@ class PublicEventController extends Controller
             $registration->update(['confirmed_at' => now()]);
         }
 
-        return redirect()->route('public.events.confirmation', [$hotelSlug, $event, $registration])
+        return redirect()->route('public.events.confirmation', [$hotelSlug, $event, $registration->id])
             ->with('success', 'Registration submitted successfully!');
     }
 
@@ -250,8 +250,15 @@ class PublicEventController extends Controller
     /**
      * Cancel a registration
      */
-    public function cancelRegistration($hotelSlug, Event $event, EventRegistration $registration)
+    public function cancelRegistration($hotelSlug, Event $event, $registrationId)
     {
+        // Manually resolve the registration to ensure it exists
+        $registration = EventRegistration::find($registrationId);
+        
+        if (!$registration) {
+            abort(404, 'Registration not found');
+        }
+
         // Verify the registration belongs to the event
         if ($registration->event_id !== $event->id) {
             abort(404);
