@@ -208,6 +208,22 @@ class PublicEventController extends Controller
             $registration->update(['confirmed_at' => now()]);
         }
 
+        // Debug output - Final step: Registration created successfully
+        if (request()->has('debug')) {
+            return response()->json([
+                'step' => 'Final - Registration created successfully',
+                'message' => '✅ Registration created and ready to redirect to confirmation',
+                'registration' => [
+                    'id' => $registration->id,
+                    'name' => $registration->name,
+                    'email' => $registration->email,
+                    'status' => $registration->status,
+                    'registration_code' => $registration->registration_code
+                ],
+                'redirect_url' => route('public.events.confirmation', [$hotelSlug, $event, $registration->id])
+            ]);
+        }
+
         return redirect()->route('public.events.confirmation', [$hotelSlug, $event, $registration->id])
             ->with('success', 'Registration submitted successfully!');
     }
