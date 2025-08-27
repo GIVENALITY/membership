@@ -336,6 +336,40 @@ Route::get('/debug/admin-confirm/{eventId}/{registrationId}', function($eventId,
     ]);
 })->name('debug.admin.confirm');
 
+// Debug route for testing public confirmation
+Route::get('/debug/public-confirm/{hotelSlug}/{eventId}/{registrationId}', function($hotelSlug, $eventId, $registrationId) {
+    $event = \App\Models\Event::find($eventId);
+    $registration = \App\Models\EventRegistration::find($registrationId);
+    
+    if (!$event) {
+        return response()->json(['error' => 'Event not found', 'eventId' => $eventId]);
+    }
+    
+    if (!$registration) {
+        return response()->json(['error' => 'Registration not found', 'registrationId' => $registrationId]);
+    }
+    
+    return response()->json([
+        'hotelSlug' => $hotelSlug,
+        'event' => [
+            'id' => $event->id,
+            'title' => $event->title,
+            'hotel_id' => $event->hotel_id,
+            'hotel_slug' => $event->hotel->slug ?? 'null'
+        ],
+        'registration' => [
+            'id' => $registration->id,
+            'event_id' => $registration->event_id,
+            'name' => $registration->name,
+            'status' => $registration->status
+        ],
+        'matches' => [
+            'event_hotel_match' => $event->hotel->slug === $hotelSlug,
+            'registration_event_match' => $registration->event_id == $event->id
+        ]
+    ]);
+})->name('debug.public.confirm');
+
 // Member Card Management Routes
 Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
 Route::post('/members/cards/mass-generate', [MemberCardController::class, 'massGenerate'])->name('members.cards.mass-generate');

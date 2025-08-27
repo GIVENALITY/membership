@@ -205,6 +205,14 @@ class PublicEventController extends Controller
      */
     public function confirmation($hotelSlug, Event $event, $registrationId)
     {
+        // Debug logging for method entry
+        \Log::info('Public confirmation method entry', [
+            'hotelSlug' => $hotelSlug,
+            'eventId' => $event->id ?? 'null',
+            'registrationId' => $registrationId,
+            'url' => request()->url()
+        ]);
+
         // Manually resolve the registration to ensure it exists
         $registration = EventRegistration::find($registrationId);
         
