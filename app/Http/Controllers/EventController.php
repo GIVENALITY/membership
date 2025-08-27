@@ -65,6 +65,11 @@ class EventController extends Controller
         $data['hotel_id'] = $user->hotel_id;
         $data['status'] = 'draft';
 
+        // Handle till_late setting
+        $data['settings'] = [
+            'till_late' => $request->has('till_late')
+        ];
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('events', 'public');
@@ -140,6 +145,11 @@ class EventController extends Controller
         }
 
         $data = $validator->validated();
+
+        // Handle till_late setting
+        $currentSettings = $event->settings ?? [];
+        $currentSettings['till_late'] = $request->has('till_late');
+        $data['settings'] = $currentSettings;
 
         // Handle image upload
         if ($request->hasFile('image')) {

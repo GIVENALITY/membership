@@ -48,7 +48,7 @@
                     </div>
                     <div class="d-flex align-items-center mb-4">
                         <i class="bx bx-time text-white me-2"></i>
-                        <span>{{ $event->start_date->format('g:i A') }} - {{ $event->end_date->format('g:i A') }}</span>
+                        <span>{{ $event->getFormattedTimeRange() }}</span>
                     </div>
                     @if(!$event->isFull())
                         <a href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" class="btn btn-light btn-lg">
@@ -133,15 +133,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card feature-card h-100">
-                                <div class="card-body p-4 text-center">
-                                    <i class="bx bx-user-check bx-lg text-primary mb-3"></i>
-                                    <h5 class="card-title">Registered</h5>
-                                    <p class="card-text">{{ $registrations }} people registered</p>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
@@ -157,7 +149,7 @@
                                 </div>
                                 <div class="d-flex align-items-center mb-3">
                                     <i class="bx bx-time text-primary me-2"></i>
-                                    <span>{{ $event->start_date->format('g:i A') }} - {{ $event->end_date->format('g:i A') }}</span>
+                                    <span>{{ $event->getFormattedTimeRange() }}</span>
                                 </div>
                             </div>
 

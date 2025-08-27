@@ -56,6 +56,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="till_late" name="till_late" 
+                                               value="1" {{ old('till_late') ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="till_late">
+                                            Till Late
+                                        </label>
+                                        <div class="form-text">Check this if the event runs until late (end time will show as "Till Late")</div>
+                                    </div>
+                                </div>
 
                                 <div class="mb-3">
                                     <label for="location" class="form-label">Location</label>

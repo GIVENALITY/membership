@@ -224,4 +224,33 @@ class Event extends Model
     {
         return $this->registration_closed || $this->status === 'cancelled' || $this->status === 'completed';
     }
+
+    /**
+     * Check if event ends "Till Late"
+     */
+    public function isTillLate(): bool
+    {
+        return $this->settings['till_late'] ?? false;
+    }
+
+    /**
+     * Get formatted end time
+     */
+    public function getFormattedEndTime(): string
+    {
+        if ($this->isTillLate()) {
+            return 'Till Late';
+        }
+        return $this->end_date->format('g:i A');
+    }
+
+    /**
+     * Get formatted time range
+     */
+    public function getFormattedTimeRange(): string
+    {
+        $startTime = $this->start_date->format('g:i A');
+        $endTime = $this->getFormattedEndTime();
+        return "{$startTime} - {$endTime}";
+    }
 }
