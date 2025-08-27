@@ -209,7 +209,7 @@ class PublicEventController extends Controller
         }
 
         // Debug output - Final step: Registration created successfully
-        if (request()->get('debug') === '1') {
+        if (request()->get('debug') === 'final') {
             return response()->json([
                 'step' => 'Final - Registration created successfully',
                 'message' => '✅ Registration created and ready to redirect to confirmation',
