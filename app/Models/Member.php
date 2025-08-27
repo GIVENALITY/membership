@@ -414,14 +414,30 @@ class Member extends Model
             $query->where('hotel_id', $hotelId);
         }
         
-        // Get the highest membership ID for this hotel
-        $highestId = $query->max(DB::raw('CAST(membership_id AS UNSIGNED)'));
+        // Get all membership IDs for this hotel and find the highest 3-digit numerical one
+        $members = $query->pluck('membership_id');
         
-        if (!$highestId) {
-            return '1';
+        $highestId = 0;
+        foreach ($members as $membershipId) {
+            // Extract only the numeric part
+            $numericPart = (int) preg_replace('/[^0-9]/', '', $membershipId);
+            
+            // Only consider 3-digit numbers (100-999)
+            if ($numericPart >= 100 && $numericPart <= 999 && $numericPart > $highestId) {
+                $highestId = $numericPart;
+            }
+        }
+        
+        if ($highestId === 0) {
+            return '100'; // Start from 100 if no 3-digit IDs exist
         }
 
         $nextNumber = $highestId + 1;
+        
+        // Ensure we don't exceed 999
+        if ($nextNumber > 999) {
+            $nextNumber = 100; // Reset to 100 if we reach 999
+        }
         
         return (string) $nextNumber;
     }
