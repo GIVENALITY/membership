@@ -242,16 +242,16 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Sender Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" 
-                                               value="{{ old('email', $hotel->email) }}" placeholder="noreply@yourhotel.com">
-                                        <small class="form-text text-muted">Email address that will appear as sender in member emails</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
                                         <label for="reply_to_email" class="form-label">Reply-To Email</label>
                                         <input type="email" class="form-control" id="reply_to_email" name="reply_to_email" 
                                                value="{{ old('reply_to_email', $hotel->reply_to_email) }}" placeholder="contact@yourhotel.com">
-                                        <small class="form-text text-muted">Email address for replies (optional)</small>
+                                        <small class="form-text text-muted">Email address where replies will be sent (optional)</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="icon-base ri ri-information-line me-2"></i>
+                                            <strong>Sender:</strong> Emails will be sent from the system email address but will display as "{{ $hotel->name }}" as the sender name.
+                                        </div>
                                     </div>
                                 </div>
                                 

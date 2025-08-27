@@ -39,12 +39,12 @@ class MemberEmail extends Mailable
         return new Envelope(
             subject: $this->emailData['subject'],
             from: new Address(
-                $hotel->email ?? config('mail.from.address'),
-                $hotel->name ?? config('mail.from.name')
+                config('mail.from.address'), // Keep system email
+                $hotel->name ?? config('mail.from.name') // Use hotel name as sender name
             ),
             replyTo: [
                 new Address(
-                    $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address'),
+                    $hotel->reply_to_email ?? config('mail.from.address'),
                     $hotel->name ?? config('mail.from.name')
                 )
             ]
