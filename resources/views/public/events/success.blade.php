@@ -111,11 +111,11 @@
             </div>
             <div class="detail-row">
                 <span class="label">Date:</span>
-                <span class="value">{{ $event->date ? $event->date->format('F j, Y') : 'TBD' }}</span>
+                <span class="value">{{ $event->start_date ? $event->start_date->format('F j, Y') : 'TBD' }}</span>
             </div>
             <div class="detail-row">
                 <span class="label">Time:</span>
-                <span class="value">{{ $event->time ?? 'TBD' }}</span>
+                <span class="value">{{ $event->start_date ? $event->start_date->format('g:i A') : 'TBD' }}</span>
             </div>
             <div class="detail-row">
                 <span class="label">Location:</span>
