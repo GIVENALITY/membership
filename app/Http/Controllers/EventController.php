@@ -51,6 +51,7 @@ class EventController extends Controller
             'price' => 'nullable|numeric|min:0',
             'is_public' => 'boolean',
             'is_active' => 'boolean',
+            'registration_closed' => 'boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -127,6 +128,7 @@ class EventController extends Controller
             'price' => 'nullable|numeric|min:0',
             'is_public' => 'boolean',
             'is_active' => 'boolean',
+            'registration_closed' => 'boolean',
             'status' => 'required|in:draft,published,cancelled,completed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);

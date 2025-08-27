@@ -69,6 +69,12 @@ class PublicEventController extends Controller
             abort(404);
         }
 
+        // Check if registration is closed
+        if ($event->isRegistrationClosed()) {
+            return redirect()->route('public.events.show', [$hotelSlug, $event])
+                ->with('error', 'Registration for this event is closed.');
+        }
+
         // Check if event is full
         if ($event->isFull()) {
             return redirect()->route('public.events.show', [$hotelSlug, $event])
@@ -96,6 +102,12 @@ class PublicEventController extends Controller
 
         if ($event->hotel->slug !== $hotelSlug) {
             abort(404);
+        }
+
+        // Check if registration is closed
+        if ($event->isRegistrationClosed()) {
+            return redirect()->route('public.events.show', [$hotelSlug, $event])
+                ->with('error', 'Registration for this event is closed.');
         }
 
         // Check if event is full

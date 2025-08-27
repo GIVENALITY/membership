@@ -24,6 +24,7 @@ class Event extends Model
         'price',
         'is_public',
         'is_active',
+        'registration_closed',
         'status',
         'settings'
     ];
@@ -33,6 +34,7 @@ class Event extends Model
         'end_date' => 'datetime',
         'is_public' => 'boolean',
         'is_active' => 'boolean',
+        'registration_closed' => 'boolean',
         'price' => 'decimal:2',
         'settings' => 'array'
     ];
@@ -213,5 +215,13 @@ class Event extends Model
     public function scopeByHotel($query, $hotelId)
     {
         return $query->where('hotel_id', $hotelId);
+    }
+
+    /**
+     * Check if registration is closed for this event
+     */
+    public function isRegistrationClosed(): bool
+    {
+        return $this->registration_closed || $this->status === 'cancelled' || $this->status === 'completed';
     }
 }

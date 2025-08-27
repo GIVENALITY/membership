@@ -156,6 +156,17 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="registration_closed" name="registration_closed" 
+                                               value="1" {{ old('registration_closed', $event->registration_closed) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="registration_closed">
+                                            Close Registration
+                                        </label>
+                                        <div class="form-text">Prevent new registrations for this event</div>
+                                    </div>
+                                </div>
+
                                 <div class="card bg-light">
                                     <div class="card-body">
                                         <h6 class="card-title">Event Preview</h6>

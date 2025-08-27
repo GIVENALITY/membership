@@ -148,7 +148,6 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ $event->title }}</h5>
-                            <p class="card-text text-muted">{{ $event->description }}</p>
                             
                             <div class="mb-3">
                                 <div class="d-flex align-items-center mb-2">
