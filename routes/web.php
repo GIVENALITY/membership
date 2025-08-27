@@ -350,6 +350,9 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     })->name('members.emails.test');
     
     Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
+    Route::get('/members/emails-simple', function() {
+        return 'Email route simple test - working!';
+    })->name('members.emails.simple');
     Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
     Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
     Route::get('/members/emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');

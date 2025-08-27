@@ -50,7 +50,15 @@ class MemberEmailController extends Controller
             'inactiveMembers' => $inactiveMembers
         ]);
         
-        return view('members.emails.index', compact('hotel', 'totalMembers', 'activeMembers', 'inactiveMembers', 'recentTemplates'));
+        try {
+            return view('members.emails.index', compact('hotel', 'totalMembers', 'activeMembers', 'inactiveMembers', 'recentTemplates'));
+        } catch (\Exception $e) {
+            \Log::error('Error rendering email index view', ['error' => $e->getMessage()]);
+            return response()->json([
+                'error' => 'View error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -177,15 +185,20 @@ class MemberEmailController extends Controller
      */
     private function saveEmailTemplate(Request $request, $hotel)
     {
-        DB::table('email_templates')->insert([
-            'hotel_id' => $hotel->id,
-            'name' => $request->subject,
-            'subject' => $request->subject,
-            'content' => $request->content,
-            'created_by' => auth()->id(),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        try {
+            DB::table('email_templates')->insert([
+                'hotel_id' => $hotel->id,
+                'name' => $request->subject,
+                'subject' => $request->subject,
+                'content' => $request->content,
+                'created_by' => auth()->id(),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('Could not save email template', ['error' => $e->getMessage()]);
+            // Don't throw the error, just log it
+        }
     }
 
     /**
@@ -193,12 +206,17 @@ class MemberEmailController extends Controller
      */
     private function getRecentTemplates()
     {
-        $user = auth()->user();
-        return DB::table('email_templates')
-            ->where('hotel_id', $user->hotel->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
+        try {
+            $user = auth()->user();
+            return DB::table('email_templates')
+                ->where('hotel_id', $user->hotel->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get();
+        } catch (\Exception $e) {
+            \Log::warning('Email templates table not found, returning empty collection', ['error' => $e->getMessage()]);
+            return collect();
+        }
     }
 
     /**
