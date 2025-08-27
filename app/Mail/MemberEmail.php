@@ -16,14 +16,16 @@ class MemberEmail extends Mailable
 
     public $member;
     public $emailData;
+    public $isCustomRecipient;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Member $member, array $emailData)
+    public function __construct($member, array $emailData)
     {
         $this->member = $member;
         $this->emailData = $emailData;
+        $this->isCustomRecipient = !($member instanceof Member);
     }
 
     /**

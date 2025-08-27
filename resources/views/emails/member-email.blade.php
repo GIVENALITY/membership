@@ -99,9 +99,13 @@
     
     <div class="content">
         <div class="member-info">
-            <h3>Dear {{ $member->first_name }} {{ $member->last_name }},</h3>
-            <p><strong>Membership ID:</strong> {{ $member->membership_id }}</p>
-            <p><strong>Membership Type:</strong> {{ $member->membershipType->name ?? 'N/A' }}</p>
+            <h3>Dear {{ $member->first_name }}{{ $member->last_name ? ' ' . $member->last_name : '' }},</h3>
+            @if(!$isCustomRecipient)
+                <p><strong>Membership ID:</strong> {{ $member->membership_id }}</p>
+                <p><strong>Membership Type:</strong> {{ $member->membershipType->name ?? 'N/A' }}</p>
+            @else
+                <p><strong>Email:</strong> {{ $member->email }}</p>
+            @endif
         </div>
         
         <div class="email-content">
@@ -116,7 +120,11 @@
     
     <div class="footer">
         <p>This email was sent to {{ $member->email }} on {{ $emailData['sent_at']->format('M d, Y \a\t g:i A') }}</p>
-        <p>If you have any questions, please contact us.</p>
+        @if(!$isCustomRecipient)
+            <p>If you have any questions, please contact us.</p>
+        @else
+            <p>You received this email as a custom recipient. If you have any questions, please contact {{ $emailData['hotel_name'] }}.</p>
+        @endif
         <p>&copy; {{ date('Y') }} {{ $emailData['hotel_name'] }}. All rights reserved.</p>
     </div>
 </body>
