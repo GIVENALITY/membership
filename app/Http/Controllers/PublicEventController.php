@@ -224,8 +224,12 @@ class PublicEventController extends Controller
             ]);
         }
 
-        return redirect()->route('public.events.confirmation', [$hotelSlug, $event, $registration->id])
-            ->with('success', 'Registration submitted successfully!');
+        // Show success page directly instead of redirecting
+        return view('public.events.success', [
+            'event' => $event,
+            'registration' => $registration,
+            'hotel' => $event->hotel
+        ])->with('success', 'Registration submitted successfully!');
     }
 
     /**
