@@ -376,9 +376,9 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/events/{event}/close-registration', [EventController::class, 'closeRegistration'])->name('events.close-registration');
     Route::post('/events/{event}/open-registration', [EventController::class, 'openRegistration'])->name('events.open-registration');
     Route::get('/events/{event}/registrations', [EventController::class, 'registrations'])->name('events.registrations');
-    Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration');
-    Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration');
-    Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended');
+    Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
+    Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
+    Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
     Route::get('/events/{event}/search-members', [EventController::class, 'searchMembers'])->name('events.search-members');
     Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');

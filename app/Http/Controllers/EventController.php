@@ -220,9 +220,14 @@ class EventController extends Controller
     /**
      * Confirm a registration
      */
-    public function confirmRegistration(EventRegistration $registration)
+    public function confirmRegistration(Event $event, EventRegistration $registration)
     {
-        $this->authorizeEvent($registration->event);
+        $this->authorizeEvent($event);
+        
+        // Verify the registration belongs to the event
+        if ($registration->event_id !== $event->id) {
+            abort(404);
+        }
         
         if ($registration->confirm()) {
             return redirect()->back()
@@ -236,9 +241,14 @@ class EventController extends Controller
     /**
      * Cancel a registration
      */
-    public function cancelRegistration(EventRegistration $registration)
+    public function cancelRegistration(Event $event, EventRegistration $registration)
     {
-        $this->authorizeEvent($registration->event);
+        $this->authorizeEvent($event);
+        
+        // Verify the registration belongs to the event
+        if ($registration->event_id !== $event->id) {
+            abort(404);
+        }
         
         if ($registration->cancel()) {
             return redirect()->back()
@@ -252,9 +262,14 @@ class EventController extends Controller
     /**
      * Mark registration as attended
      */
-    public function markAttended(EventRegistration $registration)
+    public function markAttended(Event $event, EventRegistration $registration)
     {
-        $this->authorizeEvent($registration->event);
+        $this->authorizeEvent($event);
+        
+        // Verify the registration belongs to the event
+        if ($registration->event_id !== $event->id) {
+            abort(404);
+        }
         
         if ($registration->markAsAttended()) {
             return redirect()->back()
