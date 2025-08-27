@@ -255,6 +255,7 @@ class MemberEmailController extends Controller
         }
         
         $recipients = collect();
+        $user = auth()->user();
         
         foreach ($emails as $index => $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -266,6 +267,7 @@ class MemberEmailController extends Controller
                 $recipient->last_name = '';
                 $recipient->membership_id = 'CUSTOM';
                 $recipient->membershipType = (object) ['name' => 'Custom Recipient'];
+                $recipient->hotel = $user->hotel; // Add hotel information
                 
                 $recipients->push($recipient);
             }

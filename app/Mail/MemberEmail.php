@@ -34,7 +34,13 @@ class MemberEmail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $hotel = $this->member->hotel ?? auth()->user()->hotel;
+        // Get hotel from member if it's a Member model, otherwise from authenticated user
+        $hotel = null;
+        if ($this->member instanceof Member) {
+            $hotel = $this->member->hotel;
+        } else {
+            $hotel = auth()->user()->hotel;
+        }
         
         return new Envelope(
             subject: $this->emailData['subject'],
@@ -56,7 +62,13 @@ class MemberEmail extends Mailable
      */
     public function content(): Content
     {
-        $hotel = $this->member->hotel ?? auth()->user()->hotel;
+        // Get hotel from member if it's a Member model, otherwise from authenticated user
+        $hotel = null;
+        if ($this->member instanceof Member) {
+            $hotel = $this->member->hotel;
+        } else {
+            $hotel = auth()->user()->hotel;
+        }
         
         return new Content(
             view: 'emails.member-email',
@@ -64,6 +76,7 @@ class MemberEmail extends Mailable
                 'member' => $this->member,
                 'emailData' => $this->emailData,
                 'hotel' => $hotel,
+                'isCustomRecipient' => $this->isCustomRecipient,
             ],
         );
     }
