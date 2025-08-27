@@ -269,6 +269,25 @@ Route::post('/members/import/storage', [MemberImportController::class, 'importFr
 Route::get('/members/import/membership-types', [MemberImportController::class, 'getMembershipTypes'])->name('members.import.membership-types');
 Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
 
+// Member Email Routes (MUST come before resource route)
+Route::get('/members/emails/test', function() {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Email route is working',
+        'user' => auth()->user() ? auth()->user()->name : 'no user',
+        'hotel' => auth()->user() && auth()->user()->hotel ? auth()->user()->hotel->name : 'no hotel'
+    ]);
+})->name('members.emails.test');
+
+Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
+Route::get('/members/emails-simple', function() {
+    return 'Email route simple test - working!';
+})->name('members.emails.simple');
+Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
+Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
+Route::get('/members/emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
+Route::get('/members/emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
+
 // Member Card Management Routes
 Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
 Route::post('/members/cards/mass-generate', [MemberCardController::class, 'massGenerate'])->name('members.cards.mass-generate');
@@ -339,24 +358,7 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
 
-    // Member Email Routes
-    Route::get('/members/emails/test', function() {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Email route is working',
-            'user' => auth()->user() ? auth()->user()->name : 'no user',
-            'hotel' => auth()->user() && auth()->user()->hotel ? auth()->user()->hotel->name : 'no hotel'
-        ]);
-    })->name('members.emails.test');
-    
-    Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
-    Route::get('/members/emails-simple', function() {
-        return 'Email route simple test - working!';
-    })->name('members.emails.simple');
-    Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
-    Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
-    Route::get('/members/emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
-    Route::get('/members/emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
+
 
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');
