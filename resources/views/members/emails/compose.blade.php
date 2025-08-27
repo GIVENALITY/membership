@@ -184,6 +184,15 @@
                                                 </label>
                                             </div>
                                         </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="debug_mode" 
+                                                       name="debug" value="1">
+                                                <label class="form-check-label" for="debug_mode">
+                                                    Debug Mode (Show debug info on screen)
+                                                </label>
+                                            </div>
+                                        </div>
                                         <div class="mb-3" id="schedule-section" style="display: none;">
                                             <label class="form-label">Schedule for</label>
                                             <input type="datetime-local" class="form-control" name="scheduled_at">
@@ -318,6 +327,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.appendChild(input);
             });
         }
+        
+        // Check if debug mode is enabled
+        const debugMode = document.getElementById('debug_mode').checked;
+        if (debugMode) {
+            e.preventDefault();
+            
+            // Show loading message
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="icon-base ri ri-loader-4-line me-2"></i>Sending...';
+            submitBtn.disabled = true;
+            
+            // Submit form via AJAX
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display debug information
+                showDebugInfo(data);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error sending email: ' + error.message);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
     });
 });
 
@@ -436,6 +484,45 @@ function updateRecipientCount() {
     
     document.getElementById('count-text').textContent = `${count} recipients`;
     document.getElementById('recipient-count').style.display = 'block';
+}
+
+function showDebugInfo(data) {
+    // Create debug modal
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.id = 'debugModal';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Email Debug Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-${data.status === 'completed' ? 'success' : 'danger'}">
+                        <strong>Status:</strong> ${data.status}<br>
+                        <strong>Message:</strong> ${data.message}
+                    </div>
+                    
+                    <h6>Debug Information:</h6>
+                    <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 400px; overflow-y: auto;">${JSON.stringify(data.debug_info, null, 2)}</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to page and show it
+    document.body.appendChild(modal);
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+    
+    // Remove modal from DOM after it's hidden
+    modal.addEventListener('hidden.bs.modal', function() {
+        document.body.removeChild(modal);
+    });
 }
 </script>
 @endpush

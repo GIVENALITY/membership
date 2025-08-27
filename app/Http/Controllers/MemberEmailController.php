@@ -170,6 +170,34 @@ class MemberEmailController extends Controller
             'failed_count' => $failedCount
         ]);
 
+        // Show debug information on screen
+        if (request()->get('debug') === '1') {
+            return response()->json([
+                'status' => 'completed',
+                'message' => $message,
+                'debug_info' => [
+                    'recipient_count' => $recipients->count(),
+                    'sent_count' => $sentCount,
+                    'failed_count' => $failedCount,
+                    'recipient_type' => $request->recipient_type,
+                    'send_immediately' => $request->send_immediately,
+                    'recipients' => $recipients->map(function($recipient) {
+                        return [
+                            'id' => $recipient->id,
+                            'name' => $recipient->first_name . ' ' . $recipient->last_name,
+                            'email' => $recipient->email,
+                            'is_member' => $recipient instanceof \App\Models\Member
+                        ];
+                    }),
+                    'email_data' => [
+                        'subject' => $emailData['subject'],
+                        'hotel_name' => $emailData['hotel_name'],
+                        'sent_by' => $emailData['sent_by']
+                    ]
+                ]
+            ]);
+        }
+
         return redirect()->route('members.emails.index')->with('success', $message);
         
         } catch (\Exception $e) {
@@ -177,6 +205,20 @@ class MemberEmailController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
+            
+            // Show debug information on screen for errors too
+            if (request()->get('debug') === '1') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to send emails: ' . $e->getMessage(),
+                    'debug_info' => [
+                        'error' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => $e->getTraceAsString()
+                    ]
+                ]);
+            }
             
             return back()->with('error', 'Failed to send emails: ' . $e->getMessage());
         }
