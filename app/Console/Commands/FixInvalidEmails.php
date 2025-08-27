@@ -30,10 +30,6 @@ class FixInvalidEmails extends Command
             ['pattern' => 'outlookom', 'replacement' => 'outlook.com'],
             ['pattern' => 'icloudom', 'replacement' => 'icloud.com'],
             
-            // Missing @ symbol
-            ['pattern' => 'gmail.com', 'replacement' => '@gmail.com'],
-            ['pattern' => 'yahoo.com', 'replacement' => '@yahoo.com'],
-            
             // Double dots
             ['pattern' => '..', 'replacement' => '.'],
             
@@ -98,14 +94,47 @@ class FixInvalidEmails extends Command
             }
         }
 
+        // Manual fixes for specific problematic emails
+        $manualFixes = [
+            'tsilindu@mkwawatanz.com/tsilindu39@yahoo.com' => 'tsilindu39@yahoo.com',
+            'rkhamis@206@gmail.com' => 'rkhamis206@gmail.com',
+            '..' => '', // This will be handled by the member update
+        ];
+
+        $this->info("\n🔧 Applying manual fixes for specific problematic emails:");
+        
+        foreach ($manualFixes as $oldEmail => $newEmail) {
+            $member = Member::where('email', $oldEmail)->first();
+            
+            if ($member) {
+                $this->line("  {$oldEmail} → {$newEmail}");
+                
+                if (!$isDryRun) {
+                    if ($newEmail === '') {
+                        // For empty emails, we'll mark them for manual review
+                        $this->warn("  ⚠️  {$oldEmail} needs manual review (empty email)");
+                    } else {
+                        $member->update(['email' => $newEmail]);
+                        $totalFixed++;
+                    }
+                }
+                
+                $totalFound++;
+            }
+        }
+
         // Show invalid emails that couldn't be fixed
         $this->info("\n🔍 Checking for remaining invalid emails:");
-        $invalidMembers = Member::whereRaw('email NOT REGEXP "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"')->get();
+        $invalidMembers = Member::whereRaw('email NOT REGEXP "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"')
+            ->orWhere('email', '')
+            ->orWhereNull('email')
+            ->get();
         
         if ($invalidMembers->isNotEmpty()) {
             $this->warn("⚠️  Found " . $invalidMembers->count() . " emails that still need manual fixing:");
             foreach ($invalidMembers as $member) {
-                $this->line("  - {$member->email} (Member: {$member->full_name})");
+                $email = $member->email ?: '(empty)';
+                $this->line("  - {$email} (Member: {$member->full_name})");
             }
         } else {
             $this->info("✅ All emails are now valid!");

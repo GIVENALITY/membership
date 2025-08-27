@@ -96,6 +96,7 @@
                                                 <option value="inactive" {{ request('type') === 'inactive' ? 'selected' : '' }}>Inactive Members Only</option>
                                                 <option value="selected">Selected Members</option>
                                                 <option value="filtered">Filtered Members</option>
+                                                <option value="bounced">Bounced List Members</option>
                                                 <option value="custom">Custom Email Addresses</option>
                                             </select>
                                         </div>
@@ -138,6 +139,24 @@
                                                     <option value="active">Active Only</option>
                                                     <option value="inactive">Inactive Only</option>
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bounced Members -->
+                                        <div id="bounced-members-section" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label">Bounced Members (Last 30 Days)</label>
+                                                <div class="alert alert-warning">
+                                                    <i class="icon-base ri ri-alert-line me-2"></i>
+                                                    <strong>Note:</strong> These members had emails that bounced or failed in the last 30 days. 
+                                                    Consider using the <a href="{{ route('rate-limited-emails.index') }}" class="alert-link">rate-limited email system</a> for better delivery.
+                                                </div>
+                                                <div id="bounced-members-list" class="border rounded p-2" style="min-height: 100px;">
+                                                    <div class="text-center text-muted">
+                                                        <i class="icon-base ri ri-loader-4-line me-2"></i>
+                                                        Loading bounced members...
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -262,16 +281,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedType = this.value;
         const selectedSection = document.getElementById('selected-members-section');
         const filteredSection = document.getElementById('filtered-members-section');
+        const bouncedSection = document.getElementById('bounced-members-section');
         const customSection = document.getElementById('custom-emails-section');
         
         selectedSection.style.display = 'none';
         filteredSection.style.display = 'none';
+        bouncedSection.style.display = 'none';
         customSection.style.display = 'none';
         
         if (selectedType === 'selected') {
             selectedSection.style.display = 'block';
         } else if (selectedType === 'filtered') {
             filteredSection.style.display = 'block';
+        } else if (selectedType === 'bounced') {
+            bouncedSection.style.display = 'block';
+            loadBouncedMembers();
         } else if (selectedType === 'custom') {
             customSection.style.display = 'block';
         }
@@ -327,8 +351,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
-        // Add selected member IDs to form if sending to selected members
-        if (document.getElementById('recipient_type').value === 'selected') {
+        // Add selected member IDs to form if sending to selected members or bounced members
+        if (document.getElementById('recipient_type').value === 'selected' || 
+            document.getElementById('recipient_type').value === 'bounced') {
             // Remove any existing selected_members inputs
             const existingInputs = document.querySelectorAll('input[name="selected_members[]"]');
             existingInputs.forEach(input => input.remove());
@@ -520,6 +545,10 @@ function updateRecipientCount() {
                 console.error('Error calculating recipients:', error);
                 countElement.textContent = 'Error calculating recipients';
             });
+    } else if (recipientType === 'bounced') {
+        // For bounced members, count will be updated when members are loaded
+        countElement.textContent = 'Loading bounced members...';
+        countContainer.style.display = 'block';
     } else {
         // Show calculating message
         countElement.textContent = 'Calculating recipients...';
@@ -536,6 +565,117 @@ function updateRecipientCount() {
                 countElement.textContent = 'Error calculating recipients';
             });
     }
+}
+
+function loadBouncedMembers() {
+    const bouncedList = document.getElementById('bounced-members-list');
+    
+    // Show loading state
+    bouncedList.innerHTML = `
+        <div class="text-center text-muted">
+            <i class="icon-base ri ri-loader-4-line me-2"></i>
+            Loading bounced members...
+        </div>
+    `;
+    
+    // Fetch bounced members
+    fetch('{{ route("members.emails.bounced") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success' && data.members.length > 0) {
+                // Clear selected members array for bounced members
+                selectedMembers = [];
+                
+                // Display bounced members
+                bouncedList.innerHTML = data.members.map(member => `
+                    <div class="selected-member">
+                        <div>
+                            <strong>${member.name}</strong><br>
+                            <small class="text-muted">${member.email} (ID: ${member.membership_id})</small>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary add-bounced-member" 
+                                    data-member='${JSON.stringify(member)}'>
+                                <i class="icon-base ri ri-add-line"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add event listeners to add buttons
+                document.querySelectorAll('.add-bounced-member').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const member = JSON.parse(this.dataset.member);
+                        addBouncedMember(member);
+                    });
+                });
+                
+                // Update recipient count
+                document.getElementById('count-text').textContent = `${data.members.length} bounced members available`;
+                
+            } else {
+                bouncedList.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="icon-base ri ri-check-line me-2"></i>
+                        No bounced members found in the last 30 days
+                    </div>
+                `;
+                document.getElementById('count-text').textContent = '0 bounced members';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading bounced members:', error);
+            bouncedList.innerHTML = `
+                <div class="text-center text-danger">
+                    <i class="icon-base ri ri-error-warning-line me-2"></i>
+                    Error loading bounced members
+                </div>
+            `;
+            document.getElementById('count-text').textContent = 'Error loading bounced members';
+        });
+}
+
+function addBouncedMember(member) {
+    // Check if member is already selected
+    if (selectedMembers.some(m => m.id === member.id)) {
+        alert('This member is already selected.');
+        return;
+    }
+    
+    // Add to selected members array
+    selectedMembers.push(member);
+    
+    // Update the selected members list
+    updateSelectedMembersList();
+    
+    // Update recipient count
+    document.getElementById('count-text').textContent = `${selectedMembers.length} recipients selected`;
+}
+
+function updateSelectedMembersList() {
+    const selectedList = document.getElementById('selected-members-list');
+    
+    if (selectedMembers.length === 0) {
+        selectedList.innerHTML = '<small class="text-muted">No members selected</small>';
+    } else {
+        selectedList.innerHTML = selectedMembers.map(member => `
+            <div class="selected-member">
+                <div>
+                    <strong>${member.name}</strong><br>
+                    <small class="text-muted">${member.email}</small>
+                </div>
+                <div>
+                    <span class="remove-member" onclick="removeSelectedMember(${member.id})">×</span>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+function removeSelectedMember(memberId) {
+    selectedMembers = selectedMembers.filter(member => member.id !== memberId);
+    updateSelectedMembersList();
+    document.getElementById('count-text').textContent = `${selectedMembers.length} recipients selected`;
 }
 
 function showDebugInfo(data) {

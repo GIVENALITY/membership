@@ -388,6 +388,40 @@ class MemberEmailController extends Controller
     }
 
     /**
+     * Get bounced members for email composer
+     */
+    public function getBouncedMembers()
+    {
+        $user = auth()->user();
+        $hotel = $user->hotel;
+
+        // Get members whose emails have bounced or failed in the last 30 days
+        $bouncedMembers = Member::where('members.hotel_id', $hotel->id)
+            ->join('email_logs', 'members.id', '=', 'email_logs.member_id')
+            ->where('email_logs.hotel_id', $hotel->id)
+            ->whereIn('email_logs.status', ['failed', 'bounced'])
+            ->where('email_logs.created_at', '>=', now()->subDays(30))
+            ->select('members.*')
+            ->distinct()
+            ->orderBy('members.first_name')
+            ->orderBy('members.last_name')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'members' => $bouncedMembers->map(function($member) {
+                return [
+                    'id' => $member->id,
+                    'name' => $member->full_name,
+                    'email' => $member->email,
+                    'membership_id' => $member->membership_id,
+                    'hotel' => $member->hotel->name
+                ];
+            })
+        ]);
+    }
+
+    /**
      * Get email statistics
      */
     public function statistics()
