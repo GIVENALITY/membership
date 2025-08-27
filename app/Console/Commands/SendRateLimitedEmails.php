@@ -18,7 +18,7 @@ class SendRateLimitedEmails extends Command
                             {--content= : Email content}
                             {--member-ids=* : Specific member IDs to send to}
                             {--resume-from= : Resume from specific email log ID}
-                            {--batch-size=60 : Number of emails per hour (default: 60)}
+                            {--batch-size=50 : Number of emails per hour (default: 50)}
                             {--dry-run : Show what would be sent without actually sending}';
 
     protected $description = 'Send emails with rate limiting (60 per hour) and progress tracking';
@@ -34,7 +34,7 @@ class SendRateLimitedEmails extends Command
         $this->batchSize = (int) $this->option('batch-size');
         
         $this->info("🚀 Starting rate-limited email sending...");
-        $this->info("📊 Batch size: {$this->batchSize} emails per hour");
+        $this->info("📊 Batch size: {$this->batchSize} emails per hour (within 50/hour hosting limit)");
         $this->info("⏰ Started at: " . $this->startTime->format('Y-m-d H:i:s'));
         
         // Get email parameters

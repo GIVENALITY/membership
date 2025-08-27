@@ -79,9 +79,9 @@
                                         <div class="mb-3">
                                             <label class="form-label">Batch Size (emails/hour)</label>
                                             <select name="batch_size" class="form-select">
-                                                <option value="60" selected>60 emails/hour (Recommended)</option>
-                                                <option value="50">50 emails/hour (Conservative)</option>
-                                                <option value="70">70 emails/hour (Aggressive)</option>
+                                                <option value="50" selected>50 emails/hour (Recommended - Hosting Limit)</option>
+                                                <option value="45">45 emails/hour (Conservative)</option>
+                                                <option value="40">40 emails/hour (Very Conservative)</option>
                                             </select>
                                         </div>
                                     </div>
