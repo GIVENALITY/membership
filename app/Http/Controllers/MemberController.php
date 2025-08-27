@@ -40,7 +40,7 @@ class MemberController extends Controller
             return back()->withErrors(['error' => 'User not associated with a hotel.']);
         }
 
-        $membershipId = Member::generateMembershipId();
+        $membershipId = Member::generateMembershipId($user->hotel_id);
         $membershipTypes = \App\Models\MembershipType::where('hotel_id', $user->hotel_id)
             ->where('is_active', true)
             ->orderBy('sort_order')
@@ -86,7 +86,7 @@ class MemberController extends Controller
 
             $member = Member::create([
                 'hotel_id' => $user->hotel_id,
-                'membership_id' => Member::generateMembershipId(),
+                'membership_id' => Member::generateMembershipId($user->hotel_id),
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,

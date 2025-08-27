@@ -74,7 +74,7 @@
               <div class="col-md-6 mb-3">
                 <label for="membership_id" class="form-label">Membership ID</label>
                 <input type="text" class="form-control" id="membership_id" 
-                       value="{{ $membershipId ?? 'MS001' }}" readonly>
+                       value="{{ $membershipId ?? '1' }}" readonly>
                 <small class="text-muted">Auto-generated membership ID</small>
               </div>
               <div class="col-md-6 mb-3">

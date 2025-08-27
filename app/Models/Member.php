@@ -396,19 +396,33 @@ class Member extends Model
     }
 
     /**
-     * Generate next membership ID
+     * Generate next membership ID for a specific hotel
      */
-    public static function generateMembershipId(): string
+    public static function generateMembershipId($hotelId = null): string
     {
-        $lastMember = self::orderBy('id', 'desc')->first();
+        // If no hotel ID provided, try to get it from the authenticated user
+        if (!$hotelId) {
+            $user = auth()->user();
+            $hotelId = $user ? $user->hotel_id : null;
+        }
+        
+        // Build query to find the last member
+        $query = self::query();
+        
+        if ($hotelId) {
+            $query->where('hotel_id', $hotelId);
+        }
+        
+        $lastMember = $query->orderBy('id', 'desc')->first();
         
         if (!$lastMember) {
-            return 'MS001';
+            return '1';
         }
 
-        $lastNumber = (int) substr($lastMember->membership_id, 2);
+        // Get the last numerical membership ID
+        $lastNumber = (int) $lastMember->membership_id;
         $nextNumber = $lastNumber + 1;
         
-        return 'MS' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        return (string) $nextNumber;
     }
 } 
