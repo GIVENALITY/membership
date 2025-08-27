@@ -93,7 +93,9 @@
                     <div class="card feature-card mb-4">
                         <div class="card-body p-4">
                             <h3 class="card-title mb-4">About This Event</h3>
-                            <p class="card-text">{{ $event->description }}</p>
+                            <div class="card-text">
+                                {!! nl2br(e($event->description)) !!}
+                            </div>
                         </div>
                     </div>
 
