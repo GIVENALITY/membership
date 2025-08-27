@@ -334,14 +334,11 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Member</th>
-                                    <th>Visit Date</th>
-                                    <th>People</th>
-                                    <th>Amount</th>
-                                    <th>Discount</th>
-                                    <th>Final</th>
+                                    <th>Visit</th>
+                                    <th>Details</th>
+                                    <th>Financial</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th width="120">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -349,7 +346,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm me-3">
+                                            <div class="avatar avatar-sm me-2">
                                                 <span class="avatar-initial rounded-circle bg-label-primary">
                                                     {{ substr($visit->member->first_name, 0, 1) }}
                                                 </span>
@@ -361,40 +358,39 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div>{{ $visit->created_at->format('M j, Y') }}</div>
-                                        <small class="text-muted">{{ $visit->created_at->format('H:i') }}</small>
+                                        <div class="small">
+                                            <div class="fw-semibold">{{ $visit->created_at->format('M j, Y') }}</div>
+                                            <div class="text-muted">{{ $visit->created_at->format('H:i') }}</div>
+                                            <div>
+                                                <span class="badge bg-label-info">{{ $visit->number_of_people }} people</span>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-label-info">{{ $visit->number_of_people }} people</span>
+                                        <div class="small">
+                                            @if($visit->amount_spent)
+                                                <div class="fw-semibold">TZS {{ number_format($visit->amount_spent) }}</div>
+                                            @else
+                                                <div class="text-muted">-</div>
+                                            @endif
+                                            
+                                            @if($visit->discount_amount)
+                                                <div class="text-success">-TZS {{ number_format($visit->discount_amount) }} ({{ $visit->discount_percentage }}%)</div>
+                                            @endif
+                                            
+                                            @if($visit->final_amount)
+                                                <div class="fw-bold">Final: TZS {{ number_format($visit->final_amount) }}</div>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td>
-                                        @if($visit->amount_spent)
-                                            <strong>TZS {{ number_format($visit->amount_spent) }}</strong>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($visit->discount_amount)
-                                            <span class="text-success">-TZS {{ number_format($visit->discount_amount) }}</span>
-                                            <br><small class="text-muted">({{ $visit->discount_percentage }}%)</small>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($visit->final_amount)
-                                            <strong>TZS {{ number_format($visit->final_amount) }}</strong>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($visit->is_checked_out)
-                                            <span class="badge bg-label-success">Completed</span>
-                                        @else
-                                            <span class="badge bg-label-warning">Active</span>
-                                        @endif
+                                        <div class="small">
+                                            @if($visit->is_checked_out)
+                                                <span class="badge bg-label-success">Completed</span>
+                                            @else
+                                                <span class="badge bg-label-warning">Active</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1">

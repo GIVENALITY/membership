@@ -45,13 +45,10 @@
             <thead>
               <tr>
                 <th>{{ __('app.member') }}</th>
-                <th>{{ __('app.membership_id') }}</th>
-                <th>{{ __('app.membership_type') }}</th>
-                <th>{{ __('app.phone') }}</th>
-                <th>{{ __('app.total_visits') }}</th>
-                <th>{{ __('app.last_visit') }}</th>
+                <th>{{ __('app.details') }}</th>
+                <th>{{ __('app.activity') }}</th>
                 <th>{{ __('app.status') }}</th>
-                <th>{{ __('app.actions') }}</th>
+                <th width="120">{{ __('app.actions') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -59,7 +56,7 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
-                      <div class="avatar avatar-sm me-3">
+                      <div class="avatar avatar-sm me-2">
                         <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle" />
                       </div>
                       <div>
@@ -68,26 +65,34 @@
                       </div>
                     </div>
                   </td>
-                  <td><span class="badge bg-label-primary">{{ $member->membership_id }}</span></td>
                   <td>
-                    @if($member->membershipType)
-                      <span class="badge bg-label-info">{{ $member->membershipType->name }}</span>
-                    @else
-                      <span class="text-muted">N/A</span>
-                    @endif
+                    <div class="small">
+                      <div class="mb-1">
+                        <span class="badge bg-label-primary">{{ $member->membership_id }}</span>
+                        @if($member->membershipType)
+                          <span class="badge bg-label-info">{{ $member->membershipType->name }}</span>
+                        @endif
+                      </div>
+                      <div class="text-muted">{{ $member->phone }}</div>
+                    </div>
                   </td>
-                  <td>{{ $member->phone }}</td>
-                  <td>{{ $member->total_visits }} {{ __('app.total_visits') }}</td>
-                  <td>{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : __('app.never') }}</td>
                   <td>
-                    <div class="d-flex flex-column gap-1">
-                      @if($member->status === 'active')
-                        <span class="badge bg-label-success">{{ __('app.active') }}</span>
-                      @elseif($member->status === 'inactive')
-                        <span class="badge bg-label-secondary">{{ __('app.inactive') }}</span>
-                      @else
-                        <span class="badge bg-label-danger">{{ __('app.suspended') }}</span>
-                      @endif
+                    <div class="small">
+                      <div class="fw-semibold">{{ $member->total_visits }} {{ __('app.total_visits') }}</div>
+                      <div class="text-muted">{{ $member->last_visit_at ? $member->last_visit_at->diffForHumans() : __('app.never') }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="small">
+                      <div class="mb-1">
+                        @if($member->status === 'active')
+                          <span class="badge bg-label-success">{{ __('app.active') }}</span>
+                        @elseif($member->status === 'inactive')
+                          <span class="badge bg-label-secondary">{{ __('app.inactive') }}</span>
+                        @else
+                          <span class="badge bg-label-danger">{{ __('app.suspended') }}</span>
+                        @endif
+                      </div>
                       
                       @if($member->card_image_path)
                         <span class="badge bg-label-success">
@@ -100,10 +105,6 @@
                           {{ __('app.no_card') }}
                         </span>
                       @endif
-                      
-                      <span class="badge {{ $member->getPhysicalCardStatusBadgeClass() }}">
-                        {{ $member->getPhysicalCardStatusText() }}
-                      </span>
                     </div>
                   </td>
                   <td>

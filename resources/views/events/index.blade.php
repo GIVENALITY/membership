@@ -88,73 +88,87 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <!-- Primary Actions -->
-                                                <div class="d-flex gap-1">
-                                                    <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-outline-primary" title="View">
-                                                        <i class="bx bx-show"></i>
-                                                    </a>
-                                                    <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
-                                                        <i class="bx bx-edit"></i>
-                                                    </a>
-                                                    <a href="{{ route('events.registrations', $event) }}" class="btn btn-sm btn-outline-info" title="Registrations">
-                                                        <i class="bx bx-list-ul"></i>
-                                                    </a>
-                                                </div>
-                                                
-                                                <!-- Secondary Actions -->
-                                                <div class="d-flex gap-1">
-                                                    @if($event->status === 'draft')
-                                                        <form action="{{ route('events.publish', $event) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-sm btn-success" title="Publish">
-                                                                <i class="bx bx-check-circle"></i>
-                                                            </button>
-                                                        </form>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{{ route('events.show', $event) }}">
+                                                        <i class="bx bx-show me-1"></i> View
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('events.edit', $event) }}">
+                                                        <i class="bx bx-edit me-1"></i> Edit
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('events.registrations', $event) }}">
+                                                        <i class="bx bx-list-ul me-1"></i> Registrations
+                                                    </a></li>
+                                                    @if($event->is_public && $event->status === 'published')
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="{{ route('public.events.show', [$event->hotel->slug, $event]) }}" target="_blank">
+                                                        <i class="bx bx-external-link me-1"></i> View Public Page
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" target="_blank">
+                                                        <i class="bx bx-user-plus me-1"></i> Test Registration
+                                                    </a></li>
                                                     @endif
-                                                    
+                                                    @if($event->status === 'draft')
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <form action="{{ route('events.publish', $event) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item text-success">
+                                                                    <i class="bx bx-check-circle me-1"></i> Publish
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @endif
+                                                    @if($event->status === 'published' && $event->isUpcoming())
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <form action="{{ route('events.cancel', $event) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item text-danger" 
+                                                                        onclick="return confirm('Are you sure you want to cancel this event?')">
+                                                                    <i class="bx bx-x-circle me-1"></i> Cancel Event
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @endif
                                                     @if($event->status === 'published')
+                                                        <li><hr class="dropdown-divider"></li>
                                                         @if($event->isRegistrationClosed())
-                                                            <form action="{{ route('events.open-registration', $event) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-sm btn-success" title="Open Registration">
-                                                                    <i class="bx bx-lock-open"></i>
-                                                                </button>
-                                                            </form>
+                                                            <li>
+                                                                <form action="{{ route('events.open-registration', $event) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="dropdown-item text-success">
+                                                                        <i class="bx bx-lock-open me-1"></i> Open Registration
+                                                                    </button>
+                                                                </form>
+                                                            </li>
                                                         @else
-                                                            <form action="{{ route('events.close-registration', $event) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-sm btn-warning" title="Close Registration"
-                                                                        onclick="return confirm('Close registration?')">
-                                                                    <i class="bx bx-lock"></i>
-                                                                </button>
-                                                            </form>
+                                                            <li>
+                                                                <form action="{{ route('events.close-registration', $event) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="dropdown-item text-warning" 
+                                                                            onclick="return confirm('Are you sure you want to close registration for this event?')">
+                                                                        <i class="bx bx-lock me-1"></i> Close Registration
+                                                                    </button>
+                                                                </form>
+                                                            </li>
                                                         @endif
                                                     @endif
-                                                    
-                                                    <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                                onclick="return confirm('Delete this event?')">
-                                                            <i class="bx bx-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                
-                                                <!-- Public Links (if applicable) -->
-                                                @if($event->is_public && $event->status === 'published')
-                                                    <div class="d-flex gap-1">
-                                                        <a href="{{ route('public.events.show', [$event->hotel->slug, $event]) }}" 
-                                                           class="btn btn-sm btn-outline-dark" target="_blank" title="Public Page">
-                                                            <i class="bx bx-external-link"></i>
-                                                        </a>
-                                                        <a href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" 
-                                                           class="btn btn-sm btn-outline-success" target="_blank" title="Test Registration">
-                                                            <i class="bx bx-user-plus"></i>
-                                                        </a>
-                                                    </div>
-                                                @endif
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item text-danger" 
+                                                                    onclick="return confirm('Are you sure you want to delete this event?')">
+                                                                <i class="bx bx-trash me-1"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </td>
                                     </tr>

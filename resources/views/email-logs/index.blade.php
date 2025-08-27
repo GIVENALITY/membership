@@ -142,28 +142,15 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Subject</th>
-                                    <th>Recipient</th>
+                                    <th>Email</th>
+                                    <th>Details</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th width="120">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($logs as $log)
                                     <tr>
-                                        <td>{{ $log->created_at->format('M d, Y H:i') }}</td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">
-                                                {{ $log->getEmailTypeLabel() }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="text-truncate" style="max-width: 200px;" title="{{ $log->subject }}">
-                                                {{ $log->subject }}
-                                            </div>
-                                        </td>
                                         <td>
                                             <div>
                                                 <strong>{{ $log->recipient_name ?: 'N/A' }}</strong><br>
@@ -171,12 +158,27 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="{{ $log->getStatusBadgeClass() }}">
-                                                {{ ucfirst($log->status) }}
-                                            </span>
-                                            @if($log->error_message)
-                                                <br><small class="text-danger">{{ Str::limit($log->error_message, 50) }}</small>
-                                            @endif
+                                            <div class="small">
+                                                <div class="fw-semibold">{{ $log->subject }}</div>
+                                                <div class="text-muted">{{ $log->created_at->format('M d, Y g:i A') }}</div>
+                                                <div>
+                                                    <span class="badge bg-light text-dark">
+                                                        {{ $log->getEmailTypeLabel() }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                <div class="mb-1">
+                                                    <span class="{{ $log->getStatusBadgeClass() }}">
+                                                        {{ ucfirst($log->status) }}
+                                                    </span>
+                                                </div>
+                                                @if($log->error_message)
+                                                    <div class="text-danger">{{ Str::limit($log->error_message, 40) }}</div>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
