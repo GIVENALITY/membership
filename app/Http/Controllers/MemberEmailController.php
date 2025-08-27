@@ -85,8 +85,8 @@ class MemberEmailController extends Controller
                     $request->validate([
             'subject' => 'required|string|max:255',
             'content' => 'required|string',
-            'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
-            'selected_members' => 'required_if:recipient_type,selected|array',
+            'recipient_type' => 'required|in:all,active,inactive,selected,filtered,bounced,custom',
+            'selected_members' => 'required_if:recipient_type,selected|required_if:recipient_type,bounced|array',
             'selected_members.*' => 'exists:members,id',
             'membership_type_ids' => 'required_if:recipient_type,filtered|array',
             'membership_type_ids.*' => 'exists:membership_types,id',
@@ -269,6 +269,9 @@ class MemberEmailController extends Controller
                 return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->where('status', 'inactive')->get();
 
             case 'selected':
+                return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->whereIn('id', $request->selected_members)->get();
+
+            case 'bounced':
                 return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->whereIn('id', $request->selected_members)->get();
 
             case 'filtered':
