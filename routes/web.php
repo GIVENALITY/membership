@@ -23,6 +23,7 @@ use App\Http\Controllers\MemberAlertController;
 use App\Http\Controllers\PointsConfigurationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\MemberEmailController;
 
 // Landing page route
 Route::get('/landing', function () {
