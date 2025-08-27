@@ -81,20 +81,20 @@ class MemberEmailController extends Controller
     public function send(Request $request)
     {
         try {
-            $request->validate([
-                'subject' => 'required|string|max:255',
-                'content' => 'required|string',
-                'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
-                'selected_members' => 'required_if:recipient_type,selected|array',
-                'selected_members.*' => 'exists:members,id',
-                'membership_type_ids' => 'required_if:recipient_type,filtered|array',
-                'membership_type_ids.*' => 'exists:membership_types,id',
-                'status_filter' => 'required_if:recipient_type,filtered|in:all,active,inactive',
-                'custom_emails' => 'required_if:recipient_type,custom|string',
-                'custom_names' => 'nullable|string',
-                'send_immediately' => 'boolean',
-                'scheduled_at' => 'nullable|date|after:now'
-            ]);
+                    $request->validate([
+            'subject' => 'required|string|max:255',
+            'content' => 'required|string',
+            'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
+            'selected_members' => 'required_if:recipient_type,selected|array',
+            'selected_members.*' => 'exists:members,id',
+            'membership_type_ids' => 'required_if:recipient_type,filtered|array',
+            'membership_type_ids.*' => 'exists:membership_types,id',
+            'status_filter' => 'required_if:recipient_type,filtered|in:all,active,inactive',
+            'custom_emails' => 'required_if:recipient_type,custom|nullable|string',
+            'custom_names' => 'nullable|string',
+            'send_immediately' => 'boolean',
+            'scheduled_at' => 'nullable|date|after:now'
+        ]);
 
             $user = auth()->user();
             $hotel = $user->hotel;
