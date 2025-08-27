@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Models\Member;
 use App\Models\Hotel;
+use App\Models\EmailLog;
 use App\Mail\MemberEmail;
 use Carbon\Carbon;
 
@@ -135,19 +136,47 @@ class MemberEmailController extends Controller
                     'send_immediately' => $request->send_immediately
                 ]);
                 
+                // Create email log entry
+                $emailLog = EmailLog::create([
+                    'hotel_id' => $hotel->id,
+                    'email_type' => 'member_email',
+                    'subject' => $emailData['subject'],
+                    'content' => $emailData['content'],
+                    'recipient_email' => $member->email,
+                    'recipient_name' => $member->first_name . ' ' . $member->last_name,
+                    'member_id' => $member->id,
+                    'status' => 'pending',
+                    'metadata' => [
+                        'recipient_type' => $request->recipient_type,
+                        'send_immediately' => $request->send_immediately,
+                        'sent_by' => $user->id
+                    ]
+                ]);
+                
                 if ($request->send_immediately) {
                     // Send immediately
                     Mail::to($member->email)->send(new MemberEmail($member, $emailData));
+                    $emailLog->update(['status' => 'sent', 'sent_at' => now()]);
                     $sentCount++;
                     \Log::info('Email sent immediately', ['member_id' => $member->id]);
                 } else {
                     // Queue for later
                     Mail::to($member->email)->queue(new MemberEmail($member, $emailData));
+                    $emailLog->update(['status' => 'queued']);
                     $sentCount++;
                     \Log::info('Email queued', ['member_id' => $member->id]);
                 }
             } catch (\Exception $e) {
                 $failedCount++;
+                
+                // Update email log with error
+                if (isset($emailLog)) {
+                    $emailLog->update([
+                        'status' => 'failed',
+                        'error_message' => $e->getMessage()
+                    ]);
+                }
+                
                 \Log::error('Failed to send email to member ' . $member->id . ': ' . $e->getMessage(), [
                     'member_id' => $member->id,
                     'member_email' => $member->email,

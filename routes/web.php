@@ -24,6 +24,7 @@ use App\Http\Controllers\PointsConfigurationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\MemberEmailController;
+use App\Http\Controllers\EmailLogController;
 
 // Landing page route
 Route::get('/landing', function () {
@@ -385,6 +386,13 @@ Route::post('/member-emails/send', [MemberEmailController::class, 'send'])->name
 Route::get('/member-emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
 Route::get('/member-emails/count', [MemberEmailController::class, 'getRecipientCount'])->name('members.emails.count');
 Route::get('/member-emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
+
+// Email Logs Routes
+Route::get('/email-logs', [EmailLogController::class, 'index'])->name('email-logs.index');
+Route::get('/email-logs/{emailLog}', [EmailLogController::class, 'show'])->name('email-logs.show');
+Route::post('/email-logs/{emailLog}/retry', [EmailLogController::class, 'retry'])->name('email-logs.retry');
+Route::get('/email-logs/statistics', [EmailLogController::class, 'statistics'])->name('email-logs.statistics');
+Route::get('/email-logs/export', [EmailLogController::class, 'export'])->name('email-logs.export');
 
 // Debug route for testing registration
 Route::get('/debug/registration/{id}', function($id) {

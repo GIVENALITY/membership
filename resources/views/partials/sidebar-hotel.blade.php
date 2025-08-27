@@ -119,6 +119,16 @@
   </li>
   @endif
 
+  <!-- Email Logs (Admin, Manager only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <li class="menu-item {{ request()->routeIs('email-logs.*') ? 'active' : '' }}">
+    <a href="{{ route('email-logs.index') }}" class="menu-link">
+      <i class="icon-base ri ri-file-list-line menu-icon"></i>
+      <div>Email Logs</div>
+    </a>
+  </li>
+  @endif
+
   <!-- Reports (Admin, Manager only) - Temporarily Hidden -->
   {{-- @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">
