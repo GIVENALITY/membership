@@ -377,4 +377,61 @@ class MemberEmailController extends Controller
         
         return view('members.emails.statistics', compact('hotel', 'stats'));
     }
+
+    /**
+     * Get recipient count for AJAX requests
+     */
+    public function getRecipientCount(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $hotel = $user->hotel;
+            $type = $request->get('type');
+            
+            $query = Member::where('hotel_id', $hotel->id)->whereNotNull('email');
+            
+            switch ($type) {
+                case 'all':
+                    $count = $query->count();
+                    break;
+                    
+                case 'active':
+                    $count = $query->where('status', 'active')->count();
+                    break;
+                    
+                case 'inactive':
+                    $count = $query->where('status', 'inactive')->count();
+                    break;
+                    
+                case 'filtered':
+                    $membershipTypeIds = $request->get('membership_type_ids');
+                    $statusFilter = $request->get('status');
+                    
+                    if ($membershipTypeIds) {
+                        $typeIds = explode(',', $membershipTypeIds);
+                        $query->whereIn('membership_type_id', $typeIds);
+                    }
+                    
+                    if ($statusFilter && $statusFilter !== 'all') {
+                        $query->where('status', $statusFilter);
+                    }
+                    
+                    $count = $query->count();
+                    break;
+                    
+                default:
+                    $count = 0;
+            }
+            
+            return response()->json(['count' => $count]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error getting recipient count', [
+                'error' => $e->getMessage(),
+                'type' => $type ?? 'unknown'
+            ]);
+            
+            return response()->json(['count' => 0, 'error' => 'Error calculating recipients']);
+        }
+    }
 }

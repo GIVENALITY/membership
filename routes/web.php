@@ -383,6 +383,7 @@ Route::get('/member-emails-simple', function() {
 Route::get('/member-emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
 Route::post('/member-emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
 Route::get('/member-emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
+Route::get('/member-emails/count', [MemberEmailController::class, 'getRecipientCount'])->name('members.emails.count');
 Route::get('/member-emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
 
 // Debug route for testing registration

@@ -300,6 +300,21 @@ document.addEventListener('DOMContentLoaded', function() {
         updateRecipientCount();
     });
     
+    // Handle filtered members filters
+    document.querySelectorAll('input[name="membership_type_ids[]"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (document.getElementById('recipient_type').value === 'filtered') {
+                updateRecipientCount();
+            }
+        });
+    });
+    
+    document.querySelector('select[name="status_filter"]').addEventListener('change', function() {
+        if (document.getElementById('recipient_type').value === 'filtered') {
+            updateRecipientCount();
+        }
+    });
+    
     // Handle form submission
     document.getElementById('emailForm').addEventListener('submit', function(e) {
         // Update hidden content field with editor content
@@ -463,27 +478,64 @@ function updateSelectedMembersList() {
 
 function updateRecipientCount() {
     const recipientType = document.getElementById('recipient_type').value;
-    let count = 0;
+    const countElement = document.getElementById('count-text');
+    const countContainer = document.getElementById('recipient-count');
+    
+    if (!recipientType) {
+        countContainer.style.display = 'none';
+        return;
+    }
     
     if (recipientType === 'selected') {
-        count = selectedMembers.length;
-    } else if (recipientType === 'filtered') {
-        // This would need to be calculated via AJAX
-        count = 'Calculating...';
+        const count = selectedMembers.length;
+        countElement.textContent = `${count} recipients`;
+        countContainer.style.display = 'block';
     } else if (recipientType === 'custom') {
         const customEmails = document.getElementById('custom_emails').value;
         if (customEmails.trim()) {
             // Count emails (split by comma or newline)
             const emails = customEmails.split(/[,\n]/).filter(email => email.trim() !== '');
-            count = emails.length;
+            countElement.textContent = `${emails.length} recipients`;
+        } else {
+            countElement.textContent = '0 recipients';
         }
+        countContainer.style.display = 'block';
+    } else if (recipientType === 'filtered') {
+        // Show calculating message
+        countElement.textContent = 'Calculating recipients...';
+        countContainer.style.display = 'block';
+        
+        // Get filter parameters
+        const membershipTypeIds = Array.from(document.querySelectorAll('input[name="membership_type_ids[]"]:checked'))
+            .map(cb => cb.value);
+        const statusFilter = document.querySelector('select[name="status_filter"]').value;
+        
+        // Make AJAX call to get filtered count
+        fetch(`{{ route('members.emails.count') }}?type=filtered&membership_type_ids=${membershipTypeIds.join(',')}&status=${statusFilter}`)
+            .then(response => response.json())
+            .then(data => {
+                countElement.textContent = `${data.count} recipients`;
+            })
+            .catch(error => {
+                console.error('Error calculating recipients:', error);
+                countElement.textContent = 'Error calculating recipients';
+            });
     } else {
-        // This would need to be calculated via AJAX
-        count = 'Calculating...';
+        // Show calculating message
+        countElement.textContent = 'Calculating recipients...';
+        countContainer.style.display = 'block';
+        
+        // Make AJAX call to get count for all/active/inactive
+        fetch(`{{ route('members.emails.count') }}?type=${recipientType}`)
+            .then(response => response.json())
+            .then(data => {
+                countElement.textContent = `${data.count} recipients`;
+            })
+            .catch(error => {
+                console.error('Error calculating recipients:', error);
+                countElement.textContent = 'Error calculating recipients';
+            });
     }
-    
-    document.getElementById('count-text').textContent = `${count} recipients`;
-    document.getElementById('recipient-count').style.display = 'block';
 }
 
 function showDebugInfo(data) {
