@@ -110,7 +110,7 @@
                                             <td>{{ $event->location ?? 'To be announced' }}</td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Hotel:</strong></td>
+                                            <td><strong>Venue:</strong></td>
                                             <td>{{ $event->hotel->name }}</td>
                                         </tr>
                                     </table>
