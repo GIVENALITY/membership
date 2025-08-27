@@ -340,6 +340,15 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
 
     // Member Email Routes
+    Route::get('/members/emails/test', function() {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Email route is working',
+            'user' => auth()->user() ? auth()->user()->name : 'no user',
+            'hotel' => auth()->user() && auth()->user()->hotel ? auth()->user()->hotel->name : 'no hotel'
+        ]);
+    })->name('members.emails.test');
+    
     Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
     Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
     Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');

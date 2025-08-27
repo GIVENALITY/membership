@@ -17,8 +17,24 @@ class MemberEmailController extends Controller
      */
     public function index()
     {
+        // Debug logging
+        \Log::info('MemberEmailController@index called');
+        
         $user = auth()->user();
+        if (!$user) {
+            \Log::error('No authenticated user found');
+            return redirect('/login');
+        }
+        
+        \Log::info('User authenticated', ['user_id' => $user->id, 'name' => $user->name]);
+        
         $hotel = $user->hotel;
+        if (!$hotel) {
+            \Log::error('User has no hotel', ['user_id' => $user->id]);
+            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+        }
+        
+        \Log::info('Hotel found', ['hotel_id' => $hotel->id, 'hotel_name' => $hotel->name]);
         
         // Get member statistics
         $totalMembers = Member::where('hotel_id', $hotel->id)->count();
@@ -27,6 +43,12 @@ class MemberEmailController extends Controller
         
         // Get recent email templates
         $recentTemplates = $this->getRecentTemplates();
+        
+        \Log::info('Rendering email index view', [
+            'totalMembers' => $totalMembers,
+            'activeMembers' => $activeMembers,
+            'inactiveMembers' => $inactiveMembers
+        ]);
         
         return view('members.emails.index', compact('hotel', 'totalMembers', 'activeMembers', 'inactiveMembers', 'recentTemplates'));
     }
