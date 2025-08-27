@@ -233,6 +233,18 @@ class PublicEventController extends Controller
      */
     public function confirmation($hotelSlug, $eventId, $registrationId)
     {
+        // Debug output for confirmation method
+        if (request()->get('debug') === '1') {
+            return response()->json([
+                'step' => 'Confirmation method called',
+                'hotelSlug' => $hotelSlug,
+                'eventId' => $eventId,
+                'registrationId' => $registrationId,
+                'url' => request()->url(),
+                'message' => '✅ Confirmation method is being called'
+            ]);
+        }
+
         // Debug logging for method entry
         \Log::info('Public confirmation method entry', [
             'hotelSlug' => $hotelSlug,
