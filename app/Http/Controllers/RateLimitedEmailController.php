@@ -42,9 +42,13 @@ class RateLimitedEmailController extends Controller
             'content' => 'required|string',
             'member_ids' => 'nullable|array',
             'member_ids.*' => 'exists:members,id',
+            'selected_members' => 'nullable|array',
+            'selected_members.*' => 'exists:members,id',
             'resume_from' => 'nullable|exists:email_logs,id',
-            'batch_size' => 'nullable|integer|min:1|max:75',
-            'dry_run' => 'boolean'
+            'batch_size' => 'nullable|integer|min:1|max:50',
+            'dry_run' => 'boolean',
+            'recipient_type' => 'nullable|string',
+            'custom_emails' => 'nullable|string'
         ]);
         
         $user = auth()->user();
@@ -54,16 +58,30 @@ class RateLimitedEmailController extends Controller
             return back()->withErrors(['error' => 'An email batch is already running. Please wait for it to complete.']);
         }
         
+        // Get member IDs based on recipient type
+        $memberIds = null;
+        
+        if ($request->selected_members) {
+            // From email composer - selected or bounced members
+            $memberIds = $request->selected_members;
+        } elseif ($request->member_ids) {
+            // From rate-limited emails page
+            $memberIds = $request->member_ids;
+        } elseif ($request->recipient_type && $request->recipient_type !== 'custom') {
+            // Get members based on recipient type
+            $memberIds = $this->getMemberIdsByType($request->recipient_type, $request);
+        }
+        
         // Prepare command arguments
         $args = [
             '--subject' => $request->subject,
             '--content' => $request->content,
             '--type' => 'custom',
-            '--batch-size' => $request->batch_size ?: 60
+            '--batch-size' => $request->batch_size ?: 40
         ];
         
-        if ($request->member_ids) {
-            $args['--member-ids'] = $request->member_ids;
+        if ($memberIds) {
+            $args['--member-ids'] = $memberIds;
         }
         
         if ($request->resume_from) {
@@ -92,6 +110,15 @@ class RateLimitedEmailController extends Controller
         $message = $request->dry_run 
             ? 'Dry run started successfully. Check the progress below.'
             : 'Email batch started successfully. Check the progress below.';
+        
+        // Check if this is an AJAX request from email composer
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'batch_info' => $batchInfo
+            ]);
+        }
             
         return back()->with('success', $message);
     }
@@ -233,5 +260,52 @@ class RateLimitedEmailController extends Controller
         } else {
             exec($command . " > /dev/null 2>&1 &");
         }
+    }
+
+    private function getMemberIdsByType($recipientType, $request)
+    {
+        $user = auth()->user();
+        $query = Member::where('hotel_id', $user->hotel_id);
+
+        switch ($recipientType) {
+            case 'all':
+                // All members
+                break;
+                
+            case 'active':
+                // Active members only
+                $query->where('status', 'active');
+                break;
+                
+            case 'inactive':
+                // Inactive members only
+                $query->where('status', 'inactive');
+                break;
+                
+            case 'filtered':
+                // Filtered by membership type and status
+                if ($request->membership_type_ids) {
+                    $query->whereIn('membership_type_id', $request->membership_type_ids);
+                }
+                if ($request->status_filter && $request->status_filter !== 'all') {
+                    $query->where('status', $request->status_filter);
+                }
+                break;
+                
+            case 'bounced':
+                // Members with bounced emails in last 30 days
+                $query->join('email_logs', 'members.id', '=', 'email_logs.member_id')
+                      ->where('email_logs.hotel_id', $user->hotel_id)
+                      ->whereIn('email_logs.status', ['failed', 'bounced'])
+                      ->where('email_logs.created_at', '>=', now()->subDays(30))
+                      ->select('members.id')
+                      ->distinct();
+                break;
+                
+            default:
+                return [];
+        }
+
+        return $query->pluck('id')->toArray();
     }
 }

@@ -652,3 +652,4 @@ Route::post('/events/{event}/registrations/bulk-delete', [EventController::class
     Route::post('/rate-limited-emails/stop', [RateLimitedEmailController::class, 'stopBatch'])->name('rate-limited-emails.stop');
     Route::post('/rate-limited-emails/retry', [RateLimitedEmailController::class, 'retryFailed'])->name('rate-limited-emails.retry');
 });
+

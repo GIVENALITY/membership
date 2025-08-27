@@ -211,6 +211,41 @@
                                                     Send Immediately
                                                 </label>
                                             </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="send_in_batches" 
+                                                       name="send_in_batches" value="1">
+                                                <label class="form-check-label" for="send_in_batches">
+                                                    Send in Batches (Rate Limited)
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Batch Settings -->
+                                        <div id="batch-settings" style="display: none;">
+                                            <div class="alert alert-info">
+                                                <i class="icon-base ri ri-information-line me-2"></i>
+                                                <strong>Rate-Limited Sending:</strong> Emails will be sent in batches to avoid hitting hosting provider limits.
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Batch Size</label>
+                                                    <select class="form-select" name="batch_size" id="batch_size">
+                                                        <option value="25">25 emails per hour</option>
+                                                        <option value="30">30 emails per hour</option>
+                                                        <option value="35">35 emails per hour</option>
+                                                        <option value="40" selected>40 emails per hour</option>
+                                                        <option value="45">45 emails per hour</option>
+                                                        <option value="50">50 emails per hour (max)</option>
+                                                    </select>
+                                                    <small class="form-text text-muted">Recommended: 40-50 per hour for your hosting provider</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Estimated Duration</label>
+                                                    <div class="form-control-plaintext" id="estimated-duration">
+                                                        Calculating...
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
@@ -315,7 +350,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle send immediately checkbox
     document.getElementById('send_immediately').addEventListener('change', function() {
         const scheduleSection = document.getElementById('schedule-section');
+        const batchSettings = document.getElementById('batch-settings');
+        const sendInBatches = document.getElementById('send_in_batches');
+        
         scheduleSection.style.display = this.checked ? 'none' : 'block';
+        
+        // If send immediately is checked, uncheck send in batches
+        if (this.checked) {
+            sendInBatches.checked = false;
+            batchSettings.style.display = 'none';
+        }
+    });
+
+    // Handle send in batches checkbox
+    document.getElementById('send_in_batches').addEventListener('change', function() {
+        const sendImmediately = document.getElementById('send_immediately');
+        const batchSettings = document.getElementById('batch-settings');
+        
+        if (this.checked) {
+            sendImmediately.checked = false;
+            batchSettings.style.display = 'block';
+            updateEstimatedDuration();
+        } else {
+            batchSettings.style.display = 'none';
+        }
+    });
+
+    // Handle batch size change
+    document.getElementById('batch_size').addEventListener('change', function() {
+        updateEstimatedDuration();
     });
     
     // Handle member search
@@ -377,6 +440,77 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
+        // Check if batch sending is enabled
+        const sendInBatches = document.getElementById('send_in_batches').checked;
+        if (sendInBatches) {
+            e.preventDefault();
+            
+            // Validate batch settings
+            const batchSize = parseInt(document.getElementById('batch_size').value);
+            if (!batchSize || batchSize < 1 || batchSize > 50) {
+                alert('Please select a valid batch size (1-50 emails per hour).');
+                return false;
+            }
+            
+            // Show confirmation dialog
+            const recipientCount = this.getRecipientCount();
+            const hours = Math.ceil(recipientCount / batchSize);
+            
+            const confirmed = confirm(
+                `Start batch email sending?\n\n` +
+                `📧 ${recipientCount} emails\n` +
+                `⏱️  ${batchSize} emails per hour\n` +
+                `⏰ Estimated duration: ${hours} hour${hours > 1 ? 's' : ''}\n\n` +
+                `This will start the rate-limited email system in the background.`
+            );
+            
+            if (!confirmed) {
+                return false;
+            }
+            
+            // Show loading message
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="icon-base ri ri-loader-4-line me-2"></i>Starting Batch...';
+            submitBtn.disabled = true;
+            
+            // Submit to batch email endpoint
+            const formData = new FormData(this);
+            formData.append('batch_size', batchSize);
+            
+            fetch('{{ route("rate-limited-emails.start") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Batch email sending started successfully!\n\nYou can monitor progress in the Rate-Limited Emails section.');
+                    window.location.href = '{{ route("rate-limited-emails.index") }}';
+                } else {
+                    alert('❌ Error starting batch: ' + (data.message || 'Unknown error'));
+                }
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error starting batch email: ' + error.message);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+            
+            return false;
+        }
+
         // Check if debug mode is enabled
         const debugMode = document.getElementById('debug_mode').checked;
         if (debugMode) {
@@ -568,11 +702,20 @@ function updateRecipientCount() {
             .then(response => response.json())
             .then(data => {
                 countElement.textContent = `${data.count} recipients`;
+                // Update estimated duration if batch sending is enabled
+                if (document.getElementById('send_in_batches').checked) {
+                    updateEstimatedDuration();
+                }
             })
             .catch(error => {
                 console.error('Error calculating recipients:', error);
                 countElement.textContent = 'Error calculating recipients';
             });
+    }
+    
+    // Update estimated duration if batch sending is enabled
+    if (document.getElementById('send_in_batches').checked) {
+        updateEstimatedDuration();
     }
 }
 
@@ -750,6 +893,73 @@ function updateBouncedSelectionCount() {
     const countElement = document.getElementById('bounced-selection-count');
     if (countElement) {
         countElement.textContent = `${selectedMembers.length} selected`;
+    }
+}
+
+function updateEstimatedDuration() {
+    const batchSize = parseInt(document.getElementById('batch_size').value);
+    const recipientType = document.getElementById('recipient_type').value;
+    const durationElement = document.getElementById('estimated-duration');
+    
+    if (!recipientType) {
+        durationElement.textContent = 'Select recipients first';
+        return;
+    }
+    
+    let recipientCount = 0;
+    
+    if (recipientType === 'selected' || recipientType === 'bounced') {
+        recipientCount = selectedMembers.length;
+    } else if (recipientType === 'custom') {
+        const customEmails = document.getElementById('custom_emails').value;
+        if (customEmails.trim()) {
+            recipientCount = customEmails.split(/[,\n]/).filter(email => email.trim() !== '').length;
+        }
+    } else {
+        // For other types, we'll need to get the count from the server
+        // For now, show a placeholder
+        durationElement.textContent = 'Calculating...';
+        return;
+    }
+    
+    if (recipientCount === 0) {
+        durationElement.textContent = 'No recipients selected';
+        return;
+    }
+    
+    const hours = Math.ceil(recipientCount / batchSize);
+    const minutes = Math.ceil((recipientCount % batchSize) / batchSize * 60);
+    
+    let durationText = '';
+    if (hours > 0) {
+        durationText = `${hours} hour${hours > 1 ? 's' : ''}`;
+        if (minutes > 0) {
+            durationText += ` ${minutes} minute${minutes > 1 ? 's' : ''}`;
+        }
+    } else {
+        durationText = `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    }
+    
+    durationElement.textContent = `${durationText} (${recipientCount} emails at ${batchSize}/hour)`;
+}
+
+// Helper function to get recipient count for batch sending
+function getRecipientCount() {
+    const recipientType = document.getElementById('recipient_type').value;
+    
+    if (recipientType === 'selected' || recipientType === 'bounced') {
+        return selectedMembers.length;
+    } else if (recipientType === 'custom') {
+        const customEmails = document.getElementById('custom_emails').value;
+        if (customEmails.trim()) {
+            return customEmails.split(/[,\n]/).filter(email => email.trim() !== '').length;
+        }
+        return 0;
+    } else {
+        // For other types, we'll need to get from the count element
+        const countText = document.getElementById('count-text').textContent;
+        const match = countText.match(/(\d+)/);
+        return match ? parseInt(match[1]) : 0;
     }
 }
 
