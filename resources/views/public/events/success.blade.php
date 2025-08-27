@@ -91,10 +91,48 @@
             font-size: 14px;
             margin-top: 20px;
         }
+        
+        .hotel-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-img {
+            max-height: 60px;
+            max-width: 200px;
+            object-fit: contain;
+        }
+        
+        .event-poster {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .poster-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Hotel Logo -->
+        @if($hotel->logo)
+            <div class="hotel-logo">
+                <img src="{{ asset('storage/' . $hotel->logo) }}" alt="{{ $hotel->name }}" class="logo-img">
+            </div>
+        @endif
+        
+        <!-- Event Poster -->
+        @if($event->image)
+            <div class="event-poster">
+                <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="poster-img">
+            </div>
+        @endif
+        
         <div class="success-icon">✓</div>
         
         <h1>Registration Successful!</h1>
