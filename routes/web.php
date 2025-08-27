@@ -340,6 +340,35 @@ Route::get('/member-emails/test-welcome/{memberId}', function($memberId) {
     }
 })->name('members.emails.test-welcome');
 
+Route::get('/member-emails/list-members', function() {
+    try {
+        $members = \App\Models\Member::with('hotel')
+            ->orderBy('id', 'desc')
+            ->limit(10)
+            ->get(['id', 'first_name', 'last_name', 'email', 'membership_id', 'hotel_id']);
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Available members for testing',
+            'members' => $members->map(function($member) {
+                return [
+                    'id' => $member->id,
+                    'name' => $member->full_name,
+                    'email' => $member->email,
+                    'membership_id' => $member->membership_id,
+                    'hotel' => $member->hotel ? $member->hotel->name : 'No Hotel'
+                ];
+            })
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to list members: ' . $e->getMessage()
+        ], 500);
+    }
+})->name('members.emails.list-members');
+
 Route::get('/member-emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
 Route::get('/member-emails-simple', function() {
     return 'Email route simple test - working!';
