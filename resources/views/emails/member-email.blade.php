@@ -116,7 +116,7 @@
             <img src="{{ $hotel->email_logo_url }}" alt="{{ $hotel->name }}" class="logo">
         @endif
         <h1>{{ $hotel->name }}</h1>
-        <p>Member Communication</p>
+        <p>{{ $hotel->email_subtitle ?? 'Member Communication' }}</p>
     </div>
     
     <div class="content">

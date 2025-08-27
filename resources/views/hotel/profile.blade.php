@@ -256,11 +256,17 @@
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label for="email_logo_url" class="form-label">Email Logo URL</label>
                                         <input type="url" class="form-control" id="email_logo_url" name="email_logo_url" 
                                                value="{{ old('email_logo_url', $hotel->email_logo_url) }}" placeholder="https://example.com/logo.png">
                                         <small class="form-text text-muted">URL to your logo for email headers (optional)</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email_subtitle" class="form-label">Email Subtitle</label>
+                                        <input type="text" class="form-control" id="email_subtitle" name="email_subtitle" 
+                                               value="{{ old('email_subtitle', $hotel->email_subtitle ?? 'Member Communication') }}" placeholder="Member Communication">
+                                        <small class="form-text text-muted">Subtitle that appears below your hotel name in emails</small>
                                     </div>
                                 </div>
                                 

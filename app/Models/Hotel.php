@@ -27,6 +27,7 @@ class Hotel extends Model
         'email_primary_color',
         'email_secondary_color',
         'email_accent_color',
+        'email_subtitle',
         'website',
         'description',
         'logo_path',

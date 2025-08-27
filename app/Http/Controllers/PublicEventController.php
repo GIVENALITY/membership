@@ -160,7 +160,7 @@ class PublicEventController extends Controller
             'phone' => $data['phone'],
             'number_of_guests' => $data['number_of_guests'],
             'total_amount' => $totalAmount,
-            'status' => 'pending',
+            'status' => 'confirmed', // Auto-confirm the registration
             'special_requests' => $data['special_requests'],
             'guest_details' => $data['guest_details'] ?? null
         ]);
@@ -173,6 +173,15 @@ class PublicEventController extends Controller
 
         if ($member) {
             $registration->update(['member_id' => $member->id]);
+        }
+
+        // Ensure registration code is generated and registration is confirmed
+        if (empty($registration->registration_code)) {
+            $registration->update(['registration_code' => EventRegistration::generateRegistrationCode()]);
+        }
+        
+        if ($registration->status === 'confirmed' && empty($registration->confirmed_at)) {
+            $registration->update(['confirmed_at' => now()]);
         }
 
         return redirect()->route('public.events.confirmation', [$hotelSlug, $event, $registration])
@@ -190,7 +199,10 @@ class PublicEventController extends Controller
             'eventId' => $event->id,
             'registrationId' => $registration->id,
             'registrationEventId' => $registration->event_id,
-            'eventHotelSlug' => $event->hotel->slug
+            'eventHotelSlug' => $event->hotel->slug,
+            'registrationCode' => $registration->registration_code,
+            'registrationStatus' => $registration->status,
+            'registrationExists' => $registration->exists
         ]);
 
         // Verify the registration belongs to the event

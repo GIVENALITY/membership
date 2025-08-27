@@ -288,6 +288,29 @@ Route::post('/member-emails/send', [MemberEmailController::class, 'send'])->name
 Route::get('/member-emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
 Route::get('/member-emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
 
+// Debug route for testing registration
+Route::get('/debug/registration/{id}', function($id) {
+    $registration = \App\Models\EventRegistration::find($id);
+    if (!$registration) {
+        return response()->json(['error' => 'Registration not found']);
+    }
+    
+    return response()->json([
+        'id' => $registration->id,
+        'event_id' => $registration->event_id,
+        'name' => $registration->name,
+        'email' => $registration->email,
+        'registration_code' => $registration->registration_code,
+        'status' => $registration->status,
+        'confirmed_at' => $registration->confirmed_at,
+        'event' => [
+            'id' => $registration->event->id,
+            'title' => $registration->event->title,
+            'hotel_slug' => $registration->event->hotel->slug
+        ]
+    ]);
+})->name('debug.registration');
+
 // Member Card Management Routes
 Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
 Route::post('/members/cards/mass-generate', [MemberCardController::class, 'massGenerate'])->name('members.cards.mass-generate');
