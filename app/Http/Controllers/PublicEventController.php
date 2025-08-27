@@ -261,12 +261,33 @@ class PublicEventController extends Controller
             abort(404, 'Event not found');
         }
 
+        // Debug output - Event found
+        if (request()->get('debug') === '1') {
+            return response()->json([
+                'step' => 'Event found successfully',
+                'eventId' => $eventId,
+                'eventTitle' => $event->title,
+                'message' => '✅ Event exists'
+            ]);
+        }
+
         // Manually resolve the registration to ensure it exists
         $registration = EventRegistration::find($registrationId);
         
         if (!$registration) {
             \Log::error('Registration not found', ['registrationId' => $registrationId]);
             abort(404, 'Registration not found');
+        }
+
+        // Debug output - Registration found
+        if (request()->get('debug') === '1') {
+            return response()->json([
+                'step' => 'Registration found successfully',
+                'registrationId' => $registrationId,
+                'registrationName' => $registration->name,
+                'registrationEventId' => $registration->event_id,
+                'message' => '✅ Registration exists'
+            ]);
         }
 
         // Debug logging
@@ -284,6 +305,14 @@ class PublicEventController extends Controller
 
         // Verify the registration belongs to the event
         if ($registration->event_id !== $event->id) {
+            if (request()->get('debug') === '1') {
+                return response()->json([
+                    'step' => 'Registration event mismatch',
+                    'registrationEventId' => $registration->event_id,
+                    'eventId' => $event->id,
+                    'message' => '❌ Registration does not belong to this event'
+                ]);
+            }
             \Log::error('Registration event mismatch', [
                 'registrationEventId' => $registration->event_id,
                 'eventId' => $event->id
@@ -293,6 +322,14 @@ class PublicEventController extends Controller
 
         // Verify the event belongs to the hotel
         if ($event->hotel->slug !== $hotelSlug) {
+            if (request()->get('debug') === '1') {
+                return response()->json([
+                    'step' => 'Event hotel mismatch',
+                    'eventHotelSlug' => $event->hotel->slug,
+                    'hotelSlug' => $hotelSlug,
+                    'message' => '❌ Event does not belong to this hotel'
+                ]);
+            }
             \Log::error('Event hotel mismatch', [
                 'eventHotelSlug' => $event->hotel->slug,
                 'hotelSlug' => $hotelSlug
