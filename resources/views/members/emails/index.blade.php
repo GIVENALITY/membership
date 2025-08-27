@@ -134,6 +134,12 @@
                                                 Email Selected Members
                                             </a>
                                         </div>
+                                        <div class="col-md-3 mb-3">
+                                            <a href="{{ route('members.emails.compose') }}?type=custom" class="btn btn-outline-warning w-100">
+                                                <i class="icon-base ri ri-mail-add-line me-2"></i>
+                                                Email Custom Addresses
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

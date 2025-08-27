@@ -96,6 +96,7 @@
                                                 <option value="inactive" {{ request('type') === 'inactive' ? 'selected' : '' }}>Inactive Members Only</option>
                                                 <option value="selected">Selected Members</option>
                                                 <option value="filtered">Filtered Members</option>
+                                                <option value="custom">Custom Email Addresses</option>
                                             </select>
                                         </div>
 
@@ -137,6 +138,26 @@
                                                     <option value="active">Active Only</option>
                                                     <option value="inactive">Inactive Only</option>
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Custom Email Addresses -->
+                                        <div id="custom-emails-section" style="display: none;">
+                                            <div class="mb-3">
+                                                <label class="form-label">Email Addresses</label>
+                                                <textarea class="form-control" id="custom_emails" name="custom_emails" 
+                                                          rows="4" placeholder="Enter email addresses, one per line or separated by commas&#10;Example:&#10;john@example.com&#10;jane@example.com&#10;or: john@example.com, jane@example.com"></textarea>
+                                                <small class="form-text text-muted">
+                                                    Enter one email per line or separate multiple emails with commas
+                                                </small>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Recipient Names (Optional)</label>
+                                                <textarea class="form-control" id="custom_names" name="custom_names" 
+                                                          rows="3" placeholder="Enter names corresponding to emails (optional)&#10;Example:&#10;John Doe&#10;Jane Smith"></textarea>
+                                                <small class="form-text text-muted">
+                                                    If provided, names will be used in the email greeting
+                                                </small>
                                             </div>
                                         </div>
 
@@ -232,14 +253,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedType = this.value;
         const selectedSection = document.getElementById('selected-members-section');
         const filteredSection = document.getElementById('filtered-members-section');
+        const customSection = document.getElementById('custom-emails-section');
         
         selectedSection.style.display = 'none';
         filteredSection.style.display = 'none';
+        customSection.style.display = 'none';
         
         if (selectedType === 'selected') {
             selectedSection.style.display = 'block';
         } else if (selectedType === 'filtered') {
             filteredSection.style.display = 'block';
+        } else if (selectedType === 'custom') {
+            customSection.style.display = 'block';
         }
         
         updateRecipientCount();
@@ -259,6 +284,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             document.getElementById('member-suggestions').style.display = 'none';
         }
+    });
+    
+    // Handle custom emails input
+    document.getElementById('custom_emails').addEventListener('input', function() {
+        updateRecipientCount();
     });
     
     // Handle form submission
@@ -376,6 +406,13 @@ function updateRecipientCount() {
     } else if (recipientType === 'filtered') {
         // This would need to be calculated via AJAX
         count = 'Calculating...';
+    } else if (recipientType === 'custom') {
+        const customEmails = document.getElementById('custom_emails').value;
+        if (customEmails.trim()) {
+            // Count emails (split by comma or newline)
+            const emails = customEmails.split(/[,\n]/).filter(email => email.trim() !== '');
+            count = emails.length;
+        }
     } else {
         // This would need to be calculated via AJAX
         count = 'Calculating...';

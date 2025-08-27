@@ -83,12 +83,14 @@ class MemberEmailController extends Controller
         $request->validate([
             'subject' => 'required|string|max:255',
             'content' => 'required|string',
-            'recipient_type' => 'required|in:all,active,inactive,selected,filtered',
+            'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
             'selected_members' => 'required_if:recipient_type,selected|array',
             'selected_members.*' => 'exists:members,id',
             'membership_type_ids' => 'required_if:recipient_type,filtered|array',
             'membership_type_ids.*' => 'exists:membership_types,id',
             'status_filter' => 'required_if:recipient_type,filtered|in:all,active,inactive',
+            'custom_emails' => 'required_if:recipient_type,custom|string',
+            'custom_names' => 'nullable|string',
             'send_immediately' => 'boolean',
             'scheduled_at' => 'nullable|date|after:now'
         ]);
@@ -149,22 +151,22 @@ class MemberEmailController extends Controller
      */
     private function getRecipients(Request $request, $hotel)
     {
-        $query = Member::where('hotel_id', $hotel->id)->whereNotNull('email');
-
         switch ($request->recipient_type) {
             case 'all':
-                return $query->get();
+                return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->get();
 
             case 'active':
-                return $query->where('status', 'active')->get();
+                return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->where('status', 'active')->get();
 
             case 'inactive':
-                return $query->where('status', 'inactive')->get();
+                return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->where('status', 'inactive')->get();
 
             case 'selected':
-                return $query->whereIn('id', $request->selected_members)->get();
+                return Member::where('hotel_id', $hotel->id)->whereNotNull('email')->whereIn('id', $request->selected_members)->get();
 
             case 'filtered':
+                $query = Member::where('hotel_id', $hotel->id)->whereNotNull('email');
+                
                 if (!empty($request->membership_type_ids)) {
                     $query->whereIn('membership_type_id', $request->membership_type_ids);
                 }
@@ -174,6 +176,9 @@ class MemberEmailController extends Controller
                 }
                 
                 return $query->get();
+
+            case 'custom':
+                return $this->getCustomRecipients($request);
 
             default:
                 return collect();
@@ -199,6 +204,38 @@ class MemberEmailController extends Controller
             \Log::warning('Could not save email template', ['error' => $e->getMessage()]);
             // Don't throw the error, just log it
         }
+    }
+
+    /**
+     * Get custom recipients from email addresses
+     */
+    private function getCustomRecipients(Request $request)
+    {
+        $emails = array_filter(array_map('trim', explode(',', str_replace(["\n", "\r"], ',', $request->custom_emails))));
+        $names = [];
+        
+        if ($request->custom_names) {
+            $names = array_filter(array_map('trim', explode(',', str_replace(["\n", "\r"], ',', $request->custom_names))));
+        }
+        
+        $recipients = collect();
+        
+        foreach ($emails as $index => $email) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // Create a temporary member object for custom recipients
+                $recipient = new \stdClass();
+                $recipient->id = 'custom_' . $index;
+                $recipient->email = $email;
+                $recipient->first_name = isset($names[$index]) ? $names[$index] : 'Guest';
+                $recipient->last_name = '';
+                $recipient->membership_id = 'CUSTOM';
+                $recipient->membershipType = (object) ['name' => 'Custom Recipient'];
+                
+                $recipients->push($recipient);
+            }
+        }
+        
+        return $recipients;
     }
 
     /**

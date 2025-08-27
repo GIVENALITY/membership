@@ -270,7 +270,7 @@ Route::get('/members/import/membership-types', [MemberImportController::class, '
 Route::get('/members/import/template', [MemberImportController::class, 'downloadTemplate'])->name('members.import.template');
 
 // Member Email Routes (MUST come before resource route)
-Route::get('/members/emails/test', function() {
+Route::get('/member-emails/test', function() {
     return response()->json([
         'status' => 'success',
         'message' => 'Email route is working',
@@ -279,14 +279,14 @@ Route::get('/members/emails/test', function() {
     ]);
 })->name('members.emails.test');
 
-Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
-Route::get('/members/emails-simple', function() {
+Route::get('/member-emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
+Route::get('/member-emails-simple', function() {
     return 'Email route simple test - working!';
 })->name('members.emails.simple');
-Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
-Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
-Route::get('/members/emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
-Route::get('/members/emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
+Route::get('/member-emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
+Route::post('/member-emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
+Route::get('/member-emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
+Route::get('/member-emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
 
 // Member Card Management Routes
 Route::get('/members/cards', [MemberCardController::class, 'index'])->name('members.cards.index');
