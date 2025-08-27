@@ -285,7 +285,12 @@ Route::get('/member-emails/test', function() {
         'status' => 'success',
         'message' => 'Email route is working',
         'user' => auth()->user() ? auth()->user()->name : 'no user',
-        'hotel' => auth()->user() && auth()->user()->hotel ? auth()->user()->hotel->name : 'no hotel'
+        'hotel' => auth()->user() && auth()->user()->hotel ? auth()->user()->hotel->name : 'no hotel',
+        'mail_config' => [
+            'default' => config('mail.default'),
+            'from_address' => config('mail.from.address'),
+            'from_name' => config('mail.from.name')
+        ]
     ]);
 })->name('members.emails.test');
 

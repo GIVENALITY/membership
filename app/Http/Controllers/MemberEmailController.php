@@ -80,23 +80,30 @@ class MemberEmailController extends Controller
      */
     public function send(Request $request)
     {
-        $request->validate([
-            'subject' => 'required|string|max:255',
-            'content' => 'required|string',
-            'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
-            'selected_members' => 'required_if:recipient_type,selected|array',
-            'selected_members.*' => 'exists:members,id',
-            'membership_type_ids' => 'required_if:recipient_type,filtered|array',
-            'membership_type_ids.*' => 'exists:membership_types,id',
-            'status_filter' => 'required_if:recipient_type,filtered|in:all,active,inactive',
-            'custom_emails' => 'required_if:recipient_type,custom|string',
-            'custom_names' => 'nullable|string',
-            'send_immediately' => 'boolean',
-            'scheduled_at' => 'nullable|date|after:now'
-        ]);
+        try {
+            $request->validate([
+                'subject' => 'required|string|max:255',
+                'content' => 'required|string',
+                'recipient_type' => 'required|in:all,active,inactive,selected,filtered,custom',
+                'selected_members' => 'required_if:recipient_type,selected|array',
+                'selected_members.*' => 'exists:members,id',
+                'membership_type_ids' => 'required_if:recipient_type,filtered|array',
+                'membership_type_ids.*' => 'exists:membership_types,id',
+                'status_filter' => 'required_if:recipient_type,filtered|in:all,active,inactive',
+                'custom_emails' => 'required_if:recipient_type,custom|string',
+                'custom_names' => 'nullable|string',
+                'send_immediately' => 'boolean',
+                'scheduled_at' => 'nullable|date|after:now'
+            ]);
 
-        $user = auth()->user();
-        $hotel = $user->hotel;
+            $user = auth()->user();
+            $hotel = $user->hotel;
+            
+            \Log::info('Email send request started', [
+                'user_id' => $user->id,
+                'hotel_id' => $hotel->id,
+                'recipient_type' => $request->recipient_type
+            ]);
 
         // Get recipients based on selection
         $recipients = $this->getRecipients($request, $hotel);
@@ -117,21 +124,36 @@ class MemberEmailController extends Controller
         // Send emails
         $sentCount = 0;
         $failedCount = 0;
+        
+        \Log::info('Starting to send emails', ['recipient_count' => $recipients->count()]);
 
         foreach ($recipients as $member) {
             try {
+                \Log::info('Sending email to member', [
+                    'member_id' => $member->id,
+                    'member_email' => $member->email,
+                    'send_immediately' => $request->send_immediately
+                ]);
+                
                 if ($request->send_immediately) {
                     // Send immediately
                     Mail::to($member->email)->send(new MemberEmail($member, $emailData));
                     $sentCount++;
+                    \Log::info('Email sent immediately', ['member_id' => $member->id]);
                 } else {
                     // Queue for later
                     Mail::to($member->email)->queue(new MemberEmail($member, $emailData));
                     $sentCount++;
+                    \Log::info('Email queued', ['member_id' => $member->id]);
                 }
             } catch (\Exception $e) {
                 $failedCount++;
-                \Log::error('Failed to send email to member ' . $member->id . ': ' . $e->getMessage());
+                \Log::error('Failed to send email to member ' . $member->id . ': ' . $e->getMessage(), [
+                    'member_id' => $member->id,
+                    'member_email' => $member->email,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
             }
         }
 
@@ -143,7 +165,21 @@ class MemberEmailController extends Controller
             $message .= " Failed to send to {$failedCount} members.";
         }
 
+        \Log::info('Email sending completed', [
+            'sent_count' => $sentCount,
+            'failed_count' => $failedCount
+        ]);
+
         return redirect()->route('members.emails.index')->with('success', $message);
+        
+        } catch (\Exception $e) {
+            \Log::error('Email sending failed with exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()->with('error', 'Failed to send emails: ' . $e->getMessage());
+        }
     }
 
     /**
