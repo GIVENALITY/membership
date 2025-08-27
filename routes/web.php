@@ -294,6 +294,52 @@ Route::get('/member-emails/test', function() {
     ]);
 })->name('members.emails.test');
 
+Route::get('/member-emails/test-welcome/{memberId}', function($memberId) {
+    try {
+        $member = \App\Models\Member::findOrFail($memberId);
+        
+        // Build welcome email content
+        $subject = 'Welcome to ' . $member->hotel->name . ' - Your Membership is Ready!';
+        $bodyText = 'Dear ' . $member->first_name . ",\n\n" .
+                   'Welcome to ' . $member->hotel->name . "! We're excited to have you as a member of our exclusive program.\n\n" .
+                   'Your membership has been successfully activated and you now have access to all the benefits and privileges that come with being part of our community.\n\n' .
+                   'We look forward to providing you with exceptional service and memorable experiences.\n\n' .
+                   'Best regards,\n' . $member->hotel->name . ' Team';
+        
+        // Send the welcome email
+        \Mail::to($member->email)->send(new \App\Mail\WelcomeMemberMail($member, $subject, $bodyText));
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Welcome email sent successfully!',
+            'member' => [
+                'id' => $member->id,
+                'name' => $member->full_name,
+                'email' => $member->email,
+                'membership_id' => $member->membership_id,
+                'hotel' => $member->hotel->name
+            ],
+            'email_details' => [
+                'subject' => $subject,
+                'to' => $member->email,
+                'from' => config('mail.from.address'),
+                'from_name' => $member->hotel->name
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to send welcome email: ' . $e->getMessage(),
+            'error_details' => [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]
+        ], 500);
+    }
+})->name('members.emails.test-welcome');
+
 Route::get('/member-emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
 Route::get('/member-emails-simple', function() {
     return 'Email route simple test - working!';

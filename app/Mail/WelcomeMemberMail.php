@@ -17,7 +17,11 @@ class WelcomeMemberMail extends Mailable
 
     public function build()
     {
+        $hotel = $this->member->hotel;
+        
         $mail = $this->subject($this->subjectLine)
+            ->from(config('mail.from.address'), $hotel->name)
+            ->replyTo($hotel->reply_to_email ?? config('mail.from.address'), $hotel->name)
             ->view('emails.welcome_member', [
                 'member' => $this->member,
                 'bodyText' => nl2br(e($this->bodyText)),
