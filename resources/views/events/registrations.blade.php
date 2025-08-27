@@ -59,10 +59,29 @@
                     </div>
 
                     @if($registrations->count() > 0)
+                        <!-- Bulk Actions -->
+                        <div class="mb-3">
+                            <form action="{{ route('events.bulk-delete-registrations', $event) }}" method="POST" id="bulkDeleteForm">
+                                @csrf
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" id="selectAllBtn">
+                                        <i class="bx bx-check-square"></i> Select All
+                                    </button>
+                                    <button type="submit" class="btn btn-danger btn-sm" id="bulkDeleteBtn" style="display: none;">
+                                        <i class="bx bx-trash"></i> Delete Selected (<span id="selectedCount">0</span>)
+                                    </button>
+                                    <small class="text-muted">Select registrations to delete (useful for removing test registrations)</small>
+                                </div>
+                            </form>
+                        </div>
+                        
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th width="50">
+                                            <input type="checkbox" class="form-check-input" id="selectAll">
+                                        </th>
                                         <th>Registration Code</th>
                                         <th>Name</th>
                                         <th>Email</th>
@@ -77,6 +96,10 @@
                                 <tbody>
                                     @foreach($registrations as $registration)
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input registration-checkbox" 
+                                                   name="registration_ids[]" value="{{ $registration->id }}">
+                                        </td>
                                         <td>
                                             <code class="text-primary">{{ $registration->registration_code }}</code>
                                         </td>
@@ -155,6 +178,16 @@
                                                             </form>
                                                         </li>
                                                     @endif
+                                                    <li>
+                                                        <form action="{{ route('events.delete-registration', [$event, $registration]) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item text-danger" 
+                                                                    onclick="return confirm('Are you sure you want to DELETE this registration? This action cannot be undone.')">
+                                                                <i class="bx bx-trash me-1"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -277,4 +310,86 @@
     </div>
 </div>
 @endforeach
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const registrationCheckboxes = document.querySelectorAll('.registration-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+    
+    // Handle "Select All" checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+        registrationCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateBulkDeleteButton();
+    });
+    
+    // Handle "Select All" button
+    selectAllBtn.addEventListener('click', function() {
+        const allChecked = Array.from(registrationCheckboxes).every(cb => cb.checked);
+        registrationCheckboxes.forEach(checkbox => {
+            checkbox.checked = !allChecked;
+        });
+        selectAllCheckbox.checked = !allChecked;
+        updateBulkDeleteButton();
+    });
+    
+    // Handle individual checkboxes
+    registrationCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateBulkDeleteButton();
+            updateSelectAllCheckbox();
+        });
+    });
+    
+    // Handle bulk delete form submission
+    bulkDeleteForm.addEventListener('submit', function(e) {
+        const selectedCheckboxes = document.querySelectorAll('.registration-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one registration to delete.');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to delete ${selectedCheckboxes.length} registration(s)? This action cannot be undone.`)) {
+            e.preventDefault();
+            return;
+        }
+    });
+    
+    function updateBulkDeleteButton() {
+        const selectedCount = document.querySelectorAll('.registration-checkbox:checked').length;
+        selectedCountSpan.textContent = selectedCount;
+        
+        if (selectedCount > 0) {
+            bulkDeleteBtn.style.display = 'inline-block';
+        } else {
+            bulkDeleteBtn.style.display = 'none';
+        }
+    }
+    
+    function updateSelectAllCheckbox() {
+        const totalCheckboxes = registrationCheckboxes.length;
+        const checkedCheckboxes = document.querySelectorAll('.registration-checkbox:checked').length;
+        
+        if (checkedCheckboxes === 0) {
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = false;
+        } else if (checkedCheckboxes === totalCheckboxes) {
+            selectAllCheckbox.checked = true;
+            selectAllCheckbox.indeterminate = false;
+        } else {
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+});
+</script>
+@endpush
+
 @endsection

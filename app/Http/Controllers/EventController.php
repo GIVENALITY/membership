@@ -302,6 +302,73 @@ class EventController extends Controller
     }
 
     /**
+     * Delete a registration
+     */
+    public function deleteRegistration(Event $event, EventRegistration $registration)
+    {
+        $this->authorizeEvent($event);
+        
+        // Verify the registration belongs to the event
+        if ($registration->event_id !== $event->id) {
+            abort(404);
+        }
+        
+        try {
+            $registrationName = $registration->name;
+            $registration->delete();
+            
+            return redirect()->back()
+                ->with('success', "Registration for '{$registrationName}' deleted successfully.");
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete registration', [
+                'registration_id' => $registration->id,
+                'error' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Unable to delete registration.');
+        }
+    }
+
+    /**
+     * Bulk delete test registrations
+     */
+    public function bulkDeleteTestRegistrations(Event $event, Request $request)
+    {
+        $this->authorizeEvent($event);
+        
+        $request->validate([
+            'registration_ids' => 'required|array',
+            'registration_ids.*' => 'exists:event_registrations,id'
+        ]);
+        
+        try {
+            $registrations = EventRegistration::where('event_id', $event->id)
+                ->whereIn('id', $request->registration_ids)
+                ->get();
+            
+            $deletedCount = 0;
+            foreach ($registrations as $registration) {
+                $registration->delete();
+                $deletedCount++;
+            }
+            
+            return redirect()->back()
+                ->with('success', "Successfully deleted {$deletedCount} test registration(s).");
+                
+        } catch (\Exception $e) {
+            \Log::error('Failed to bulk delete registrations', [
+                'event_id' => $event->id,
+                'registration_ids' => $request->registration_ids,
+                'error' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Unable to delete registrations.');
+        }
+    }
+
+    /**
      * Search members for event registration
      */
     public function searchMembers(Request $request, Event $event)

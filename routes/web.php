@@ -543,6 +543,8 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration');
     Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration');
     Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended');
+Route::delete('/events/{event}/registrations/{registration}', [EventController::class, 'deleteRegistration'])->name('events.delete-registration');
+Route::post('/events/{event}/registrations/bulk-delete', [EventController::class, 'bulkDeleteTestRegistrations'])->name('events.bulk-delete-registrations');
     Route::get('/events/{event}/search-members', [EventController::class, 'searchMembers'])->name('events.search-members');
     Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
