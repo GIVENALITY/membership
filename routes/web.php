@@ -338,6 +338,13 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
 
+    // Member Email Routes
+    Route::get('/members/emails', [MemberEmailController::class, 'index'])->name('members.emails.index');
+    Route::get('/members/emails/compose', [MemberEmailController::class, 'compose'])->name('members.emails.compose');
+    Route::post('/members/emails/send', [MemberEmailController::class, 'send'])->name('members.emails.send');
+    Route::get('/members/emails/suggestions', [MemberEmailController::class, 'getMemberSuggestions'])->name('members.emails.suggestions');
+    Route::get('/members/emails/statistics', [MemberEmailController::class, 'statistics'])->name('members.emails.statistics');
+
     // Onboarding Routes
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');
     Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');

@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+use App\Models\Member;
+
+class MemberEmail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public $member;
+    public $emailData;
+
+    /**
+     * Create a new message instance.
+     */
+    public function __construct(Member $member, array $emailData)
+    {
+        $this->member = $member;
+        $this->emailData = $emailData;
+    }
+
+    /**
+     * Get the message envelope.
+     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: $this->emailData['subject'],
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.member-email',
+            with: [
+                'member' => $this->member,
+                'emailData' => $this->emailData,
+            ],
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [];
+    }
+}

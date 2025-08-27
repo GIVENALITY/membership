@@ -109,6 +109,16 @@
   </li>
   @endif
 
+  <!-- Member Emails (Admin, Manager only) -->
+  @if(in_array(auth()->user()->role, ['admin', 'manager']))
+  <li class="menu-item {{ request()->routeIs('members.emails.*') ? 'active' : '' }}">
+    <a href="{{ route('members.emails.index') }}" class="menu-link">
+      <i class="icon-base ri ri-mail-line menu-icon"></i>
+      <div>Member Emails</div>
+    </a>
+  </li>
+  @endif
+
   <!-- Reports (Admin, Manager only) - Temporarily Hidden -->
   {{-- @if(in_array(auth()->user()->role, ['admin', 'manager']))
   <li class="menu-item">
