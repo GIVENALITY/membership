@@ -84,6 +84,12 @@
             line-height: 1.8;
             margin-bottom: 25px;
         }
+        .welcome-message p {
+            margin: 0 0 20px 0;
+        }
+        .welcome-message p:last-child {
+            margin-bottom: 0;
+        }
         .card-notice {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -121,7 +127,14 @@
     
     <div class="content">
         <div class="welcome-message">
-            {!! nl2br($bodyText) !!}
+            @php
+                $paragraphs = explode("\n\n", $bodyText);
+            @endphp
+            @foreach($paragraphs as $paragraph)
+                @if(trim($paragraph))
+                    <p>{{ trim($paragraph) }}</p>
+                @endif
+            @endforeach
         </div>
 
         <div class="member-info">
