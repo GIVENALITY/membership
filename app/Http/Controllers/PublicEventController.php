@@ -96,7 +96,7 @@ class PublicEventController extends Controller
     public function processRegistration(Request $request, $hotelSlug, Event $event)
     {
         // Debug output - Step 1: Method entry
-        if (request()->has('debug')) {
+        if (request()->get('debug') === 'step1') {
             return response()->json([
                 'step' => '1 - Method entry',
                 'hotelSlug' => $hotelSlug,
@@ -209,7 +209,7 @@ class PublicEventController extends Controller
         }
 
         // Debug output - Final step: Registration created successfully
-        if (request()->has('debug')) {
+        if (request()->get('debug') === '1') {
             return response()->json([
                 'step' => 'Final - Registration created successfully',
                 'message' => '✅ Registration created and ready to redirect to confirmation',
