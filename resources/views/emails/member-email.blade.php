@@ -14,7 +14,7 @@
             padding: 20px;
         }
         .header {
-            background-color: {{ $hotel->email_secondary_color ?? '#f8f9fa' }};
+            background-color: #ffffff;
             padding: 20px;
             text-align: center;
             border-radius: 8px 8px 0 0;
@@ -120,15 +120,9 @@
     </div>
     
     <div class="content">
-        <div class="member-info">
-            <h3>Dear {{ $member->first_name }}{{ $member->last_name ? ' ' . $member->last_name : '' }},</h3>
-            @if(!$isCustomRecipient)
-                <p><strong>Membership ID:</strong> {{ $member->membership_id }}</p>
-                <p><strong>Membership Type:</strong> {{ $member->membershipType->name ?? 'N/A' }}</p>
-            @else
-                <p><strong>Email:</strong> {{ $member->email }}</p>
-            @endif
-        </div>
+        @if(!$isCustomRecipient)
+            <h3 style="margin: 0 0 20px 0; color: {{ $hotel->email_primary_color ?? '#1976d2' }};">Dear {{ $member->first_name }}{{ $member->last_name ? ' ' . $member->last_name : '' }},</h3>
+        @endif
         
         <div class="email-content">
             {!! $emailData['content'] !!}
@@ -144,11 +138,7 @@
     
     <div class="footer">
         <p>This email was sent to {{ $member->email }} on {{ $emailData['sent_at']->format('M d, Y \a\t g:i A') }}</p>
-        @if(!$isCustomRecipient)
-            <p>If you have any questions, please contact us.</p>
-        @else
-            <p>You received this email as a custom recipient. If you have any questions, please contact {{ $emailData['hotel_name'] }}.</p>
-        @endif
+        <p>If you have any questions, please contact us.</p>
         <p>&copy; {{ date('Y') }} {{ $emailData['hotel_name'] }}. All rights reserved.</p>
     </div>
 </body>
