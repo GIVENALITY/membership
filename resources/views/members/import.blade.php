@@ -110,6 +110,87 @@
                                             </div>
                                         </div>
 
+                                        <!-- Field Selection for Updates -->
+                                        <div class="mb-3" id="update-fields-section" style="display: none;">
+                                            <label class="form-label">{{ __('app.update_fields') }}</label>
+                                            <div class="alert alert-info">
+                                                <i class="icon-base ri ri-information-line me-2"></i>
+                                                {{ __('app.select_fields_to_update') }}
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="first_name" id="update_first_name">
+                                                        <label class="form-check-label" for="update_first_name">First Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="last_name" id="update_last_name">
+                                                        <label class="form-check-label" for="update_last_name">Last Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="email" id="update_email">
+                                                        <label class="form-check-label" for="update_email">Email</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="phone" id="update_phone">
+                                                        <label class="form-check-label" for="update_phone">Phone</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="address" id="update_address">
+                                                        <label class="form-check-label" for="update_address">Address</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="birth_date" id="update_birth_date">
+                                                        <label class="form-check-label" for="update_birth_date">Birth Date</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="join_date" id="update_join_date">
+                                                        <label class="form-check-label" for="update_join_date">Join Date</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="membership_type_name" id="update_membership_type">
+                                                        <label class="form-check-label" for="update_membership_type">Membership Type</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="allergies" id="update_allergies">
+                                                        <label class="form-check-label" for="update_allergies">Allergies</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="dietary_preferences" id="update_dietary">
+                                                        <label class="form-check-label" for="update_dietary">Dietary Preferences</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="special_requests" id="update_special_requests">
+                                                        <label class="form-check-label" for="update_special_requests">Special Requests</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="additional_notes" id="update_notes">
+                                                        <label class="form-check-label" for="update_notes">Additional Notes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_name" id="update_emergency_name">
+                                                        <label class="form-check-label" for="update_emergency_name">Emergency Contact Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_phone" id="update_emergency_phone">
+                                                        <label class="form-check-label" for="update_emergency_phone">Emergency Contact Phone</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_relationship" id="update_emergency_relationship">
+                                                        <label class="form-check-label" for="update_emergency_relationship">Emergency Contact Relationship</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllFields()">Select All</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllFields()">Deselect All</button>
+                                            </div>
+                                        </div>
+
                                         <button type="submit" class="btn btn-primary">
                                             <i class="icon-base ri ri-upload-line me-2"></i>
                                             {{ __('app.import_members') }}
@@ -171,6 +252,87 @@
                                             </select>
                                             <div class="form-text">
                                                 {{ __('app.duplicate_handling_description') }}
+                                            </div>
+                                        </div>
+
+                                        <!-- Field Selection for Updates (Storage) -->
+                                        <div class="mb-3" id="storage-update-fields-section" style="display: none;">
+                                            <label class="form-label">{{ __('app.update_fields') }}</label>
+                                            <div class="alert alert-info">
+                                                <i class="icon-base ri ri-information-line me-2"></i>
+                                                {{ __('app.select_fields_to_update') }}
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="first_name" id="storage_update_first_name">
+                                                        <label class="form-check-label" for="storage_update_first_name">First Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="last_name" id="storage_update_last_name">
+                                                        <label class="form-check-label" for="storage_update_last_name">Last Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="email" id="storage_update_email">
+                                                        <label class="form-check-label" for="storage_update_email">Email</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="phone" id="storage_update_phone">
+                                                        <label class="form-check-label" for="storage_update_phone">Phone</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="address" id="storage_update_address">
+                                                        <label class="form-check-label" for="storage_update_address">Address</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="birth_date" id="storage_update_birth_date">
+                                                        <label class="form-check-label" for="storage_update_birth_date">Birth Date</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="join_date" id="storage_update_join_date">
+                                                        <label class="form-check-label" for="storage_update_join_date">Join Date</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="membership_type_name" id="storage_update_membership_type">
+                                                        <label class="form-check-label" for="storage_update_membership_type">Membership Type</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="allergies" id="storage_update_allergies">
+                                                        <label class="form-check-label" for="storage_update_allergies">Allergies</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="dietary_preferences" id="storage_update_dietary">
+                                                        <label class="form-check-label" for="storage_update_dietary">Dietary Preferences</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="special_requests" id="storage_update_special_requests">
+                                                        <label class="form-check-label" for="storage_update_special_requests">Special Requests</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="additional_notes" id="storage_update_notes">
+                                                        <label class="form-check-label" for="storage_update_notes">Additional Notes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_name" id="storage_update_emergency_name">
+                                                        <label class="form-check-label" for="storage_update_emergency_name">Emergency Contact Name</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_phone" id="storage_update_emergency_phone">
+                                                        <label class="form-check-label" for="storage_update_emergency_phone">Emergency Contact Phone</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="update_fields[]" value="emergency_contact_relationship" id="storage_update_emergency_relationship">
+                                                        <label class="form-check-label" for="storage_update_emergency_relationship">Emergency Contact Relationship</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllStorageFields()">Select All</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllStorageFields()">Deselect All</button>
                                             </div>
                                         </div>
 
@@ -282,6 +444,30 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMembershipTypes(this.value, storageMembershipTypeSelect);
     });
     
+    // Handle duplicate handling selection for file upload
+    const duplicateHandlingSelect = document.getElementById('duplicate_handling');
+    const updateFieldsSection = document.getElementById('update-fields-section');
+    
+    duplicateHandlingSelect.addEventListener('change', function() {
+        if (this.value === 'update') {
+            updateFieldsSection.style.display = 'block';
+        } else {
+            updateFieldsSection.style.display = 'none';
+        }
+    });
+    
+    // Handle duplicate handling selection for storage import
+    const storageDuplicateHandlingSelect = document.getElementById('storage_duplicate_handling');
+    const storageUpdateFieldsSection = document.getElementById('storage-update-fields-section');
+    
+    storageDuplicateHandlingSelect.addEventListener('change', function() {
+        if (this.value === 'update') {
+            storageUpdateFieldsSection.style.display = 'block';
+        } else {
+            storageUpdateFieldsSection.style.display = 'none';
+        }
+    });
+    
     // Load membership types for selected hotel
     function loadMembershipTypes(hotelId, targetSelect) {
         if (!hotelId) {
@@ -312,7 +498,37 @@ document.addEventListener('DOMContentLoaded', function() {
     if (storageHotelSelect.value) {
         loadMembershipTypes(storageHotelSelect.value, storageMembershipTypeSelect);
     }
+    
+    // Initialize field selection visibility
+    if (duplicateHandlingSelect.value === 'update') {
+        updateFieldsSection.style.display = 'block';
+    }
+    if (storageDuplicateHandlingSelect.value === 'update') {
+        storageUpdateFieldsSection.style.display = 'block';
+    }
 });
+
+// Field selection functions for file upload
+function selectAllFields() {
+    const checkboxes = document.querySelectorAll('#update-fields-section input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.checked = true);
+}
+
+function deselectAllFields() {
+    const checkboxes = document.querySelectorAll('#update-fields-section input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+}
+
+// Field selection functions for storage import
+function selectAllStorageFields() {
+    const checkboxes = document.querySelectorAll('#storage-update-fields-section input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.checked = true);
+}
+
+function deselectAllStorageFields() {
+    const checkboxes = document.querySelectorAll('#storage-update-fields-section input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+}
 </script>
 @endpush
 @endsection

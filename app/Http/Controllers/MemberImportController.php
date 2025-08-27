@@ -40,7 +40,9 @@ class MemberImportController extends Controller
         $request->validate([
             'hotel_id' => 'required|exists:hotels,id',
             'import_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // 10MB max
-            'duplicate_handling' => 'nullable|in:skip,update,error'
+            'duplicate_handling' => 'nullable|in:skip,update,error',
+            'update_fields' => 'nullable|array',
+            'update_fields.*' => 'nullable|string|in:first_name,last_name,email,phone,address,birth_date,join_date,membership_type_name,allergies,dietary_preferences,special_requests,additional_notes,emergency_contact_name,emergency_contact_phone,emergency_contact_relationship'
         ]);
 
         try {
@@ -59,6 +61,7 @@ class MemberImportController extends Controller
             }
             
             $duplicateHandling = $request->input('duplicate_handling', 'error'); // Default to error
+            $updateFields = $request->input('update_fields', []); // Fields to update for existing members
             
             $file = $request->file('import_file');
             $filePath = $file->getRealPath();
@@ -88,7 +91,7 @@ class MemberImportController extends Controller
                 }
                 
                 try {
-                    $member = $this->createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling);
+                    $member = $this->createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling, $updateFields);
                     
                     if ($member === null) {
                         // Member was skipped (duplicate handling = 'skip')
@@ -234,7 +237,7 @@ class MemberImportController extends Controller
     /**
      * Create a member from a data row
      */
-    private function createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling = 'error')
+    private function createMemberFromRow($data, $hotel, $membershipTypes, $duplicateHandling = 'error', $updateFields = [])
     {
         // Map the data columns (adjust based on your Excel structure)
         $mappedData = $this->mapDataColumns($data);
@@ -249,10 +252,15 @@ class MemberImportController extends Controller
             $mappedData['membership_id'] = Member::generateMembershipId();
         }
         
-        // Check if member already exists
-        $existingMember = Member::where('membership_id', $mappedData['membership_id'])
-            ->orWhere('email', $mappedData['email'])
-            ->first();
+        // Check if member already exists (only if we have valid data)
+        $existingMember = null;
+        if (!empty($mappedData['membership_id'])) {
+            $existingMember = Member::where('membership_id', $mappedData['membership_id'])->first();
+        }
+        
+        if (!$existingMember && !empty($mappedData['email'])) {
+            $existingMember = Member::where('email', $mappedData['email'])->first();
+        }
             
         if ($existingMember) {
             switch ($duplicateHandling) {
@@ -261,14 +269,31 @@ class MemberImportController extends Controller
                     return null;
                     
                 case 'update':
-                    // Update existing member with new data
-                    $mappedData['hotel_id'] = $hotel->id;
-                    $membershipType = $this->determineMembershipType($mappedData, $membershipTypes);
-                    $mappedData['membership_type_id'] = $membershipType->id;
-                    $mappedData['status'] = $mappedData['status'] ?? 'active';
-                    $mappedData['join_date'] = $mappedData['join_date'] ?? now()->toDateString();
+                    // Update existing member with selected fields only
+                    $updateData = [];
                     
-                    $existingMember->update($mappedData);
+                    // Always update these fields
+                    $updateData['hotel_id'] = $hotel->id;
+                    $membershipType = $this->determineMembershipType($mappedData, $membershipTypes);
+                    $updateData['membership_type_id'] = $membershipType->id;
+                    
+                    // Update only selected fields
+                    foreach ($updateFields as $field) {
+                        if (isset($mappedData[$field]) && !empty($mappedData[$field])) {
+                            $updateData[$field] = $mappedData[$field];
+                        }
+                    }
+                    
+                    // Always update membership_id if it's higher than existing
+                    if (!empty($mappedData['membership_id'])) {
+                        $existingId = (int) $existingMember->membership_id;
+                        $newId = (int) $mappedData['membership_id'];
+                        if ($newId > $existingId) {
+                            $updateData['membership_id'] = $mappedData['membership_id'];
+                        }
+                    }
+                    
+                    $existingMember->update($updateData);
                     return $existingMember;
                     
                 case 'error':
@@ -288,10 +313,40 @@ class MemberImportController extends Controller
         $mappedData['status'] = $mappedData['status'] ?? 'active';
         $mappedData['join_date'] = $mappedData['join_date'] ?? now()->toDateString();
         
-        // Create the member
-        $member = Member::create($mappedData);
+        // Always use the highest membership ID from the file or generate a new one
+        if (!empty($mappedData['membership_id'])) {
+            // Check if this ID is higher than any existing ID
+            $highestExistingId = Member::where('hotel_id', $hotel->id)
+                ->whereRaw('membership_id REGEXP "^[0-9]+$"')
+                ->max(DB::raw('CAST(membership_id AS UNSIGNED)'));
+            
+            $newId = (int) $mappedData['membership_id'];
+            if ($newId > ($highestExistingId ?? 0)) {
+                // Use the ID from the file
+                $mappedData['membership_id'] = (string) $newId;
+            } else {
+                // Generate a new ID higher than the highest existing
+                $mappedData['membership_id'] = $this->generateUniqueMembershipId($hotel);
+            }
+        } else {
+            // Generate a new ID if none provided
+            $mappedData['membership_id'] = $this->generateUniqueMembershipId($hotel);
+        }
         
-        return $member;
+        // Create the member with error handling
+        try {
+            $member = Member::create($mappedData);
+            return $member;
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) { // Duplicate entry error
+                if ($duplicateHandling === 'skip') {
+                    return null; // Skip silently
+                } else {
+                    throw new \Exception('Duplicate entry detected. Consider using "skip" or "update" duplicate handling option.');
+                }
+            }
+            throw $e; // Re-throw other database errors
+        }
     }
 
     /**
@@ -485,6 +540,11 @@ class MemberImportController extends Controller
     {
         $name = strtolower(trim($name));
         
+        // Handle NaN/empty values
+        if (empty($name) || $name === 'nan' || $name === 'null') {
+            return 'individual'; // Default to individual
+        }
+        
         // Common typos and variations
         $replacements = [
             'coorporate' => 'corporate',
@@ -492,6 +552,10 @@ class MemberImportController extends Controller
             'corprorate' => 'corporate',
             'individaul' => 'individual',
             'indivdual' => 'individual',
+            'indivivual' => 'individual',
+            'indvidual' => 'individual',
+            'individul' => 'individual',
+            'iddividual' => 'individual',
             'famly' => 'family',
             'familly' => 'family',
             'vip' => 'vip',
@@ -516,6 +580,22 @@ class MemberImportController extends Controller
     {
         $hotels = Hotel::active()->get();
         return response()->json($hotels);
+    }
+
+    /**
+     * Generate a unique membership ID based on highest existing number
+     */
+    private function generateUniqueMembershipId($hotel)
+    {
+        // Get the highest numeric membership ID for this hotel
+        $highestId = Member::where('hotel_id', $hotel->id)
+            ->whereRaw('membership_id REGEXP "^[0-9]+$"') // Only numeric IDs
+            ->max(DB::raw('CAST(membership_id AS UNSIGNED)'));
+        
+        // If no numeric IDs exist, start from 1
+        $nextId = ($highestId ?? 0) + 1;
+        
+        return (string) $nextId;
     }
 
     /**
