@@ -137,9 +137,23 @@
     </div>
     
     <div class="footer">
-        <p>This email was sent to {{ $member->email }} on {{ $emailData['sent_at']->format('M d, Y \a\t g:i A') }}</p>
-        <p>If you have any questions, please contact us.</p>
-        <p>&copy; {{ date('Y') }} {{ $emailData['hotel_name'] }}. All rights reserved.</p>
+        <p style="margin: 0 0 10px 0;">
+            <strong>{{ $emailData['hotel_name'] }}</strong><br>
+            {{ $hotel->address ?? '' }}<br>
+            {{ $hotel->city ?? '' }}, {{ $hotel->country ?? '' }}
+        </p>
+        <p style="margin: 0; font-size: 12px;">
+            This email was sent to {{ $member->email }} on {{ $emailData['sent_at']->format('M d, Y \a\t g:i A') }}
+        </p>
+        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">
+            <strong>Questions?</strong> Reply to this email or contact us at: 
+            <a href="mailto:{{ $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address') }}" style="color: {{ $hotel->email_primary_color ?? '#1976d2' }};">
+                {{ $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address') }}
+            </a>
+        </p>
+        <p style="margin: 10px 0 0 0; font-size: 12px; color: #999;">
+            &copy; {{ date('Y') }} {{ $emailData['hotel_name'] }}. All rights reserved.
+        </p>
     </div>
 </body>
 </html>

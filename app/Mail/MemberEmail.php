@@ -42,6 +42,10 @@ class MemberEmail extends Mailable
             $hotel = auth()->user()->hotel;
         }
         
+        // Determine reply-to email with fallback
+        $replyToEmail = $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address');
+        $replyToName = $hotel->name ?? config('mail.from.name');
+        
         return new Envelope(
             subject: $this->emailData['subject'],
             from: new Address(
@@ -50,8 +54,8 @@ class MemberEmail extends Mailable
             ),
             replyTo: [
                 new Address(
-                    $hotel->reply_to_email ?? config('mail.from.address'),
-                    $hotel->name ?? config('mail.from.name')
+                    $replyToEmail,
+                    $replyToName
                 )
             ]
         );
