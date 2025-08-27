@@ -66,7 +66,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('public.events.process-registration', [$event->hotel->slug, $event]) }}" method="POST">
+                        <form action="{{ route('public.events.process-registration', [$event->hotel->slug, $event]) }}?debug=1" method="POST">
                             @csrf
                             
                             <div class="row">

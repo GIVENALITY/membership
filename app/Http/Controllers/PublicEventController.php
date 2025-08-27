@@ -95,6 +95,18 @@ class PublicEventController extends Controller
      */
     public function processRegistration(Request $request, $hotelSlug, Event $event)
     {
+        // Debug output - Step 1: Method entry
+        if (request()->has('debug')) {
+            return response()->json([
+                'step' => '1 - Method entry',
+                'hotelSlug' => $hotelSlug,
+                'eventId' => $event->id,
+                'eventTitle' => $event->title,
+                'requestData' => $request->all(),
+                'message' => '✅ Method is being called successfully!'
+            ]);
+        }
+
         // Verify the event belongs to the hotel and is public
         if (!$event->is_public || !$event->is_active || $event->status !== 'published') {
             abort(404);
