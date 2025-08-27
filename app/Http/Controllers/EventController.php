@@ -402,6 +402,32 @@ class EventController extends Controller
     }
 
     /**
+     * Close registration for an event
+     */
+    public function closeRegistration(Event $event)
+    {
+        $this->authorizeEvent($event);
+        
+        $event->update(['registration_closed' => true]);
+        
+        return redirect()->back()
+            ->with('success', 'Registration has been closed for this event.');
+    }
+
+    /**
+     * Open registration for an event
+     */
+    public function openRegistration(Event $event)
+    {
+        $this->authorizeEvent($event);
+        
+        $event->update(['registration_closed' => false]);
+        
+        return redirect()->back()
+            ->with('success', 'Registration has been opened for this event.');
+    }
+
+    /**
      * Authorize event access
      */
     private function authorizeEvent(Event $event)

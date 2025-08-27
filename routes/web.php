@@ -373,6 +373,8 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::resource('events', EventController::class);
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
     Route::post('/events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
+    Route::post('/events/{event}/close-registration', [EventController::class, 'closeRegistration'])->name('events.close-registration');
+    Route::post('/events/{event}/open-registration', [EventController::class, 'openRegistration'])->name('events.open-registration');
     Route::get('/events/{event}/registrations', [EventController::class, 'registrations'])->name('events.registrations');
     Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration');
     Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration');

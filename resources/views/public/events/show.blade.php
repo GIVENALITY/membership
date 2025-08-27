@@ -192,7 +192,11 @@
                                 </div>
                             </div>
 
-                            @if(!$event->isFull())
+                            @if($event->isRegistrationClosed())
+                                <button class="btn btn-danger btn-lg w-100 mb-2" disabled>
+                                    <i class="bx bx-lock"></i> Registration Closed
+                                </button>
+                            @elseif(!$event->isFull())
                                 <a href="{{ route('public.events.register', [$event->hotel->slug, $event]) }}" 
                                    class="btn btn-primary btn-lg w-100 mb-2">
                                     <i class="bx bx-user-plus"></i> Register Now

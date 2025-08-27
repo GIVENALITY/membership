@@ -25,6 +25,7 @@
                                         <th>Price</th>
                                         <th>Capacity</th>
                                         <th>Status</th>
+                                        <th>Registration</th>
                                         <th>Registrations</th>
                                         <th>Actions</th>
                                     </tr>
@@ -71,6 +72,13 @@
                                             <span class="{{ $event->getStatusBadgeClass() }}">
                                                 {{ $event->getStatusText() }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            @if($event->isRegistrationClosed())
+                                                <span class="badge bg-danger">Closed</span>
+                                            @else
+                                                <span class="badge bg-success">Open</span>
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
@@ -126,6 +134,29 @@
                                                                 </button>
                                                             </form>
                                                         </li>
+                                                    @endif
+                                                    @if($event->status === 'published')
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        @if($event->isRegistrationClosed())
+                                                            <li>
+                                                                <form action="{{ route('events.open-registration', $event) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="dropdown-item text-success">
+                                                                        <i class="bx bx-lock-open me-1"></i> Open Registration
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <form action="{{ route('events.close-registration', $event) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="dropdown-item text-warning" 
+                                                                            onclick="return confirm('Are you sure you want to close registration for this event?')">
+                                                                        <i class="bx bx-lock me-1"></i> Close Registration
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        @endif
                                                     @endif
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
