@@ -45,6 +45,12 @@ class HotelController extends Controller
             'primary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'secondary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'tertiary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'email' => 'nullable|email|max:255',
+            'reply_to_email' => 'nullable|email|max:255',
+            'email_logo_url' => 'nullable|url|max:500',
+            'email_primary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'email_secondary_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'email_accent_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
         ]);
 
         try {
@@ -62,6 +68,12 @@ class HotelController extends Controller
                 'primary_color' => $request->primary_color,
                 'secondary_color' => $request->secondary_color,
                 'tertiary_color' => $request->tertiary_color,
+                'email' => $request->email,
+                'reply_to_email' => $request->reply_to_email,
+                'email_logo_url' => $request->email_logo_url,
+                'email_primary_color' => $request->email_primary_color,
+                'email_secondary_color' => $request->email_secondary_color,
+                'email_accent_color' => $request->email_accent_color,
             ]);
 
             // Handle logo upload

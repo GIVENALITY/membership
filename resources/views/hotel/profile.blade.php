@@ -230,6 +230,105 @@
                             </div>
                         </div>
 
+                        <!-- Email Settings -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="icon-base ri ri-mail-line me-2"></i>
+                                    Email Settings
+                                </h6>
+                                <small class="text-muted">Configure email branding and sender information</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Sender Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               value="{{ old('email', $hotel->email) }}" placeholder="noreply@yourhotel.com">
+                                        <small class="form-text text-muted">Email address that will appear as sender in member emails</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="reply_to_email" class="form-label">Reply-To Email</label>
+                                        <input type="email" class="form-control" id="reply_to_email" name="reply_to_email" 
+                                               value="{{ old('reply_to_email', $hotel->reply_to_email) }}" placeholder="contact@yourhotel.com">
+                                        <small class="form-text text-muted">Email address for replies (optional)</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="email_logo_url" class="form-label">Email Logo URL</label>
+                                        <input type="url" class="form-control" id="email_logo_url" name="email_logo_url" 
+                                               value="{{ old('email_logo_url', $hotel->email_logo_url) }}" placeholder="https://example.com/logo.png">
+                                        <small class="form-text text-muted">URL to your logo for email headers (optional)</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="email_primary_color" class="form-label">Email Primary Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="email_primary_color" name="email_primary_color" 
+                                                   value="{{ old('email_primary_color', $hotel->email_primary_color ?? '#1976d2') }}" 
+                                                   title="Choose email primary color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('email_primary_color', $hotel->email_primary_color ?? '#1976d2') }}" 
+                                                   id="email_primary_color_text" placeholder="#1976d2">
+                                        </div>
+                                        <small class="form-text text-muted">Main brand color for emails</small>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="email_secondary_color" class="form-label">Email Secondary Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="email_secondary_color" name="email_secondary_color" 
+                                                   value="{{ old('email_secondary_color', $hotel->email_secondary_color ?? '#f8f9fa') }}" 
+                                                   title="Choose email secondary color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('email_secondary_color', $hotel->email_secondary_color ?? '#f8f9fa') }}" 
+                                                   id="email_secondary_color_text" placeholder="#f8f9fa">
+                                        </div>
+                                        <small class="form-text text-muted">Background color for headers/footers</small>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="email_accent_color" class="form-label">Email Accent Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" 
+                                                   id="email_accent_color" name="email_accent_color" 
+                                                   value="{{ old('email_accent_color', $hotel->email_accent_color ?? '#e3f2fd') }}" 
+                                                   title="Choose email accent color">
+                                            <input type="text" class="form-control" 
+                                                   value="{{ old('email_accent_color', $hotel->email_accent_color ?? '#e3f2fd') }}" 
+                                                   id="email_accent_color_text" placeholder="#e3f2fd">
+                                        </div>
+                                        <small class="form-text text-muted">Highlight color for member info boxes</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Email Color Preview -->
+                                <div class="mt-3">
+                                    <label class="form-label">Email Color Preview</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="email-color-preview" style="background-color: {{ $hotel->email_primary_color ?? '#1976d2' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold;">
+                                            Primary
+                                        </div>
+                                        <div class="email-color-preview" style="background-color: {{ $hotel->email_secondary_color ?? '#f8f9fa' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px; font-weight: bold; border: 1px solid #ddd;">
+                                            Secondary
+                                        </div>
+                                        <div class="email-color-preview" style="background-color: {{ $hotel->email_accent_color ?? '#e3f2fd' }}; width: 60px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px; font-weight: bold; border: 1px solid #ddd;">
+                                            Accent
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info mt-3">
+                                    <i class="icon-base ri ri-information-line me-2"></i>
+                                    <strong>Note:</strong> These settings will be used in all member emails sent from your hotel.
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Update Restaurant Profile</button>
                         </div>
@@ -295,6 +394,50 @@ function updateColorPreview() {
         previews[0].style.backgroundColor = primaryColor;
         previews[1].style.backgroundColor = secondaryColor;
         previews[2].style.backgroundColor = tertiaryColor;
+    }
+}
+
+// Email color picker sync
+document.getElementById('email_primary_color').addEventListener('input', function() {
+    document.getElementById('email_primary_color_text').value = this.value;
+    updateEmailColorPreview();
+});
+
+document.getElementById('email_primary_color_text').addEventListener('input', function() {
+    document.getElementById('email_primary_color').value = this.value;
+    updateEmailColorPreview();
+});
+
+document.getElementById('email_secondary_color').addEventListener('input', function() {
+    document.getElementById('email_secondary_color_text').value = this.value;
+    updateEmailColorPreview();
+});
+
+document.getElementById('email_secondary_color_text').addEventListener('input', function() {
+    document.getElementById('email_secondary_color').value = this.value;
+    updateEmailColorPreview();
+});
+
+document.getElementById('email_accent_color').addEventListener('input', function() {
+    document.getElementById('email_accent_color_text').value = this.value;
+    updateEmailColorPreview();
+});
+
+document.getElementById('email_accent_color_text').addEventListener('input', function() {
+    document.getElementById('email_accent_color').value = this.value;
+    updateEmailColorPreview();
+});
+
+function updateEmailColorPreview() {
+    const primaryColor = document.getElementById('email_primary_color').value;
+    const secondaryColor = document.getElementById('email_secondary_color').value;
+    const accentColor = document.getElementById('email_accent_color').value;
+    
+    const previews = document.querySelectorAll('.email-color-preview');
+    if (previews.length >= 3) {
+        previews[0].style.backgroundColor = primaryColor;
+        previews[1].style.backgroundColor = secondaryColor;
+        previews[2].style.backgroundColor = accentColor;
     }
 }
 </script>

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Member;
 
@@ -33,8 +34,20 @@ class MemberEmail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $hotel = $this->member->hotel ?? auth()->user()->hotel;
+        
         return new Envelope(
             subject: $this->emailData['subject'],
+            from: new Address(
+                $hotel->email ?? config('mail.from.address'),
+                $hotel->name ?? config('mail.from.name')
+            ),
+            replyTo: [
+                new Address(
+                    $hotel->reply_to_email ?? $hotel->email ?? config('mail.from.address'),
+                    $hotel->name ?? config('mail.from.name')
+                )
+            ]
         );
     }
 

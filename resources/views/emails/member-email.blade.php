@@ -14,10 +14,19 @@
             padding: 20px;
         }
         .header {
-            background-color: #f8f9fa;
+            background-color: {{ $hotel->email_secondary_color ?? '#f8f9fa' }};
             padding: 20px;
             text-align: center;
             border-radius: 8px 8px 0 0;
+            border-bottom: 3px solid {{ $hotel->email_primary_color ?? '#1976d2' }};
+        }
+        .header h1 {
+            color: {{ $hotel->email_primary_color ?? '#1976d2' }};
+            margin: 0 0 10px 0;
+        }
+        .header .logo {
+            max-height: 60px;
+            margin-bottom: 10px;
         }
         .content {
             background-color: #ffffff;
@@ -25,22 +34,24 @@
             border: 1px solid #dee2e6;
         }
         .footer {
-            background-color: #f8f9fa;
+            background-color: {{ $hotel->email_secondary_color ?? '#f8f9fa' }};
             padding: 20px;
             text-align: center;
             border-radius: 0 0 8px 8px;
             font-size: 12px;
             color: #6c757d;
+            border-top: 1px solid {{ $hotel->email_primary_color ?? '#1976d2' }};
         }
         .member-info {
-            background-color: #e3f2fd;
+            background-color: {{ $hotel->email_accent_color ?? '#e3f2fd' }};
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
+            border-left: 4px solid {{ $hotel->email_primary_color ?? '#1976d2' }};
         }
         .member-info h3 {
             margin: 0 0 10px 0;
-            color: #1976d2;
+            color: {{ $hotel->email_primary_color ?? '#1976d2' }};
         }
         .member-info p {
             margin: 5px 0;
@@ -49,7 +60,7 @@
             margin: 20px 0;
         }
         .email-content h1, .email-content h2, .email-content h3 {
-            color: #1976d2;
+            color: {{ $hotel->email_primary_color ?? '#1976d2' }};
         }
         .email-content table {
             border-collapse: collapse;
@@ -64,14 +75,14 @@
             text-align: left;
         }
         .email-content th {
-            background-color: #f2f2f2;
+            background-color: {{ $hotel->email_secondary_color ?? '#f2f2f2' }};
         }
         .email-content ul, .email-content ol {
             margin: 15px 0;
             padding-left: 20px;
         }
         .email-content a {
-            color: #1976d2;
+            color: {{ $hotel->email_primary_color ?? '#1976d2' }};
             text-decoration: none;
         }
         .email-content a:hover {
@@ -80,6 +91,14 @@
         .email-content img {
             max-width: 100%;
             height: auto;
+        }
+        .signature {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        .signature strong {
+            color: {{ $hotel->email_primary_color ?? '#1976d2' }};
         }
         @media only screen and (max-width: 600px) {
             body {
@@ -92,8 +111,14 @@
     </style>
 </head>
 <body>
+    @php
+        $hotel = $member->hotel ?? auth()->user()->hotel;
+    @endphp
     <div class="header">
-        <h1>{{ $emailData['hotel_name'] }}</h1>
+        @if($hotel->email_logo_url)
+            <img src="{{ $hotel->email_logo_url }}" alt="{{ $hotel->name }}" class="logo">
+        @endif
+        <h1>{{ $hotel->name }}</h1>
         <p>Member Communication</p>
     </div>
     
@@ -114,8 +139,10 @@
         
         <p>Thank you for being part of our community!</p>
         
-        <p>Best regards,<br>
-        <strong>{{ $emailData['hotel_name'] }} Team</strong></p>
+        <div class="signature">
+            <p>Best regards,<br>
+            <strong>{{ $hotel->name }} Team</strong></p>
+        </div>
     </div>
     
     <div class="footer">
