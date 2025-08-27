@@ -45,11 +45,11 @@
             border-top: 1px solid {{ $member->hotel->email_primary_color ?? '#1976d2' }};
         }
         .member-info {
-            background-color: {{ $member->hotel->email_accent_color ?? '#e3f2fd' }};
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
             margin: 25px 0;
-            border-left: 5px solid {{ $member->hotel->email_primary_color ?? '#1976d2' }};
+            border: 2px solid {{ $member->hotel->email_primary_color ?? '#1976d2' }};
         }
         .member-info h3 {
             margin: 0 0 15px 0;

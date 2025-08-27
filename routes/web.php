@@ -306,6 +306,9 @@ Route::get('/member-emails/test-welcome/{memberId}', function($memberId) {
                    'We look forward to providing you with exceptional service and memorable experiences.\n\n' .
                    'Best regards,\n' . $member->hotel->name . ' Team';
         
+        // Convert \n to HTML line breaks for display
+        $bodyTextForDisplay = nl2br($bodyText);
+        
         // Send the welcome email
         \Mail::to($member->email)->send(new \App\Mail\WelcomeMemberMail($member, $subject, $bodyText));
         
@@ -324,6 +327,10 @@ Route::get('/member-emails/test-welcome/{memberId}', function($memberId) {
                 'to' => $member->email,
                 'from' => config('mail.from.address'),
                 'from_name' => $member->hotel->name
+            ],
+            'email_content' => [
+                'raw_text' => $bodyText,
+                'formatted_html' => $bodyTextForDisplay
             ]
         ]);
         
