@@ -24,7 +24,7 @@ class WelcomeMemberMail extends Mailable
             ->replyTo($hotel->reply_to_email ?? config('mail.from.address'), $hotel->name)
             ->view('emails.welcome_member', [
                 'member' => $this->member,
-                'bodyText' => nl2br(e($this->bodyText)),
+                'bodyText' => $this->bodyText,
             ]);
 
         if ($this->member->card_image_path) {

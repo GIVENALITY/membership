@@ -53,7 +53,7 @@
         }
         .member-info h3 {
             margin: 0 0 15px 0;
-            color: {{ $member->hotel->email_primary_color ?? '#1976d2' }};
+            color: #ffffff;
             font-size: 20px;
         }
         .member-info p {
@@ -121,7 +121,7 @@
     
     <div class="content">
         <div class="welcome-message">
-            {!! $bodyText !!}
+            {!! nl2br($bodyText) !!}
         </div>
 
         <div class="member-info">
