@@ -222,10 +222,21 @@ class EventController extends Controller
      */
     public function confirmRegistration(Event $event, EventRegistration $registration)
     {
+        \Log::info('Confirm registration called', [
+            'eventId' => $event->id,
+            'registrationId' => $registration->id,
+            'registrationEventId' => $registration->event_id,
+            'registrationStatus' => $registration->status
+        ]);
+        
         $this->authorizeEvent($event);
         
         // Verify the registration belongs to the event
         if ($registration->event_id !== $event->id) {
+            \Log::error('Registration event mismatch', [
+                'registrationEventId' => $registration->event_id,
+                'eventId' => $event->id
+            ]);
             abort(404);
         }
         

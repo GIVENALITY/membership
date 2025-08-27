@@ -369,19 +369,21 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::get('/points-configuration/multipliers', [PointsConfigurationController::class, 'multipliers'])->name('points-configuration.multipliers');
     Route::get('/points-configuration/tiers', [PointsConfigurationController::class, 'tiers'])->name('points-configuration.tiers');
 
-    // Events Routes
-    Route::resource('events', EventController::class);
+    // Events Routes (specific routes first to avoid conflicts with resource route)
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
     Route::post('/events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
     Route::post('/events/{event}/close-registration', [EventController::class, 'closeRegistration'])->name('events.close-registration');
     Route::post('/events/{event}/open-registration', [EventController::class, 'openRegistration'])->name('events.open-registration');
     Route::get('/events/{event}/registrations', [EventController::class, 'registrations'])->name('events.registrations');
-    Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
-    Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
-    Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended')->where(['event' => '[0-9]+', 'registration' => '[0-9]+']);
+    Route::post('/events/{event}/registrations/{registration}/confirm', [EventController::class, 'confirmRegistration'])->name('events.confirm-registration');
+    Route::post('/events/{event}/registrations/{registration}/cancel', [EventController::class, 'cancelRegistration'])->name('events.cancel-registration');
+    Route::post('/events/{event}/registrations/{registration}/attend', [EventController::class, 'markAttended'])->name('events.mark-attended');
     Route::get('/events/{event}/search-members', [EventController::class, 'searchMembers'])->name('events.search-members');
     Route::post('/events/{event}/register-member', [EventController::class, 'registerMember'])->name('events.register-member');
     Route::get('/events/{event}/export-registrations', [EventController::class, 'exportRegistrations'])->name('events.export-registrations');
+    
+    // Events resource route (must come after specific routes)
+    Route::resource('events', EventController::class);
 
 
 
