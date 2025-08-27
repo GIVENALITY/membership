@@ -302,9 +302,9 @@ Route::get('/member-emails/test-welcome/{memberId}', function($memberId) {
         $subject = 'Welcome to ' . $member->hotel->name . ' - Your Membership is Ready!';
         $bodyText = 'Dear ' . $member->first_name . ",\n\n" .
                    'Welcome to ' . $member->hotel->name . "! We're excited to have you as a member of our exclusive program.\n\n" .
-                   'Your membership has been successfully activated and you now have access to all the benefits and privileges that come with being part of our community.\n\n' .
-                   'We look forward to providing you with exceptional service and memorable experiences.\n\n' .
-                   'Best regards,\n' . $member->hotel->name . ' Team';
+                   'Your membership has been successfully activated and you now have access to all the benefits and privileges that come with being part of our community.'\n\n .
+                   'We look forward to providing you with exceptional service and memorable experiences.'\n .
+                   'Best regards,'\n\n . $member->hotel->name . ' Team';
         
         // Convert \n to HTML line breaks for display
         $bodyTextForDisplay = nl2br($bodyText);
