@@ -1,0 +1,9 @@
+# Google Workspace Email Configuration for members.co.tz
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=noreply@members.co.tz
+MAIL_PASSWORD=your-app-password-here
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@members.co.tz
+MAIL_FROM_NAME="Membership MS"

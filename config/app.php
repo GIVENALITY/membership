@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://membership.kinara.co.tz'),
+    'url' => env('APP_URL', 'https://members.co.tz'),
 
     /*
     |--------------------------------------------------------------------------

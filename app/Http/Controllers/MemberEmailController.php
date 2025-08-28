@@ -137,21 +137,27 @@ class MemberEmailController extends Controller
                 ]);
                 
                 // Create email log entry
-                $emailLog = EmailLog::create([
+                $emailLogData = [
                     'hotel_id' => $hotel->id,
                     'email_type' => 'member_email',
                     'subject' => $emailData['subject'],
                     'content' => $emailData['content'],
                     'recipient_email' => $member->email,
                     'recipient_name' => $member->first_name . ' ' . $member->last_name,
-                    'member_id' => $member->id,
                     'status' => 'pending',
                     'metadata' => [
                         'recipient_type' => $request->recipient_type,
                         'send_immediately' => $request->send_immediately,
                         'sent_by' => $user->id
                     ]
-                ]);
+                ];
+                
+                // Only set member_id if it's a valid integer (not a custom recipient)
+                if (is_numeric($member->id) && $member->id > 0) {
+                    $emailLogData['member_id'] = $member->id;
+                }
+                
+                $emailLog = EmailLog::create($emailLogData);
                 
                 if ($request->send_immediately) {
                     // Send immediately

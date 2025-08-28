@@ -464,7 +464,7 @@
                     <p>Our support team is here to help you get the most out of Membership MS:</p>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Email:</strong> support@kinara.co.tz</p>
+                            <p><strong>Email:</strong> support@members.co.tz</p>
                             <p><strong>Phone:</strong> +255 XXX XXX XXX</p>
                         </div>
                         <div class="col-md-6">

@@ -1,0 +1,19 @@
+# Update these lines in your .env file for Google Workspace
+
+# Production settings
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://members.co.tz
+
+# Google Workspace Email Configuration
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=noreply@members.co.tz
+MAIL_PASSWORD=your-app-password-here
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@members.co.tz
+MAIL_FROM_NAME="Membership MS"
+
+# Log level for production
+LOG_LEVEL=error

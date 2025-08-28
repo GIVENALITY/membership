@@ -156,7 +156,7 @@
             <h4 style="margin-top: 0; color: #000;">📞 Need Help?</h4>
             <p>Our support team is here to help you get the most out of Membership MS:</p>
             <ul>
-                <li><strong>Email:</strong> support@kinara.co.tz</li>
+                <li><strong>Email:</strong> support@members.co.tz</li>
                 <li><strong>Phone:</strong> +255 XXX XXX XXX</li>
                 <li><strong>Hours:</strong> Monday - Friday, 8:00 AM - 6:00 PM EAT</li>
             </ul>

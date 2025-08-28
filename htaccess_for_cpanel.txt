@@ -1,0 +1,28 @@
+# Copy this entire content to your .htaccess file in the Laravel root directory
+
+# cPanel Laravel Configuration
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect all requests to the public folder
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Prevent access to sensitive files
+<Files .*>
+    # Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+    # Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</Files>
+
+# Allow access to public folder
+<Files "public/*">
+    Require all granted
+</Files>
