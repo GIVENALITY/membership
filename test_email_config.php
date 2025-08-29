@@ -11,11 +11,12 @@ require_once 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-echo "Testing Email Configuration\n";
-echo "==========================\n\n";
+echo "Testing Email Configuration for members.co.tz\n";
+echo "===========================================\n\n";
 
 // Test 1: Check mail configuration
 echo "1. Mail Configuration:\n";
+echo "   APP_URL: " . config('app.url') . "\n";
 echo "   MAIL_MAILER: " . config('mail.default') . "\n";
 echo "   MAIL_HOST: " . config('mail.mailers.smtp.host') . "\n";
 echo "   MAIL_PORT: " . config('mail.mailers.smtp.port') . "\n";

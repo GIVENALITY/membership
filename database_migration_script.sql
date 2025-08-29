@@ -1,6 +1,5 @@
--- Database Migration Script for Domain Change
--- From: membership.kinara.co.tz
--- To: members.co.tz
+-- Database Migration Script for members.co.tz
+-- Update any existing domain references to use members.co.tz
 
 -- Update hotel domains if they exist
 UPDATE hotels 
