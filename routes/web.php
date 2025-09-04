@@ -516,8 +516,14 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
     Route::post('/members/approval/{member}/reject', [MemberApprovalController::class, 'reject'])->name('members.approval.reject');
     Route::post('/members/approval/{member}/verify-payment', [MemberApprovalController::class, 'verifyPayment'])->name('members.approval.verify-payment');
     Route::post('/members/approval/{member}/approve-card-issuance', [MemberApprovalController::class, 'approveCardIssuance'])->name('members.approval.approve-card-issuance');
-    Route::post('/members/approval/{member}/upload-payment-proof', [MemberApprovalController::class, 'uploadPaymentProof'])->name('members.approval.upload-payment-proof');
-    Route::get('/members/approval/{member}/download-payment-proof', [MemberApprovalController::class, 'downloadPaymentProof'])->name('members.approval.download-payment-proof');
+Route::post('/members/approval/{member}/upload-payment-proof', [MemberApprovalController::class, 'uploadPaymentProof'])->name('members.approval.upload-payment-proof');
+Route::get('/members/approval/{member}/download-payment-proof', [MemberApprovalController::class, 'downloadPaymentProof'])->name('members.approval.download-payment-proof');
+
+// Card Management Routes
+Route::post('/members/{member}/regenerate-card', [MemberApprovalController::class, 'regenerateCard'])->name('members.regenerate-card');
+Route::get('/members/{member}/card-preview', [MemberApprovalController::class, 'cardPreview'])->name('members.card-preview');
+Route::post('/members/{member}/generate-qr-code', [MemberApprovalController::class, 'generateQRCode'])->name('members.generate-qr-code');
+Route::get('/members/{member}/download-card', [MemberApprovalController::class, 'downloadCard'])->name('members.download-card');
 
     // Resource route comes AFTER specific member routes to avoid conflicts
     Route::resource('members', MemberController::class);
