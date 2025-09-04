@@ -509,7 +509,17 @@ Route::get('/members/physical-cards/stats', [PhysicalCardController::class, 'get
         return view('members.points-history', compact('member'));
     })->name('members.points-history');
     
-    // Resource route comes BEFORE specific member routes to avoid conflicts
+    // Member Approval Workflow Routes (MUST come BEFORE resource route)
+    Route::get('/members/approval', [MemberApprovalController::class, 'index'])->name('members.approval.index');
+    Route::get('/members/approval/{member}', [MemberApprovalController::class, 'show'])->name('members.approval.show');
+    Route::post('/members/approval/{member}/approve', [MemberApprovalController::class, 'approve'])->name('members.approval.approve');
+    Route::post('/members/approval/{member}/reject', [MemberApprovalController::class, 'reject'])->name('members.approval.reject');
+    Route::post('/members/approval/{member}/verify-payment', [MemberApprovalController::class, 'verifyPayment'])->name('members.approval.verify-payment');
+    Route::post('/members/approval/{member}/approve-card-issuance', [MemberApprovalController::class, 'approveCardIssuance'])->name('members.approval.approve-card-issuance');
+    Route::post('/members/approval/{member}/upload-payment-proof', [MemberApprovalController::class, 'uploadPaymentProof'])->name('members.approval.upload-payment-proof');
+    Route::get('/members/approval/{member}/download-payment-proof', [MemberApprovalController::class, 'downloadPaymentProof'])->name('members.approval.download-payment-proof');
+
+    // Resource route comes AFTER specific member routes to avoid conflicts
     Route::resource('members', MemberController::class);
     
     // These routes come AFTER the resource route to avoid conflicts
@@ -572,15 +582,7 @@ Route::post('/events/{event}/registrations/bulk-delete', [EventController::class
     Route::put('/dining/{visit}/checkout', [DiningVisitController::class, 'checkout'])->name('dining.checkout');
     Route::delete('/dining/{visit}/cancel', [DiningVisitController::class, 'cancelVisit'])->name('dining.cancel');
 
-    // Member Approval Workflow Routes
-    Route::get('/members/approval', [MemberApprovalController::class, 'index'])->name('members.approval.index');
-    Route::get('/members/approval/{member}', [MemberApprovalController::class, 'show'])->name('members.approval.show');
-    Route::post('/members/approval/{member}/approve', [MemberApprovalController::class, 'approve'])->name('members.approval.approve');
-    Route::post('/members/approval/{member}/reject', [MemberApprovalController::class, 'reject'])->name('members.approval.reject');
-    Route::post('/members/approval/{member}/verify-payment', [MemberApprovalController::class, 'verifyPayment'])->name('members.approval.verify-payment');
-    Route::post('/members/approval/{member}/approve-card-issuance', [MemberApprovalController::class, 'approveCardIssuance'])->name('members.approval.approve-card-issuance');
-    Route::post('/members/approval/{member}/upload-payment-proof', [MemberApprovalController::class, 'uploadPaymentProof'])->name('members.approval.upload-payment-proof');
-    Route::get('/members/approval/{member}/download-payment-proof', [MemberApprovalController::class, 'downloadPaymentProof'])->name('members.approval.download-payment-proof');
+
 
     // Waiter Checkout Routes
     Route::get('/waiter/checkout', [WaiterCheckoutController::class, 'index'])->name('waiter.checkout.index');
