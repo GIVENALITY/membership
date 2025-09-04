@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Services\MemberCardGenerator;
 use App\Services\QRCodeService;
 
@@ -324,11 +325,53 @@ class MemberApprovalController extends Controller
         }
 
         try {
-            $qrService = app(QRCodeService::class);
+            // Check if QR code package is available
+            if (!class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode')) {
+                throw new \Exception('QR Code package not available');
+            }
+
+            // Test basic QR code generation
+            try {
+                $testQr = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+                    ->size(100)
+                    ->margin(5)
+                    ->generate('test');
+                \Log::info('Basic QR code test successful');
+            } catch (\Exception $testError) {
+                \Log::error('Basic QR code test failed', ['error' => $testError->getMessage()]);
+                throw new \Exception('QR Code generation test failed: ' . $testError->getMessage());
+            }
+
+            // Check storage permissions
+            try {
+                $testFile = 'qr_codes/test_' . time() . '.txt';
+                Storage::disk('public')->put($testFile, 'test content');
+                Storage::disk('public')->delete($testFile);
+                \Log::info('Storage test successful');
+            } catch (\Exception $storageError) {
+                \Log::error('Storage test failed', ['error' => $storageError->getMessage()]);
+                throw new \Exception('Storage test failed: ' . $storageError->getMessage());
+            }
+
+            $qrService = app(\App\Services\QRCodeService::class);
             $qrPath = $qrService->generateForMember($member);
+
+            \Log::info('QR code generated successfully', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'qr_path' => $qrPath,
+                'generated_by' => $user->id
+            ]);
 
             return back()->with('success', 'QR code generated successfully.');
         } catch (\Exception $e) {
+            \Log::error('Failed to generate QR code', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()->withErrors(['error' => 'Failed to generate QR code: ' . $e->getMessage()]);
         }
     }

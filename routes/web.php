@@ -681,3 +681,31 @@ Route::post('/events/{event}/registrations/bulk-delete', [EventController::class
     Route::post('/rate-limited-emails/retry', [RateLimitedEmailController::class, 'retryFailed'])->name('rate-limited-emails.retry');
 });
 
+// Debug route for testing QR code generation
+Route::get('/debug/qr-test', function() {
+    try {
+        // Test 1: Check if package is available
+        if (!class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode')) {
+            return response()->json(['error' => 'QR Code package not available']);
+        }
+
+        // Test 2: Basic QR code generation
+        $testQr = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+            ->size(100)
+            ->margin(5)
+            ->generate('test');
+        
+        // Test 3: Storage test
+        $testFile = 'qr_codes/test_' . time() . '.txt';
+        \Storage::disk('public')->put($testFile, 'test content');
+        \Storage::disk('public')->delete($testFile);
+
+        return response()->json(['success' => 'QR code test passed']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+})->name('debug.qr-test');
+

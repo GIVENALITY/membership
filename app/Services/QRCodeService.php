@@ -13,27 +13,48 @@ class QRCodeService
      */
     public function generateForMember(Member $member): string
     {
-        // Generate QR code data
-        $qrData = $this->generateQRData($member);
-        
-        // Generate QR code image
-        $qrCode = QrCode::format('png')
-            ->size(300)
-            ->margin(10)
-            ->errorCorrection('H')
-            ->generate($qrData);
-        
-        // Store QR code image
-        $fileName = 'qr_codes/' . $member->membership_id . '_' . time() . '.png';
-        Storage::disk('public')->put($fileName, $qrCode);
-        
-        // Update member with QR code information
-        $member->update([
-            'qr_code_path' => $fileName,
-            'qr_code_data' => $qrData,
-        ]);
-        
-        return $fileName;
+        try {
+            // Check if QR code package is available
+            if (!class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode')) {
+                throw new \Exception('QR Code package not available. Please ensure simplesoftwareio/simple-qrcode is properly installed.');
+            }
+
+            // Generate QR code data
+            $qrData = $this->generateQRData($member);
+            
+            // Ensure qr_codes directory exists
+            $directory = 'qr_codes';
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
+            
+            // Generate QR code image
+            $qrCode = QrCode::format('png')
+                ->size(300)
+                ->margin(10)
+                ->errorCorrection('H')
+                ->generate($qrData);
+            
+            // Store QR code image
+            $fileName = $directory . '/' . $member->membership_id . '_' . time() . '.png';
+            Storage::disk('public')->put($fileName, $qrCode);
+            
+            // Update member with QR code information
+            $member->update([
+                'qr_code_path' => $fileName,
+                'qr_code_data' => $qrData,
+            ]);
+            
+            return $fileName;
+        } catch (\Exception $e) {
+            \Log::error('Failed to generate QR code for member', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
     
     /**
@@ -135,10 +156,20 @@ class QRCodeService
      */
     public function regenerateForMember(Member $member): string
     {
-        // Delete existing QR code
-        $this->deleteForMember($member);
-        
-        // Generate new QR code
-        return $this->generateForMember($member);
+        try {
+            // Delete existing QR code
+            $this->deleteForMember($member);
+            
+            // Generate new QR code
+            return $this->generateForMember($member);
+        } catch (\Exception $e) {
+            \Log::error('Failed to regenerate QR code for member', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 }
