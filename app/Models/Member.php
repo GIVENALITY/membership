@@ -12,6 +12,13 @@ class Member extends Model
 {
     use HasFactory;
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
+
     protected $fillable = [
         'hotel_id',
         'membership_id',
@@ -576,5 +583,50 @@ class Member extends Model
             'delivered' => 'bg-label-primary',
             default => 'bg-label-secondary'
         };
+    }
+
+    /**
+     * Get approval status badge HTML
+     */
+    public function getApprovalStatusBadgeAttribute(): string
+    {
+        $status = $this->approval_status ?? 'pending';
+        $badges = [
+            'pending' => '<span class="badge bg-label-warning">Pending Approval</span>',
+            'approved' => '<span class="badge bg-label-success">Approved</span>',
+            'rejected' => '<span class="badge bg-label-danger">Rejected</span>',
+        ];
+        
+        return $badges[$status] ?? $badges['pending'];
+    }
+
+    /**
+     * Get payment status badge HTML
+     */
+    public function getPaymentStatusBadgeAttribute(): string
+    {
+        $status = $this->payment_status ?? 'pending';
+        $badges = [
+            'pending' => '<span class="badge bg-label-warning">Payment Pending</span>',
+            'verified' => '<span class="badge bg-label-success">Payment Verified</span>',
+            'failed' => '<span class="badge bg-label-danger">Payment Failed</span>',
+        ];
+        
+        return $badges[$status] ?? $badges['pending'];
+    }
+
+    /**
+     * Get card issuance status badge HTML
+     */
+    public function getCardIssuanceStatusBadgeAttribute(): string
+    {
+        $status = $this->card_issuance_status ?? 'pending';
+        $badges = [
+            'pending' => '<span class="badge bg-label-warning">Card Pending</span>',
+            'approved' => '<span class="badge bg-label-success">Card Approved</span>',
+            'rejected' => '<span class="badge bg-label-danger">Card Rejected</span>',
+        ];
+        
+        return $badges[$status] ?? $badges['pending'];
     }
 } 

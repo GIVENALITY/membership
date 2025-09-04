@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -87,6 +88,9 @@ class MemberApprovalController extends Controller
         if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
             return back()->withErrors(['error' => 'Access denied.']);
         }
+
+        // Load the relationships to avoid N+1 queries
+        $member->load(['membershipType', 'approvedBy', 'paymentVerifiedBy', 'cardApprovedBy']);
 
         return view('members.approval.show', compact('member'));
     }
