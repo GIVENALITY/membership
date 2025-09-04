@@ -31,6 +31,19 @@ class Member extends Model
         'join_date',
         'membership_type_id',
         'status',
+        'approval_status',
+        'approval_notes',
+        'approved_by',
+        'approved_at',
+        'payment_status',
+        'payment_proof_path',
+        'payment_notes',
+        'payment_verified_by',
+        'payment_verified_at',
+        'card_issuance_status',
+        'card_issuance_notes',
+        'card_approved_by',
+        'card_approved_at',
         'total_visits',
         'total_spent',
         'current_discount_rate',
@@ -43,6 +56,8 @@ class Member extends Model
         'average_spending_per_visit',
         'last_visit_at',
         'card_image_path',
+        'qr_code_path',
+        'qr_code_data',
         'physical_card_status',
         'physical_card_issued_date',
         'physical_card_issued_by',
@@ -57,6 +72,9 @@ class Member extends Model
         'join_date' => 'date',
         'last_visit_at' => 'datetime',
         'last_visit_date' => 'date',
+        'approved_at' => 'datetime',
+        'payment_verified_at' => 'datetime',
+        'card_approved_at' => 'datetime',
         'physical_card_issued_date' => 'date',
         'physical_card_delivered_date' => 'date',
         'expires_at' => 'date',
@@ -178,6 +196,30 @@ class Member extends Model
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);
+    }
+
+    /**
+     * Get the user who approved this member
+     */
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Get the user who verified payment for this member
+     */
+    public function paymentVerifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'payment_verified_by');
+    }
+
+    /**
+     * Get the user who approved card issuance for this member
+     */
+    public function cardApprovedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'card_approved_by');
     }
 
     /**
@@ -440,5 +482,99 @@ class Member extends Model
         }
         
         return (string) $nextNumber;
+    }
+
+    /**
+     * Check if member is approved
+     */
+    public function isApproved(): bool
+    {
+        return $this->approval_status === 'approved';
+    }
+
+    /**
+     * Check if member payment is verified
+     */
+    public function isPaymentVerified(): bool
+    {
+        return $this->payment_status === 'verified';
+    }
+
+    /**
+     * Check if member card issuance is approved
+     */
+    public function isCardIssuanceApproved(): bool
+    {
+        return $this->card_issuance_status === 'approved';
+    }
+
+    /**
+     * Check if member can have card generated
+     */
+    public function canHaveCardGenerated(): bool
+    {
+        return $this->isApproved() && 
+               $this->isPaymentVerified() && 
+               $this->isCardIssuanceApproved();
+    }
+
+    /**
+     * Check if member has QR code
+     */
+    public function hasQRCode(): bool
+    {
+        return !empty($this->qr_code_path);
+    }
+
+    /**
+     * Get QR code URL
+     */
+    public function getQRCodeUrlAttribute(): ?string
+    {
+        if (!$this->qr_code_path) {
+            return null;
+        }
+        
+        return \Storage::url($this->qr_code_path);
+    }
+
+    /**
+     * Get approval status badge class
+     */
+    public function getApprovalStatusBadgeClass(): string
+    {
+        return match($this->approval_status) {
+            'pending' => 'bg-label-warning',
+            'approved' => 'bg-label-success',
+            'rejected' => 'bg-label-danger',
+            default => 'bg-label-secondary'
+        };
+    }
+
+    /**
+     * Get payment status badge class
+     */
+    public function getPaymentStatusBadgeClass(): string
+    {
+        return match($this->payment_status) {
+            'pending' => 'bg-label-warning',
+            'verified' => 'bg-label-success',
+            'failed' => 'bg-label-danger',
+            default => 'bg-label-secondary'
+        };
+    }
+
+    /**
+     * Get card issuance status badge class
+     */
+    public function getCardIssuanceStatusBadgeClass(): string
+    {
+        return match($this->card_issuance_status) {
+            'pending' => 'bg-label-warning',
+            'approved' => 'bg-label-success',
+            'issued' => 'bg-label-info',
+            'delivered' => 'bg-label-primary',
+            default => 'bg-label-secondary'
+        };
     }
 } 

@@ -186,6 +186,39 @@
                 </div>
               </div>
             </div>
+
+            <!-- Payment Proof Section -->
+            <div class="card mb-3">
+              <div class="card-header">
+                <h6 class="mb-0">
+                  <i class="icon-base ri ri-bill-line me-2"></i>
+                  Payment Verification
+                </h6>
+                <small class="text-muted">Upload proof of payment to complete membership registration</small>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="payment_proof" class="form-label">Proof of Payment <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control @error('payment_proof') is-invalid @enderror" 
+                           id="payment_proof" name="payment_proof" accept=".jpg,.jpeg,.png,.pdf" required>
+                    <small class="text-muted">Upload receipt, bank transfer proof, or payment screenshot</small>
+                    @error('payment_proof')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="payment_notes" class="form-label">Payment Notes</label>
+                    <textarea class="form-control @error('payment_notes') is-invalid @enderror" 
+                              id="payment_notes" name="payment_notes" rows="3" 
+                              placeholder="Additional payment details...">{{ old('payment_notes') }}</textarea>
+                    @error('payment_notes')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <div class="row">
               <div class="col-md-6 mb-3">

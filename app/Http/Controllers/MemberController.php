@@ -62,6 +62,8 @@ class MemberController extends Controller
             'birth_date' => 'required|date',
             'membership_type_id' => 'required|exists:membership_types,id',
             'status' => 'required|in:active,inactive,suspended',
+            'payment_proof' => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'payment_notes' => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
@@ -84,6 +86,12 @@ class MemberController extends Controller
                 return back()->withErrors(['membership_type_id' => 'Invalid membership type selected.']);
             }
 
+            // Handle payment proof upload
+            $proofPath = null;
+            if ($request->hasFile('payment_proof')) {
+                $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            }
+
             $member = Member::create([
                 'hotel_id' => $user->hotel_id,
                 'membership_id' => Member::generateMembershipId($user->hotel_id),
@@ -96,20 +104,22 @@ class MemberController extends Controller
                 'join_date' => now()->toDateString(),
                 'membership_type_id' => $request->membership_type_id,
                 'status' => $request->status,
+                'approval_status' => 'pending',
+                'payment_status' => 'pending',
+                'payment_proof_path' => $proofPath,
+                'payment_notes' => $request->payment_notes,
+                'card_issuance_status' => 'pending',
                 'total_visits' => 0,
                 'total_spent' => 0,
                 'current_discount_rate' => $membershipType->discount_rate,
                 // Expiry: match billing cycle of type
-                'expires_at' => $membershipType->billing_cycle === 'monthly'
+                'expires_at' => $membershipType->billing_type === 'monthly'
                     ? now()->addMonth()->toDateString()
                     : now()->addYear()->toDateString(),
             ]);
 
-            // Generate and save the membership card image
-            $generator = new MemberCardGenerator();
-            $cardPath = $generator->generate($member->fresh(['membershipType']));
-            $member->card_image_path = $cardPath;
-            $member->save();
+            // Note: Card generation is now controlled by approval workflow
+            // Cards will be generated after approval, payment verification, and card issuance approval
 
             // Build welcome email content from settings or fallback
             $subject = DB::table('system_settings')->where('key', 'welcome_email_subject')->value('value')
@@ -149,7 +159,7 @@ class MemberController extends Controller
             }
 
             return redirect()->route('members.index')
-                ->with('success', 'Member created successfully and welcome email sent! Membership ID: ' . $member->membership_id);
+                ->with('success', 'Member created successfully! Membership ID: ' . $member->membership_id . '. Awaiting approval workflow completion.');
 
         } catch (\Exception $e) {
             return redirect()->back()

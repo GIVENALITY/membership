@@ -9,6 +9,10 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title">{{ __('app.members') }}</h4>
         <div class="d-flex gap-2">
+          <a href="{{ route('members.approval.index') }}" class="btn btn-warning">
+            <i class="icon-base ri ri-user-check-line me-2"></i>
+            Approval Workflow
+          </a>
           <a href="{{ route('members.cards.index') }}" class="btn btn-info">
             <i class="icon-base ri ri-credit-card-line me-2"></i>
             {{ __('app.virtual_cards') }}
