@@ -9,9 +9,17 @@
       <div class="card-header d-flex justify-content-between">
         <h5 class="mb-0">Member Card</h5>
         @if($member->card_image_path)
-          <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ asset('storage/'.$member->card_image_path) }}">
-            <i class="icon-base ri ri-download-line me-1"></i> Download
-          </a>
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ asset('storage/'.$member->card_image_path) }}">
+              <i class="icon-base ri ri-download-line me-1"></i> Download
+            </a>
+            <form method="POST" action="{{ route('members.regenerate-card', $member) }}" style="display: inline;">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('{{ __('app.confirm_regenerate_card') }}')">
+                <i class="icon-base ri ri-refresh-line me-1"></i> Regenerate
+              </button>
+            </form>
+          </div>
         @endif
       </div>
       <div class="card-body text-center">
@@ -19,6 +27,46 @@
           <img src="{{ asset('storage/'.$member->card_image_path) }}" alt="Membership Card" class="img-fluid rounded">
         @else
           <div class="text-muted">Card will appear here after generation.</div>
+        @endif
+      </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between">
+        <h6 class="mb-0">{{ __('app.qr_code') }}</h6>
+        @if($member->hasQRCode())
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-info" href="{{ $member->getQRCodeUrlAttribute() }}" target="_blank">
+              <i class="icon-base ri ri-external-link-line me-1"></i> {{ __('app.view_full_size') }}
+            </a>
+            <form method="POST" action="{{ route('members.generate-qr-code', $member) }}" style="display: inline;">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('{{ __('app.confirm_regenerate_qr') }}')">
+                <i class="icon-base ri ri-refresh-line me-1"></i> {{ __('app.regenerate_qr') }}
+              </button>
+            </form>
+          </div>
+        @endif
+      </div>
+      <div class="card-body text-center">
+        @if($member->hasQRCode())
+          <img src="{{ $member->getQRCodeUrlAttribute() }}" alt="QR Code" class="img-fluid rounded" style="max-width: 150px;">
+          <div class="mt-2">
+            <small class="text-muted">{{ __('app.scan_to_verify') }}</small>
+          </div>
+        @else
+          <div class="text-muted mb-2">{{ __('app.no_qr_available') }}</div>
+          @if($member->hasCard())
+            <form method="POST" action="{{ route('members.generate-qr-code', $member) }}" style="display: inline;">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-primary">
+                <i class="icon-base ri ri-qr-code-line me-1"></i> {{ __('app.generate_qr_code') }}
+              </button>
+            </form>
+          @else
+            <small class="text-muted">{{ __('app.generate_card_first') }}</small>
+          @endif
         @endif
       </div>
     </div>
@@ -42,7 +90,17 @@
           <a href="{{ route('members.points-history', $member) }}" class="btn btn-sm btn-outline-info">
             <i class="icon-base ri ri-star-line me-1"></i> Points History
           </a>
-          @if(!$member->hasCard())
+          @if($member->hasCard())
+            <a href="{{ route('members.card-preview', $member) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                              <i class="icon-base ri ri-eye-line me-1"></i> {{ __('app.preview_card') }}
+            </a>
+            <form method="POST" action="{{ route('members.regenerate-card', $member) }}" style="display: inline;">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('{{ __('app.confirm_regenerate_card') }}')">
+                <i class="icon-base ri ri-refresh-line me-1"></i> {{ __('app.regenerate_all') }}
+              </button>
+            </form>
+          @else
             <form method="POST" action="{{ route('members.cards.generate', $member) }}" style="display: inline;">
               @csrf
               <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Generate virtual card for this member?')">

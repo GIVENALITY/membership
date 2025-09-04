@@ -159,6 +159,7 @@
                                     <th>{{ __('app.membership_type') }}</th>
                                     <th>{{ __('app.hotel') }}</th>
                                     <th>{{ __('app.card_status') }}</th>
+                                    <th>{{ __('app.qr_code_status') }}</th>
                                     <th>{{ __('app.actions') }}</th>
                                 </tr>
                             </thead>
@@ -209,6 +210,19 @@
                                             @endif
                                         </td>
                                         <td>
+                                            @if($member->hasQRCode())
+                                                <span class="badge bg-success">
+                                                    <i class="icon-base ri ri-qr-code-line me-1"></i>
+                                                    {{ __('app.qr_available') }}
+                                                </span>
+                                            @else
+                                                <span class="badge bg-warning">
+                                                    <i class="icon-base ri ri-error-warning-line me-1"></i>
+                                                    {{ __('app.no_qr') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                     {{ __('app.actions') }}
@@ -226,6 +240,15 @@
                                                                 <i class="icon-base ri ri-download-line me-2"></i>
                                                                 {{ __('app.download_card') }}
                                                             </a>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ route('members.regenerate-card', $member) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item" onclick="return confirm('{{ __('app.confirm_regenerate_card') }}')">
+                                                                    <i class="icon-base ri ri-refresh-line me-2"></i>
+                                                                    {{ __('app.regenerate_card') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>
@@ -255,6 +278,36 @@
                                                             </a>
                                                         </li>
                                                     @endif
+
+                                                    <!-- QR Code Actions -->
+                                                    @if($member->hasQRCode())
+                                                        <li>
+                                                            <a class="dropdown-item" href="{{ $member->getQRCodeUrlAttribute() }}" target="_blank">
+                                                                <i class="icon-base ri ri-qr-code-line me-2"></i>
+                                                                {{ __('app.view_qr_code') }}
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ route('members.generate-qr-code', $member) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item" onclick="return confirm('{{ __('app.confirm_regenerate_qr') }}')">
+                                                                    <i class="icon-base ri ri-refresh-line me-2"></i>
+                                                                    {{ __('app.regenerate_qr') }}
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @else
+                                                        <li>
+                                                            <form action="{{ route('members.generate-qr-code', $member) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <i class="icon-base ri ri-qr-code-line me-2"></i>
+                                                                    {{ __('app.generate_qr_code') }}
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @endif
+
                                                     <li>
                                                         <a class="dropdown-item" href="{{ route('members.show', $member) }}">
                                                             <i class="icon-base ri ri-user-line me-2"></i>
@@ -267,7 +320,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                             <div class="text-muted">
                                                 <i class="icon-base ri ri-user-line fs-1 mb-3"></i>
                                                 <p>{{ __('app.no_members_found') }}</p>

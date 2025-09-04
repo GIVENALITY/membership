@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Services\MemberCardGenerator;
+use App\Services\QRCodeService;
 
 class MemberApprovalController extends Controller
 {
@@ -270,5 +272,103 @@ class MemberApprovalController extends Controller
         }
 
         return response()->download($path);
+    }
+
+    /**
+     * Regenerate member card
+     */
+    public function regenerateCard(Member $member)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
+        if (!$member->canHaveCardGenerated()) {
+            return back()->withErrors(['error' => 'Member is not eligible for card generation.']);
+        }
+
+        try {
+            $cardGenerator = app(MemberCardGenerator::class);
+            $cardPath = $cardGenerator->generate($member);
+            
+            // Update member with new card path
+            $member->update(['card_image_path' => $cardPath]);
+
+            // Generate new QR code
+            $qrService = app(QRCodeService::class);
+            $qrPath = $qrService->regenerateForMember($member);
+
+            return back()->with('success', 'Member card and QR code regenerated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to regenerate card: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Generate QR code for member
+     */
+    public function generateQRCode(Member $member)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
+        if (!$member->canHaveCardGenerated()) {
+            return back()->withErrors(['error' => 'Member is not eligible for QR code generation.']);
+        }
+
+        try {
+            $qrService = app(QRCodeService::class);
+            $qrPath = $qrService->generateForMember($member);
+
+            return back()->with('success', 'QR code generated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to generate QR code: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Preview member card
+     */
+    public function cardPreview(Member $member)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
+        if (!$member->card_image_path) {
+            return back()->withErrors(['error' => 'No card found for this member.']);
+        }
+
+        $cardUrl = asset('storage/' . $member->card_image_path);
+        $qrUrl = $member->getQRCodeUrlAttribute();
+
+        return view('members.approval.card-preview', compact('member', 'cardUrl', 'qrUrl'));
+    }
+
+    /**
+     * Download member card
+     */
+    public function downloadCard(Member $member)
+    {
+        $user = auth()->user();
+        if (!$user || !$user->hotel_id || $member->hotel_id !== $user->hotel_id) {
+            return back()->withErrors(['error' => 'Access denied.']);
+        }
+
+        if (!$member->card_image_path) {
+            return back()->withErrors(['error' => 'No card found for this member.']);
+        }
+
+        $path = storage_path('app/public/' . $member->card_image_path);
+        
+        if (!file_exists($path)) {
+            return back()->withErrors(['error' => 'Card file not found.']);
+        }
+
+        return response()->download($path, $member->membership_id . '_card.png');
     }
 }

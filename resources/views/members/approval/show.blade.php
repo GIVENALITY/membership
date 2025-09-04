@@ -223,6 +223,92 @@
           </div>
         </div>
       @endif
+
+      <!-- Card Management -->
+      @if($member->card_issuance_status === 'approved')
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="icon-base ri ri-credit-card-line me-2"></i>
+              Card Management
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Virtual Card</h6>
+                @if($member->card_image_path)
+                  <div class="d-flex gap-2 mb-3">
+                    <a href="{{ route('members.card-preview', $member) }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                      <i class="icon-base ri ri-eye-line me-2"></i>Preview Card
+                    </a>
+                    <a href="{{ route('members.download-card', $member) }}" class="btn btn-outline-success btn-sm">
+                      <i class="icon-base ri ri-download-line me-2"></i>Download Card
+                    </a>
+                    <form action="{{ route('members.regenerate-card', $member) }}" method="POST" class="d-inline">
+                      @csrf
+                      <button type="submit" class="btn btn-outline-warning btn-sm" onclick="return confirm('Are you sure you want to regenerate this card? This will create a new card and QR code.')">
+                        <i class="icon-base ri ri-refresh-line me-2"></i>Regenerate
+                      </button>
+                    </form>
+                  </div>
+                  <div class="alert alert-success">
+                    <i class="icon-base ri ri-check-line me-2"></i>
+                    <strong>Card Status:</strong> Generated
+                  </div>
+                @else
+                  <div class="d-flex gap-2 mb-3">
+                    <a href="{{ route('members.cards.generate', $member) }}" class="btn btn-primary btn-sm">
+                      <i class="icon-base ri ri-add-line me-2"></i>Generate Card
+                    </a>
+                  </div>
+                  <div class="alert alert-warning">
+                    <i class="icon-base ri ri-error-warning-line me-2"></i>
+                    <strong>Card Status:</strong> Not Generated
+                  </div>
+                @endif
+              </div>
+              
+              <div class="col-md-6">
+                <h6>QR Code</h6>
+                @if($member->hasQRCode())
+                  <div class="d-flex gap-2 mb-3">
+                    <img src="{{ $member->getQRCodeUrlAttribute() }}" alt="QR Code" class="img-fluid" style="max-width: 100px;">
+                    <div class="d-flex flex-column gap-1">
+                      <form action="{{ route('members.generate-qr-code', $member) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-warning btn-sm" onclick="return confirm('Are you sure you want to regenerate the QR code?')">
+                          <i class="icon-base ri ri-refresh-line me-2"></i>Regenerate QR
+                        </button>
+                      </form>
+                      <a href="{{ $member->getQRCodeUrlAttribute() }}" class="btn btn-outline-info btn-sm" target="_blank">
+                        <i class="icon-base ri ri-external-link-line me-2"></i>View Full Size
+                      </a>
+                    </div>
+                  </div>
+                  <div class="alert alert-success">
+                    <i class="icon-base ri ri-check-line me-2"></i>
+                    <strong>QR Status:</strong> Generated
+                  </div>
+                @else
+                  <div class="d-flex gap-2 mb-3">
+                    <form action="{{ route('members.generate-qr-code', $member) }}" method="POST" class="d-inline">
+                      @csrf
+                      <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="icon-base ri ri-qr-code-line me-2"></i>Generate QR Code
+                      </button>
+                    </form>
+                  </div>
+                  <div class="alert alert-warning">
+                    <i class="icon-base ri ri-error-warning-line me-2"></i>
+                    <strong>QR Status:</strong> Not Generated
+                  </div>
+                @endif
+              </div>
+            </div>
+          </div>
+        </div>
+      @endif
     </div>
 
     <!-- Status & Timeline -->
