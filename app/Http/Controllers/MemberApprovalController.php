@@ -13,37 +13,68 @@ class MemberApprovalController extends Controller
     /**
      * Show pending members for approval
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         if (!$user || !$user->hotel_id) {
             return back()->withErrors(['error' => 'User not associated with a hotel.']);
         }
 
-        $pendingMembers = Member::with(['membershipType'])
-            ->where('hotel_id', $user->hotel_id)
-            ->where('approval_status', 'pending')
-            ->orderBy('created_at', 'asc')
-            ->paginate(20);
+        $search = $request->get('search');
+        $status = $request->get('status', 'all');
 
-        $approvedMembers = Member::with(['membershipType'])
-            ->where('hotel_id', $user->hotel_id)
-            ->where('approval_status', 'approved')
-            ->where('payment_status', 'pending')
-            ->orderBy('approved_at', 'desc')
-            ->paginate(20);
+        // Base query for all members
+        $baseQuery = Member::with(['membershipType', 'approvedBy', 'paymentVerifiedBy', 'cardApprovedBy'])
+            ->where('hotel_id', $user->hotel_id);
 
-        $paymentVerifiedMembers = Member::with(['membershipType'])
-            ->where('hotel_id', $user->hotel_id)
-            ->where('payment_status', 'verified')
-            ->where('card_issuance_status', 'pending')
-            ->orderBy('payment_verified_at', 'desc')
-            ->paginate(20);
+        // Apply search if provided
+        if ($search) {
+            $baseQuery->where(function($query) use ($search) {
+                $query->where('first_name', 'LIKE', "%{$search}%")
+                      ->orWhere('last_name', 'LIKE', "%{$search}%")
+                      ->orWhere('email', 'LIKE', "%{$search}%")
+                      ->orWhere('phone', 'LIKE', "%{$search}%")
+                      ->orWhere('membership_id', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Apply status filter
+        $pendingMembers = clone $baseQuery;
+        $approvedMembers = clone $baseQuery;
+        $paymentVerifiedMembers = clone $baseQuery;
+
+        if ($status === 'all' || $status === 'pending') {
+            $pendingMembers = $pendingMembers->where('approval_status', 'pending')
+                ->orderBy('created_at', 'asc')
+                ->paginate(20);
+        } else {
+            $pendingMembers = collect([]);
+        }
+
+        if ($status === 'all' || $status === 'approved') {
+            $approvedMembers = $approvedMembers->where('approval_status', 'approved')
+                ->where('payment_status', 'pending')
+                ->orderBy('approved_at', 'desc')
+                ->paginate(20);
+        } else {
+            $approvedMembers = collect([]);
+        }
+
+        if ($status === 'all' || $status === 'payment_verified') {
+            $paymentVerifiedMembers = $paymentVerifiedMembers->where('payment_status', 'verified')
+                ->where('card_issuance_status', 'pending')
+                ->orderBy('payment_verified_at', 'desc')
+                ->paginate(20);
+        } else {
+            $paymentVerifiedMembers = collect([]);
+        }
 
         return view('members.approval.index', compact(
             'pendingMembers', 
             'approvedMembers', 
-            'paymentVerifiedMembers'
+            'paymentVerifiedMembers',
+            'search',
+            'status'
         ));
     }
 

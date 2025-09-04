@@ -17,6 +17,65 @@
   </div>
 </div>
 
+<!-- Search and Filter Section -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form method="GET" action="{{ route('members.approval.index') }}" class="row g-3">
+          <div class="col-md-4">
+            <label for="search" class="form-label">Search Members</label>
+            <input type="text" class="form-control" id="search" name="search" 
+                   placeholder="Search by name, email, phone, or membership ID" 
+                   value="{{ $search ?? '' }}">
+          </div>
+          <div class="col-md-3">
+            <label for="status" class="form-label">Filter by Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="all" {{ ($status ?? 'all') === 'all' ? 'selected' : '' }}>All Statuses</option>
+              <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>Pending Approval</option>
+              <option value="approved" {{ ($status ?? '') === 'approved' ? 'selected' : '' }}>Payment Verification</option>
+              <option value="payment_verified" {{ ($status ?? '') === 'payment_verified' ? 'selected' : '' }}>Card Approval</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">&nbsp;</label>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">
+                <i class="icon-base ri ri-search-line me-2"></i>Search
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">&nbsp;</label>
+            <div class="d-grid">
+              <a href="{{ route('members.approval.index') }}" class="btn btn-outline-secondary">
+                <i class="icon-base ri ri-refresh-line me-2"></i>Clear
+              </a>
+            </div>
+          </div>
+        </form>
+        
+        @if($search || ($status && $status !== 'all'))
+          <div class="mt-3">
+            <div class="alert alert-info">
+              <i class="icon-base ri ri-information-line me-2"></i>
+              <strong>Active Filters:</strong>
+              @if($search)
+                <span class="badge bg-primary me-2">Search: "{{ $search }}"</span>
+              @endif
+              @if($status && $status !== 'all')
+                <span class="badge bg-info me-2">Status: {{ ucfirst(str_replace('_', ' ', $status)) }}</span>
+              @endif
+              <a href="{{ route('members.approval.index') }}" class="btn btn-sm btn-outline-secondary ms-2">Clear All</a>
+            </div>
+          </div>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Pending Approvals -->
 <div class="row">
   <div class="col-12">
@@ -74,12 +133,18 @@
               </tbody>
             </table>
           </div>
-          {{ $pendingMembers->links() }}
+          {{ $pendingMembers->appends(request()->query())->links() }}
         @else
           <div class="text-center py-4">
-            <i class="icon-base ri ri-check-double-line text-success" style="font-size: 3rem;"></i>
-            <h5 class="mt-3">No Pending Approvals</h5>
-            <p class="text-muted">All members have been processed</p>
+            @if($search || ($status && $status !== 'all'))
+              <i class="icon-base ri ri-search-line text-muted" style="font-size: 3rem;"></i>
+              <h5 class="mt-3">No Results Found</h5>
+              <p class="text-muted">Try adjusting your search criteria or filters</p>
+            @else
+              <i class="icon-base ri ri-check-double-line text-success" style="font-size: 3rem;"></i>
+              <h5 class="mt-3">No Pending Approvals</h5>
+              <p class="text-muted">All members have been processed</p>
+            @endif
           </div>
         @endif
       </div>
@@ -142,7 +207,7 @@
               </tbody>
             </table>
           </div>
-          {{ $approvedMembers->links() }}
+          {{ $approvedMembers->appends(request()->query())->links() }}
         @else
           <div class="text-center py-4">
             <i class="icon-base ri ri-bill-line text-muted" style="font-size: 3rem;"></i>
@@ -210,18 +275,63 @@
               </tbody>
             </table>
           </div>
-          {{ $paymentVerifiedMembers->links() }}
+          {{ $paymentVerifiedMembers->appends(request()->query())->links() }}
         @else
           <div class="text-center py-4">
-            <i class="icon-base ri ri-credit-card-line text-muted" style="font-size: 3rem;"></i>
-            <h5 class="mt-3">No Card Issuance Approval Required</h5>
-            <p class="text-muted">All payment verified members have been processed</p>
+            @if($search || ($status && $status !== 'all'))
+              <i class="icon-base ri ri-search-line text-muted" style="font-size: 3rem;"></i>
+              <h5 class="mt-3">No Results Found</h5>
+              <p class="text-muted">Try adjusting your search criteria or filters</p>
+            @else
+              <i class="icon-base ri ri-credit-card-line text-muted" style="font-size: 3rem;"></i>
+              <h5 class="mt-3">No Card Issuance Approval Required</h5>
+              <p class="text-muted">All payment verified members have been processed</p>
+            @endif
           </div>
         @endif
       </div>
     </div>
   </div>
 </div>
+
+<!-- Quick Search JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when status changes
+    const statusSelect = document.getElementById('status');
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            this.form.submit();
+        });
+    }
+    
+    // Add enter key support for search
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.form.submit();
+            }
+        });
+    }
+    
+    // Highlight search terms in results
+    const searchTerm = '{{ $search ?? "" }}';
+    if (searchTerm) {
+        const tables = document.querySelectorAll('table tbody');
+        tables.forEach(table => {
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm.toLowerCase())) {
+                    row.style.backgroundColor = '#fff3cd';
+                }
+            });
+        });
+    }
+});
+</script>
 
 <!-- Workflow Summary -->
 <div class="row">
