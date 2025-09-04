@@ -86,6 +86,9 @@ class MemberCardGenerator
             }
         }
 
+        // Add QR code to the card
+        $this->addQRCodeToCard($image, $member);
+
         return $this->saveImage($image, $member->membership_id);
     }
 
@@ -134,7 +137,62 @@ class MemberCardGenerator
         $this->drawText($image, $fullName, $nameX, $nameY, 37, $white, $fontPath);
         $this->drawText($image, $membershipId, $idX, $idY, 37, $white, $fontPath);
 
+        // Add QR code to the card
+        $this->addQRCodeToCard($image, $member);
+
         return $this->saveImage($image, $member->membership_id);
+    }
+
+    /**
+     * Add QR code to the membership card
+     */
+    private function addQRCodeToCard($image, Member $member): void
+    {
+        if (!$member->hasQRCode()) {
+            return; // No QR code to add
+        }
+
+        $qrPath = storage_path('app/public/' . $member->qr_code_path);
+        if (!file_exists($qrPath)) {
+            return; // QR code file doesn't exist
+        }
+
+        // Load QR code image
+        $qrImage = $this->loadImage($qrPath);
+        
+        // Get dimensions
+        $cardWidth = imagesx($image);
+        $cardHeight = imagesy($image);
+        $qrWidth = imagesx($qrImage);
+        $qrHeight = imagesy($qrImage);
+        
+        // Calculate QR code position (bottom right corner)
+        $qrSize = 120; // Size of QR code on card
+        $margin = 30; // Margin from edges
+        $qrX = $cardWidth - $qrSize - $margin;
+        $qrY = $cardHeight - $qrSize - $margin;
+        
+        // Resize and copy QR code to card
+        $this->copyResizedImage($image, $qrImage, $qrX, $qrY, $qrSize, $qrSize);
+        
+        // Clean up
+        imagedestroy($qrImage);
+    }
+
+    /**
+     * Copy and resize image
+     */
+    private function copyResizedImage($destImage, $srcImage, $destX, $destY, $destWidth, $destHeight): void
+    {
+        $srcWidth = imagesx($srcImage);
+        $srcHeight = imagesy($srcImage);
+        
+        imagecopyresampled(
+            $destImage, $srcImage,
+            $destX, $destY, 0, 0,
+            $destWidth, $destHeight,
+            $srcWidth, $srcHeight
+        );
     }
 
     /**

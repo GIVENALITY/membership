@@ -78,6 +78,27 @@ class MemberCardController extends Controller
             // Update member with card path
             $member->update(['card_image_path' => $cardPath]);
 
+            // Generate QR code if it doesn't exist
+            if (!$member->hasQRCode()) {
+                try {
+                    $qrService = app(\App\Services\QRCodeService::class);
+                    $qrPath = $qrService->generateForMember($member);
+                    
+                    Log::info('QR code generated successfully with card', [
+                        'member_id' => $member->id,
+                        'membership_id' => $member->membership_id,
+                        'qr_path' => $qrPath,
+                        'generated_by' => $user->id
+                    ]);
+                } catch (\Exception $qrError) {
+                    Log::warning('Failed to generate QR code with card', [
+                        'member_id' => $member->id,
+                        'error' => $qrError->getMessage()
+                    ]);
+                    // Don't fail the card generation if QR fails
+                }
+            }
+
             Log::info('Member card generated successfully', [
                 'member_id' => $member->id,
                 'membership_id' => $member->membership_id,
@@ -143,6 +164,20 @@ class MemberCardController extends Controller
                     
                     // Update member with card path
                     $member->update(['card_image_path' => $cardPath]);
+
+                    // Generate QR code if it doesn't exist
+                    if (!$member->hasQRCode()) {
+                        try {
+                            $qrService = app(\App\Services\QRCodeService::class);
+                            $qrService->generateForMember($member);
+                        } catch (\Exception $qrError) {
+                            // Don't fail the card generation if QR fails
+                            Log::warning('Failed to generate QR code in mass operation', [
+                                'member_id' => $member->id,
+                                'error' => $qrError->getMessage()
+                            ]);
+                        }
+                    }
                     
                     $successCount++;
 

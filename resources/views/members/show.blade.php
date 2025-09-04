@@ -68,6 +68,16 @@
             <small class="text-muted">{{ __('app.generate_card_first') }}</small>
           @endif
         @endif
+
+        <!-- Debug Info -->
+        <div class="mt-3">
+          <small class="text-muted">
+            <strong>Debug:</strong> 
+            Card: {{ $member->hasCard() ? 'Yes' : 'No' }}, 
+            QR: {{ $member->hasQRCode() ? 'Yes' : 'No' }}, 
+            QR Path: {{ $member->qr_code_path ?? 'None' }}
+          </small>
+        </div>
       </div>
     </div>
 

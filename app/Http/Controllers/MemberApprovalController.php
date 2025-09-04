@@ -299,6 +299,9 @@ class MemberApprovalController extends Controller
             $qrService = app(QRCodeService::class);
             $qrPath = $qrService->regenerateForMember($member);
 
+            // Refresh member data to get updated QR code path
+            $member->refresh();
+
             return back()->with('success', 'Member card and QR code regenerated successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to regenerate card: ' . $e->getMessage()]);
@@ -315,8 +318,9 @@ class MemberApprovalController extends Controller
             return back()->withErrors(['error' => 'Access denied.']);
         }
 
-        if (!$member->canHaveCardGenerated()) {
-            return back()->withErrors(['error' => 'Member is not eligible for QR code generation.']);
+        // Allow QR code generation for any member who has a card
+        if (!$member->hasCard()) {
+            return back()->withErrors(['error' => 'Member must have a card before generating QR code.']);
         }
 
         try {
