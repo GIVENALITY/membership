@@ -26,7 +26,7 @@
           </div>
         @endif
 
-        <form method="POST" action="{{ route('members.store') }}">
+        <form method="POST" action="{{ route('members.store') }}" enctype="multipart/form-data">
           @csrf
                       <div class="row">
               <div class="col-md-6 mb-3">
@@ -201,8 +201,8 @@
                   <div class="col-md-6 mb-3">
                     <label for="payment_proof" class="form-label">Proof of Payment <span class="text-danger">*</span></label>
                     <input type="file" class="form-control @error('payment_proof') is-invalid @enderror" 
-                           id="payment_proof" name="payment_proof" accept=".jpg,.jpeg,.png,.pdf" required>
-                    <small class="text-muted">Upload receipt, bank transfer proof, or payment screenshot</small>
+                           id="payment_proof" name="payment_proof" accept=".jpg,.jpeg,.png,.pdf,.JPG,.JPEG,.PNG,.PDF" required>
+                    <small class="text-muted">Upload receipt, bank transfer proof, or payment screenshot (Max: 2MB)</small>
                     @error('payment_proof')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

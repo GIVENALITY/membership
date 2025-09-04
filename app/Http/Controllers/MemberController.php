@@ -64,6 +64,11 @@ class MemberController extends Controller
             'status' => 'required|in:active,inactive,suspended',
             'payment_proof' => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'payment_notes' => 'nullable|string|max:1000',
+        ], [
+            'payment_proof.required' => 'Please select a payment proof file.',
+            'payment_proof.file' => 'The selected file is not valid.',
+            'payment_proof.mimes' => 'Payment proof must be a JPEG, PNG, JPG, or PDF file.',
+            'payment_proof.max' => 'Payment proof file size must not exceed 2MB.',
         ]);
 
         if ($validator->fails()) {
@@ -77,6 +82,15 @@ class MemberController extends Controller
             if (!$user || !$user->hotel_id) {
                 return back()->withErrors(['error' => 'User not associated with a hotel.']);
             }
+
+            // Debug: Log what we're receiving
+            \Log::info('Member creation request', [
+                'has_file' => $request->hasFile('payment_proof'),
+                'file_valid' => $request->file('payment_proof') ? $request->file('payment_proof')->isValid() : false,
+                'file_size' => $request->file('payment_proof') ? $request->file('payment_proof')->getSize() : 'no file',
+                'file_mime' => $request->file('payment_proof') ? $request->file('payment_proof')->getMimeType() : 'no file',
+                'all_data' => $request->all()
+            ]);
 
             $membershipType = \App\Models\MembershipType::where('id', $request->membership_type_id)
                 ->where('hotel_id', $user->hotel_id)
