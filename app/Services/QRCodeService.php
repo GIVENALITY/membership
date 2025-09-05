@@ -232,4 +232,77 @@ class QRCodeService
             throw $e;
         }
     }
+
+    /**
+     * Verify QR code authenticity by checking if the scanned data matches a valid member
+     */
+    public function verifyQRCode(string $qrData): ?array
+    {
+        try {
+            $data = json_decode($qrData, true);
+            
+            if (!$data || !isset($data['id']) || !isset($data['h'])) {
+                return null; // Invalid QR data format
+            }
+            
+            $membershipId = $data['id'];
+            $hotelId = $data['h'];
+            
+            // Find member by membership ID and hotel ID
+            $member = \App\Models\Member::where('membership_id', $membershipId)
+                ->where('hotel_id', $hotelId)
+                ->where('status', 'active')
+                ->first();
+            
+            if (!$member) {
+                return null; // Member not found or inactive
+            }
+            
+            // Verify the QR data matches the current member data
+            $expectedData = [
+                't' => 'card',
+                'id' => $member->membership_id,
+                'h' => $member->hotel_id,
+                'n' => $member->full_name,
+                's' => $member->status,
+                'e' => $member->expires_at ? $member->expires_at->format('Y-m-d') : null,
+            ];
+            
+            // Check if the data matches (allowing for some flexibility in timestamp)
+            $isValid = (
+                $data['t'] === $expectedData['t'] &&
+                $data['id'] === $expectedData['id'] &&
+                $data['h'] === $expectedData['h'] &&
+                $data['n'] === $expectedData['n'] &&
+                $data['s'] === $expectedData['s']
+            );
+            
+            if (!$isValid) {
+                return null; // Data doesn't match
+            }
+            
+            return [
+                'valid' => true,
+                'member' => $member,
+                'member_data' => [
+                    'id' => $member->id,
+                    'membership_id' => $member->membership_id,
+                    'name' => $member->full_name,
+                    'email' => $member->email,
+                    'phone' => $member->phone,
+                    'status' => $member->status,
+                    'membership_type' => $member->membershipType ? $member->membershipType->name : null,
+                    'expires_at' => $member->expires_at,
+                    'hotel_name' => $member->hotel ? $member->hotel->name : null,
+                ]
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('QR code verification failed', [
+                'qr_data' => $qrData,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
 }
