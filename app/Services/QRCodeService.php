@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Member;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use SimpleSoftwareIO\QrCode\Generator;
 
 class QRCodeService
 {
@@ -14,11 +15,6 @@ class QRCodeService
     public function generateForMember(Member $member): string
     {
         try {
-            // Check if GD extension is available
-            if (!extension_loaded('gd')) {
-                throw new \Exception('GD extension is not available. Please install php-gd extension.');
-            }
-
             // Generate QR code data
             $qrData = $this->generateQRData($member);
             
@@ -28,7 +24,7 @@ class QRCodeService
                 Storage::disk('public')->makeDirectory($directory);
             }
             
-            // Generate QR code image using the installed package
+            // Generate QR code image using the installed package (now that ImageMagick is enabled)
             $qrCode = QrCode::format('png')
                 ->size(300)
                 ->margin(10)
@@ -230,7 +226,7 @@ class QRCodeService
             // Delete existing QR code
             $this->deleteForMember($member);
             
-            // Generate new QR code
+            // Generate new QR code using the package
             return $this->generateForMember($member);
         } catch (\Exception $e) {
             \Log::error('Failed to regenerate QR code for member', [

@@ -44,7 +44,7 @@ class TestQRCode extends Command
             }
             $this->info('✓ GD extension is available');
 
-            // Test 3: Basic QR code generation
+            // Test 3: Basic QR code generation using package (now that ImageMagick is enabled)
             $this->info('3. Testing basic QR code generation...');
             $testQr = QrCode::format('png')
                 ->size(100)
@@ -69,7 +69,7 @@ class TestQRCode extends Command
                 $this->info('✓ qr_codes directory already exists');
             }
 
-            // Test 6: Generate and save actual QR code
+            // Test 6: Generate and save actual QR code using package
             $this->info('6. Testing actual QR code file creation...');
             $qrCode = QrCode::format('png')
                 ->size(300)
