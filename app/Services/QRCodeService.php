@@ -14,10 +14,9 @@ class QRCodeService
     public function generateForMember(Member $member): string
     {
         try {
-            // Check if QR code package is available
-            if (!class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode')) {
-                // Fallback to API-based QR code generation
-                return $this->generateQRCodeViaAPI($member);
+            // Check if GD extension is available
+            if (!extension_loaded('gd')) {
+                throw new \Exception('GD extension is not available. Please install php-gd extension.');
             }
 
             // Generate QR code data
@@ -29,7 +28,7 @@ class QRCodeService
                 Storage::disk('public')->makeDirectory($directory);
             }
             
-            // Generate QR code image
+            // Generate QR code image using the installed package
             $qrCode = QrCode::format('png')
                 ->size(300)
                 ->margin(10)
@@ -46,6 +45,12 @@ class QRCodeService
                 'qr_code_data' => $qrData,
             ]);
             
+            \Log::info('QR code generated successfully using package', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'qr_path' => $fileName
+            ]);
+            
             return $fileName;
         } catch (\Exception $e) {
             \Log::error('Failed to generate QR code for member', [
@@ -54,7 +59,18 @@ class QRCodeService
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            throw $e;
+            
+            // Fallback to API method if package fails
+            try {
+                \Log::info('Attempting API fallback for QR code generation');
+                return $this->generateQRCodeViaAPI($member);
+            } catch (\Exception $fallbackError) {
+                \Log::error('API fallback also failed', [
+                    'member_id' => $member->id,
+                    'fallback_error' => $fallbackError->getMessage()
+                ]);
+                throw $e; // Throw original error
+            }
         }
     }
 

@@ -37,23 +37,30 @@ class TestQRCode extends Command
             }
             $this->info('✓ QR Code package is available');
 
-            // Test 2: Basic QR code generation
-            $this->info('2. Testing basic QR code generation...');
+            // Test 2: Check GD extension
+            $this->info('2. Checking GD extension...');
+            if (!extension_loaded('gd')) {
+                throw new \Exception('GD extension is not available. Please install php-gd extension.');
+            }
+            $this->info('✓ GD extension is available');
+
+            // Test 3: Basic QR code generation
+            $this->info('3. Testing basic QR code generation...');
             $testQr = QrCode::format('png')
                 ->size(100)
                 ->margin(5)
                 ->generate('test');
             $this->info('✓ Basic QR code generation successful');
 
-            // Test 3: Storage permissions
-            $this->info('3. Testing storage permissions...');
+            // Test 4: Storage permissions
+            $this->info('4. Testing storage permissions...');
             $testFile = 'qr_codes/test_' . time() . '.txt';
             Storage::disk('public')->put($testFile, 'test content');
             Storage::disk('public')->delete($testFile);
             $this->info('✓ Storage permissions OK');
 
-            // Test 4: Create qr_codes directory
-            $this->info('4. Testing qr_codes directory creation...');
+            // Test 5: Create qr_codes directory
+            $this->info('5. Testing qr_codes directory creation...');
             $directory = 'qr_codes';
             if (!Storage::disk('public')->exists($directory)) {
                 Storage::disk('public')->makeDirectory($directory);
@@ -62,8 +69,8 @@ class TestQRCode extends Command
                 $this->info('✓ qr_codes directory already exists');
             }
 
-            // Test 5: Generate and save actual QR code
-            $this->info('5. Testing actual QR code file creation...');
+            // Test 6: Generate and save actual QR code
+            $this->info('6. Testing actual QR code file creation...');
             $qrCode = QrCode::format('png')
                 ->size(300)
                 ->margin(10)
