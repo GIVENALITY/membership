@@ -418,11 +418,17 @@ class DiningVisitController extends Controller
 
             DB::commit();
 
-            return back()->with('success', $message);
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to checkout: ' . $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to checkout: ' . $e->getMessage()
+            ]);
         }
     }
 

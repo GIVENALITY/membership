@@ -81,15 +81,21 @@
       </div>
 
       <!-- Payment Proof Section -->
-      @if($member->payment_proof_path)
-        <div class="card mt-3">
-          <div class="card-header">
-            <h5 class="card-title mb-0">
-              <i class="icon-base ri ri-file-text-line me-2"></i>
-              Payment Proof
-            </h5>
-          </div>
-          <div class="card-body">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="icon-base ri ri-file-text-line me-2"></i>
+            Payment Proof
+            @if($member->payment_proof_path)
+              <span class="badge bg-label-success ms-2">Uploaded</span>
+            @else
+              <span class="badge bg-label-warning ms-2">Pending</span>
+            @endif
+          </h5>
+        </div>
+        <div class="card-body">
+          @if($member->payment_proof_path)
+            <!-- Payment proof exists -->
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-3">
@@ -123,9 +129,47 @@
                 @endif
               </div>
             </div>
-          </div>
+          @else
+            <!-- No payment proof uploaded -->
+            <div class="alert alert-warning">
+              <div class="d-flex align-items-center">
+                <i class="icon-base ri ri-alert-line me-2"></i>
+                <div>
+                  <h6 class="alert-heading mb-1">Payment Proof Required</h6>
+                  <p class="mb-0">This member has not uploaded payment proof yet. Please request payment proof before approving membership.</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Upload Payment Proof Form -->
+            <form method="POST" action="{{ route('members.approval.upload-payment-proof', $member) }}" enctype="multipart/form-data">
+              @csrf
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="mb-3">
+                    <label for="payment_proof" class="form-label fw-bold">Upload Payment Proof</label>
+                    <input type="file" class="form-control" id="payment_proof" name="payment_proof" 
+                           accept=".jpg,.jpeg,.png,.gif,.pdf" required>
+                    <div class="form-text">Accepted formats: JPG, PNG, GIF, PDF (Max: 2MB)</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="payment_notes" class="form-label fw-bold">Payment Notes</label>
+                    <textarea class="form-control" id="payment_notes" name="payment_notes" rows="3" 
+                              placeholder="Add any notes about the payment..."></textarea>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="icon-base ri ri-upload-line me-2"></i>Upload Payment Proof
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          @endif
         </div>
-      @endif
+      </div>
 
       <!-- Approval Actions -->
       @if($member->approval_status === 'pending')
