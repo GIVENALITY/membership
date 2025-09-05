@@ -148,35 +148,66 @@ class MemberCardGenerator
      */
     private function addQRCodeToCard($image, Member $member): void
     {
+        // Generate QR code if it doesn't exist
         if (!$member->hasQRCode()) {
-            return; // No QR code to add
+            try {
+                $qrService = app(\App\Services\QRCodeService::class);
+                $qrPath = $qrService->generateForMember($member);
+                $member->refresh(); // Refresh to get updated QR code path
+                \Log::info('QR code generated during card creation', [
+                    'member_id' => $member->id,
+                    'qr_path' => $qrPath
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('Failed to generate QR code during card creation', [
+                    'member_id' => $member->id,
+                    'error' => $e->getMessage()
+                ]);
+                return; // Skip QR code if generation fails
+            }
         }
 
         $qrPath = storage_path('app/public/' . $member->qr_code_path);
         if (!file_exists($qrPath)) {
+            \Log::warning('QR code file not found', [
+                'member_id' => $member->id,
+                'qr_path' => $qrPath
+            ]);
             return; // QR code file doesn't exist
         }
 
-        // Load QR code image
-        $qrImage = $this->loadImage($qrPath);
-        
-        // Get dimensions
-        $cardWidth = imagesx($image);
-        $cardHeight = imagesy($image);
-        $qrWidth = imagesx($qrImage);
-        $qrHeight = imagesy($qrImage);
-        
-        // Calculate QR code position (bottom left corner)
-        $qrSize = 120; // Size of QR code on card
-        $margin = 30; // Margin from edges
-        $qrX = $margin; // Left side
-        $qrY = $cardHeight - $qrSize - $margin; // Bottom side
-        
-        // Resize and copy QR code to card
-        $this->copyResizedImage($image, $qrImage, $qrX, $qrY, $qrSize, $qrSize);
-        
-        // Clean up
-        imagedestroy($qrImage);
+        try {
+            // Load QR code image
+            $qrImage = $this->loadImage($qrPath);
+            
+            // Get dimensions
+            $cardWidth = imagesx($image);
+            $cardHeight = imagesy($image);
+            $qrWidth = imagesx($qrImage);
+            $qrHeight = imagesy($qrImage);
+            
+            // Calculate QR code position (bottom left corner)
+            $qrSize = 120; // Size of QR code on card
+            $margin = 30; // Margin from edges
+            $qrX = $margin; // Left side
+            $qrY = $cardHeight - $qrSize - $margin; // Bottom side
+            
+            // Resize and copy QR code to card
+            $this->copyResizedImage($image, $qrImage, $qrX, $qrY, $qrSize, $qrSize);
+            
+            \Log::info('QR code added to card successfully', [
+                'member_id' => $member->id,
+                'position' => "x:{$qrX}, y:{$qrY}, size:{$qrSize}"
+            ]);
+            
+            // Clean up
+            imagedestroy($qrImage);
+        } catch (\Exception $e) {
+            \Log::error('Failed to add QR code to card', [
+                'member_id' => $member->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

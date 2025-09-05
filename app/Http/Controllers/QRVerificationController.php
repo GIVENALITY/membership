@@ -23,6 +23,50 @@ class QRVerificationController extends Controller
     }
 
     /**
+     * Verify QR code directly from URL (for scanned QR codes)
+     */
+    public function verifyDirect($membershipId, $hotelId)
+    {
+        try {
+            // Find member by membership ID and hotel ID
+            $member = \App\Models\Member::where('membership_id', $membershipId)
+                ->where('hotel_id', $hotelId)
+                ->where('status', 'active')
+                ->first();
+
+            if ($member) {
+                return view('qr-verification.result', [
+                    'valid' => true,
+                    'member' => [
+                        'id' => $member->id,
+                        'membership_id' => $member->membership_id,
+                        'name' => $member->full_name,
+                        'email' => $member->email,
+                        'phone' => $member->phone,
+                        'status' => $member->status,
+                        'membership_type' => $member->membershipType ? $member->membershipType->name : null,
+                        'expires_at' => $member->expires_at,
+                        'hotel_name' => $member->hotel ? $member->hotel->name : null,
+                    ],
+                    'qrData' => null
+                ]);
+            } else {
+                return view('qr-verification.result', [
+                    'valid' => false,
+                    'member' => null,
+                    'qrData' => "Membership ID: {$membershipId}, Hotel ID: {$hotelId}"
+                ]);
+            }
+        } catch (\Exception $e) {
+            return view('qr-verification.result', [
+                'valid' => false,
+                'member' => null,
+                'qrData' => "Error: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Verify QR code and show result
      */
     public function verify(Request $request)

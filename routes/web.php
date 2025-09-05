@@ -711,6 +711,7 @@ Route::get('/debug/qr-test', function() {
 
 // QR code verification routes
 Route::get('/qr-verify', [App\Http\Controllers\QRVerificationController::class, 'index'])->name('qr.index');
+Route::get('/qr-verify/{membershipId}/{hotelId}', [App\Http\Controllers\QRVerificationController::class, 'verifyDirect'])->name('qr.verify.direct');
 Route::post('/qr-verify', [App\Http\Controllers\QRVerificationController::class, 'verify'])->name('qr.verify');
 Route::post('/verify-qr-code', [App\Http\Controllers\QRVerificationController::class, 'verifyApi'])->name('qr.verify.api');
 
