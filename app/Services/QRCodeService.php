@@ -16,7 +16,8 @@ class QRCodeService
         try {
             // Check if QR code package is available
             if (!class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode')) {
-                throw new \Exception('QR Code package not available. Please ensure simplesoftwareio/simple-qrcode is properly installed.');
+                // Fallback to API-based QR code generation
+                return $this->generateQRCodeViaAPI($member);
             }
 
             // Generate QR code data
@@ -52,6 +53,59 @@ class QRCodeService
                 'membership_id' => $member->membership_id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Generate QR code using API service (fallback method)
+     */
+    private function generateQRCodeViaAPI(Member $member): string
+    {
+        try {
+            // Generate QR code data
+            $qrData = $this->generateQRData($member);
+            
+            // Ensure qr_codes directory exists
+            $directory = 'qr_codes';
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
+            
+            // Use QR Server API to generate QR code
+            $qrDataEncoded = urlencode($qrData);
+            $apiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={$qrDataEncoded}&format=png&margin=10&ecc=H";
+            
+            // Download QR code from API
+            $qrCodeContent = file_get_contents($apiUrl);
+            
+            if ($qrCodeContent === false) {
+                throw new \Exception('Failed to generate QR code via API');
+            }
+            
+            // Store QR code image
+            $fileName = $directory . '/' . $member->membership_id . '_' . time() . '.png';
+            Storage::disk('public')->put($fileName, $qrCodeContent);
+            
+            // Update member with QR code information
+            $member->update([
+                'qr_code_path' => $fileName,
+                'qr_code_data' => $qrData,
+            ]);
+            
+            \Log::info('QR code generated via API fallback', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'qr_path' => $fileName
+            ]);
+            
+            return $fileName;
+        } catch (\Exception $e) {
+            \Log::error('Failed to generate QR code via API', [
+                'member_id' => $member->id,
+                'membership_id' => $member->membership_id,
+                'error' => $e->getMessage()
             ]);
             throw $e;
         }
