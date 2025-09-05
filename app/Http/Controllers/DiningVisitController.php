@@ -118,16 +118,26 @@ class DiningVisitController extends Controller
     {
         $user = auth()->user();
         if (!$user || !$user->hotel_id) {
-            return back()->withErrors(['error' => 'User not associated with a hotel.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'User not associated with a hotel.'
+            ]);
         }
 
-        $request->validate([
-            'member_id' => 'required|exists:members,id',
-            'number_of_people' => 'required|integer|min:1|max:50',
-            'amount_spent' => 'required|numeric|min:0',
-            'receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'checkout_notes' => 'nullable|string|max:500',
-        ]);
+        try {
+            $request->validate([
+                'member_id' => 'required|exists:members,id',
+                'number_of_people' => 'required|integer|min:1|max:50',
+                'amount_spent' => 'required|numeric|min:0',
+                'receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'checkout_notes' => 'nullable|string|max:500',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed: ' . implode(', ', $e->validator->errors()->all())
+            ]);
+        }
 
         // Verify member belongs to this hotel
         $member = Member::where('id', $request->member_id)
@@ -135,7 +145,10 @@ class DiningVisitController extends Controller
             ->first();
 
         if (!$member) {
-            return back()->withErrors(['member_id' => 'Invalid member selected.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid member selected.'
+            ]);
         }
 
         try {
