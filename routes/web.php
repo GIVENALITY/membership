@@ -709,36 +709,8 @@ Route::get('/debug/qr-test', function() {
     }
 })->name('debug.qr-test');
 
-// QR code verification route for testing
-Route::post('/verify-qr-code', function (\Illuminate\Http\Request $request) {
-    try {
-        $request->validate([
-            'qr_data' => 'required|string'
-        ]);
-        
-        $qrService = app(\App\Services\QRCodeService::class);
-        $result = $qrService->verifyQRCode($request->qr_data);
-        
-        if ($result) {
-            return response()->json([
-                'success' => true,
-                'valid' => true,
-                'message' => 'QR code is valid and authentic',
-                'member' => $result['member_data']
-            ]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'valid' => false,
-                'message' => 'QR code is invalid or expired'
-            ]);
-        }
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ]);
-    }
-});
+// QR code verification routes
+Route::get('/qr-verify', [App\Http\Controllers\QRVerificationController::class, 'index'])->name('qr.index');
+Route::post('/qr-verify', [App\Http\Controllers\QRVerificationController::class, 'verify'])->name('qr.verify');
+Route::post('/verify-qr-code', [App\Http\Controllers\QRVerificationController::class, 'verifyApi'])->name('qr.verify.api');
 
