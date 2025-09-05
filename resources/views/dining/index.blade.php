@@ -196,19 +196,26 @@
                                                 <small class="text-muted">Enter the total bill amount before discount</small>
                                             </div>
 
+                                            <div class="mb-3">
+                                                <label for="numberOfPeople" class="form-label">Number of People</label>
+                                                <input type="number" class="form-control" id="numberOfPeople" 
+                                                       name="number_of_people" min="1" max="50" value="1" required>
+                                                <small class="text-muted">Number of people in the party</small>
+                                            </div>
+
                                             @if(auth()->user()->hotel->getSetting('receipt_required', false))
                                             <div class="mb-3">
                                                 <label for="receipt" class="form-label">Upload Receipt <span class="text-danger">*</span></label>
                                                 <input type="file" class="form-control" id="receipt" name="receipt" 
-                                                       accept="image/*,.pdf" required>
-                                                <small class="text-muted">Upload receipt image or PDF (required)</small>
+                                                       accept="image/*" required>
+                                                <small class="text-muted">Upload receipt image (JPG, PNG, GIF) - required</small>
                                             </div>
                                             @else
                                             <div class="mb-3">
                                                 <label for="receipt" class="form-label">Upload Receipt (Optional)</label>
                                                 <input type="file" class="form-control" id="receipt" name="receipt" 
-                                                       accept="image/*,.pdf">
-                                                <small class="text-muted">Upload receipt image or PDF (optional)</small>
+                                                       accept="image/*">
+                                                <small class="text-muted">Upload receipt image (JPG, PNG, GIF) - optional</small>
                                             </div>
                                             @endif
 
@@ -507,6 +514,7 @@ function processCheckout() {
     const formData = new FormData();
     formData.append('member_id', selectedMember.id);
     formData.append('amount_spent', document.getElementById('billAmount').value);
+    formData.append('number_of_people', document.getElementById('numberOfPeople').value);
     formData.append('receipt', document.getElementById('receipt').files[0]);
     formData.append('checkout_notes', document.getElementById('checkoutNotes').value);
     formData.append('is_checked_out', 'true');
