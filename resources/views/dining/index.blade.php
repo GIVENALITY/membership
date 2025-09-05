@@ -532,7 +532,14 @@ function processCheckout() {
             selectedMember = null;
             loadCurrentVisits();
         } else {
-            alert('Error: ' + data.message);
+            let errorMsg = 'Error: ' + data.message;
+            if (data.debug_info) {
+                errorMsg += '\n\nDebug Info:\n';
+                errorMsg += 'File: ' + data.debug_info.file + '\n';
+                errorMsg += 'Line: ' + data.debug_info.line + '\n';
+                errorMsg += 'Error: ' + data.debug_info.error;
+            }
+            alert(errorMsg);
         }
     })
     .catch(error => {

@@ -425,9 +425,27 @@ class DiningVisitController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // Log detailed error information
+            \Log::error('Checkout error details', [
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_trace' => $e->getTraceAsString(),
+                'user_id' => $user->id,
+                'visit_id' => $visit->id,
+                'member_id' => $visit->member_id,
+                'amount_spent' => $request->amount_spent ?? 'not provided'
+            ]);
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to checkout: ' . $e->getMessage()
+                'message' => 'Failed to checkout: ' . $e->getMessage(),
+                'debug_info' => [
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine(),
+                    'error' => $e->getMessage()
+                ]
             ]);
         }
     }
