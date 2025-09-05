@@ -166,11 +166,11 @@ class MemberCardGenerator
         $qrWidth = imagesx($qrImage);
         $qrHeight = imagesy($qrImage);
         
-        // Calculate QR code position (bottom right corner)
+        // Calculate QR code position (bottom left corner)
         $qrSize = 120; // Size of QR code on card
         $margin = 30; // Margin from edges
-        $qrX = $cardWidth - $qrSize - $margin;
-        $qrY = $cardHeight - $qrSize - $margin;
+        $qrX = $margin; // Left side
+        $qrY = $cardHeight - $qrSize - $margin; // Bottom side
         
         // Resize and copy QR code to card
         $this->copyResizedImage($image, $qrImage, $qrX, $qrY, $qrSize, $qrSize);

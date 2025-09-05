@@ -128,20 +128,14 @@ class QRCodeService
      */
     private function generateQRData(Member $member): string
     {
+        // Create a shorter, more concise QR data to fit database column
         $data = [
-            'type' => 'membership_card',
-            'member_id' => $member->id,
-            'membership_id' => $member->membership_id,
-            'hotel_id' => $member->hotel_id,
-            'name' => $member->full_name,
-            'email' => $member->email,
-            'phone' => $member->phone,
-            'status' => $member->status,
-            'membership_type' => optional($member->membershipType)->name ?? 'N/A',
-            'discount_rate' => $member->current_discount_rate ?? 0,
-            'points_balance' => $member->current_points_balance ?? 0,
-            'expires_at' => $member->expires_at ? $member->expires_at->toISOString() : null,
-            'timestamp' => now()->toISOString(),
+            't' => 'card', // type
+            'id' => $member->membership_id, // membership_id
+            'h' => $member->hotel_id, // hotel_id
+            'n' => $member->full_name, // name
+            's' => $member->status, // status
+            'e' => $member->expires_at ? $member->expires_at->format('Y-m-d') : null, // expires_at (shorter format)
         ];
         
         return json_encode($data);
