@@ -532,14 +532,15 @@ function processCheckout() {
         }
         return response.json();
     })
-    .then(data => {
-        if (data.success) {
-            alert('Payment processed successfully! Visit closed.');
-            document.getElementById('checkoutForm').style.display = 'none';
-            document.getElementById('checkoutFormElement').reset();
-            selectedMember = null;
-            loadCurrentVisits();
-        } else {
+               .then(data => {
+               if (data.success) {
+                   alert('Payment processed successfully! Visit closed.');
+                   document.getElementById('checkoutForm').style.display = 'none';
+                   document.getElementById('checkoutFormElement').reset();
+                   selectedMember = null;
+                   // Reload current visits to remove the closed visit
+                   loadCurrentVisits();
+               } else {
             let errorMsg = 'Error: ' + data.message;
             if (data.debug_info) {
                 errorMsg += '\n\nDebug Info:\n';
